@@ -1,6 +1,6 @@
 HELP.md
 target/
-!.mvn/wrapper/maven-wrapper.jar
+!backend/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
 
@@ -33,6 +33,6 @@ build/
 .vscode/
 
 .gitattributes
-compose.yaml
-mvnw
-mvnw.cmd
+backend/compose.yaml
+backend/mvnw
+backend/mvnw.cmd
