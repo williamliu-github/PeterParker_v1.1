@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserUpdatePasswordDTO {
 
-    @JsonProperty("update_password_token")
+
     private String updatePasswordToken;
 
-    @JsonProperty("user_password")
     private String userPassword;
 
     public String getUpdatePasswordToken() {

@@ -1,51 +1,43 @@
 package com.tibame.peterparker.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Table(name="user")
+@Table(name="users")
 public class UserVO implements Serializable {
 
     //Field
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
-    @JsonProperty("user_id")
+    @Column(name="userId")
     private Integer userId;
 
-    @Column(name = "user_name", nullable = false)
-    @JsonProperty("user_name")
+    @Column (name="userName", nullable = false)
     private String userName;
 
-    @Column(name = "user_account", nullable = false)
-    @Email
-    @JsonProperty("user_account")
+    @Column (name="userAccount", nullable = false)
     private String userAccount;
 
 
-    @Column(name = "user_password", nullable = false)
-    @JsonProperty("user_password")
+    @Column (name="userPassword", nullable = false)
     private String userPassword;
 
-    @Column(name = "user_phone", nullable = false)
-    @JsonProperty("user_phone")
+    @Column (name="userPhone", nullable = false)
     private String userPhone;
 
-    @Column(name = "car_number", nullable = false)
-    @JsonProperty("car_number")
+    @Column (name="carNumber", nullable = false)
     private String carNumber;
 
-
-    @Column(name = "google_token", nullable = true)
+    @Column (name="googleToken", nullable = true)
     @JsonProperty("google_token")
     private String googleToken;
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<UserFavouritesVO> userFavourites;
+//    private List<UserFavouriteVO> userFavourites;
 
     public Integer getUserId() {
         return userId;
@@ -59,7 +51,7 @@ public class UserVO implements Serializable {
         return userName;
     }
 
-    public void setUserName(String userName) {
+    public void setUserName( String userName) {
         this.userName = userName;
     }
 
@@ -103,7 +95,7 @@ public class UserVO implements Serializable {
         this.googleToken = googleToken;
     }
 
-    public UserVO() {
+    public UserVO(){
     }
 
     public UserVO(String userName, String userAccount, String userPassword, String userPhone, String carNumber) {
@@ -122,3 +114,6 @@ public class UserVO implements Serializable {
         this.carNumber = carNumber;
     }
 }
+
+
+

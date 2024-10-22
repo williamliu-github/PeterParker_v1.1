@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserChangePasswordRequestDTO {
 
-    @JsonProperty("user_account")
     private String userAccount;
 
     public String getUserAccount() {
