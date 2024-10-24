@@ -37,6 +37,7 @@ public class OrderVO implements Serializable {
     private Integer orderTotalIncome;
 
     @Column(name = "orderModified", nullable = false)
+    @Version
     private Timestamp orderModified;
 
     // Constructors
