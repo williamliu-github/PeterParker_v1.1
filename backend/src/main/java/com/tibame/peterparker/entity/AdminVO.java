@@ -12,6 +12,8 @@ import javax.persistence.Table;
 @Table(name = "admin") // 對應 admin 表
 public class AdminVO {
 
+
+	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "admin_ID")  // 主鍵對應 admin_ID
