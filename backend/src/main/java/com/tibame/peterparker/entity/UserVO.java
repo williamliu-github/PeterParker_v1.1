@@ -1,7 +1,5 @@
 package com.tibame.peterparker.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -23,7 +21,7 @@ public class UserVO implements Serializable {
     private String userAccount;
 
 
-    @Column (name="userPassword", nullable = false)
+    @Column (name="userPassword")
     private String userPassword;
 
     @Column (name="userPhone", nullable = false)
@@ -32,8 +30,7 @@ public class UserVO implements Serializable {
     @Column (name="carNumber", nullable = false)
     private String carNumber;
 
-    @Column (name="googleToken", nullable = true)
-    @JsonProperty("google_token")
+    @Column(name="googleToken", columnDefinition = "TEXT")
     private String googleToken;
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
@@ -87,9 +84,11 @@ public class UserVO implements Serializable {
         this.carNumber = carNumber;
     }
 
+
     public String getGoogleToken() {
         return googleToken;
     }
+
 
     public void setGoogleToken(String googleToken) {
         this.googleToken = googleToken;
