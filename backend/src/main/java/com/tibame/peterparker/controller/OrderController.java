@@ -22,8 +22,8 @@ import com.tibame.peterparker.entity.OrderVO;
 import com.tibame.peterparker.service.OrderService;
 import com.tibame.peterparker.service.ParkingService;
 
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.servlet.http.HttpSession;
+import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping(path = "/order")
