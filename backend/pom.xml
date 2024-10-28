@@ -31,6 +31,8 @@
         <spring-cloud.version>2023.0.3</spring-cloud.version>
         <spring-modulith.version>1.2.4</spring-modulith.version>
     </properties>
+
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -264,7 +266,38 @@
                 <scope>provided</scope>
             </dependency>
 
-        </dependencies>
+            <!-- Google API 客戶端 -->
+            <dependency>
+                <groupId>com.google.api-client</groupId>
+                <artifactId>google-api-client</artifactId>
+                <version>1.33.0</version>
+            </dependency>
+
+            <!-- Google OAuth 客戶端 -->
+            <dependency>
+                <groupId>com.google.oauth-client</groupId>
+                <artifactId>google-oauth-client-jetty</artifactId>
+                <version>1.33.1</version>
+            </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.apis/google-api-services-calendar -->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-calendar</artifactId>
+            <version>v3-rev411-1.25.0</version>
+        </dependency>
+
+
+
+        <!-- Jackson JSON 工廠 -->
+            <dependency>
+                <groupId>com.google.http-client</groupId>
+                <artifactId>google-http-client-jackson2</artifactId>
+                <version>1.41.4</version>
+            </dependency>
+
+
+    </dependencies>
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -288,6 +321,23 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+
+            <dependency>
+                <groupId>com.google.api-client</groupId>
+                <artifactId>google-api-client</artifactId>
+                <version>1.33.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.oauth-client</groupId>
+                <artifactId>google-oauth-client-jetty</artifactId>
+                <version>1.33.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.apis</groupId>
+                <artifactId>google-api-services-calendar</artifactId>
+                <version>v3-rev305-1.25.0</version>
+            </dependency>
+
 
             <!-- Google Sign-in integration -->
             <!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->

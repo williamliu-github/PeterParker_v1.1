@@ -15,11 +15,11 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer> {
     // 根據狀態查找訂單
     List<OrderVO> findByStatusId(String statusId);
 
-    // 根據用戶 ID 查找所有訂單
-    List<OrderVO> findByUserUserId(Integer userId);
+    // 根據用戶 ID 查找所有訂單（修改方法名稱以符合命名規則）
+    List<OrderVO> findByUserId(Integer userId);
 
     // 查找在指定時間段內已被預訂的停車位
-    @Query(value = "SELECT o FROM OrderVO o WHERE o.spaceId = :spaceId AND " +
+    @Query("SELECT o FROM OrderVO o WHERE o.spaceId = :spaceId AND " +
             "((o.orderStartTime <= :startTime AND o.orderEndTime >= :startTime) OR " +
             "(o.orderStartTime <= :endTime AND o.orderEndTime >= :endTime) OR " +
             "(o.orderStartTime >= :startTime AND o.orderEndTime <= :endTime))")
@@ -27,23 +27,9 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer> {
 
     // 修改訂單狀態
     @Modifying
-    @Query(value = "UPDATE orderinfo o SET o.statusId = :statusId WHERE o.orderId = :orderId", nativeQuery = true)
+    @Query("UPDATE OrderVO o SET o.statusId = :statusId WHERE o.orderId = :orderId")
     int updateOrderStatus(Integer orderId, String statusId);
 
-    // 插入新的訂單
-    @Modifying
-    @Query(value = "INSERT INTO orderinfo (userId, spaceId, statusId, orderCheck, userComment, " +
-            "orderStartTime, orderEndTime, orderTotalPrice, orderModified) " +
-            "VALUES (:userId, :spaceId, :statusId, :orderCheck, :userComment, :orderStartTime, :orderEndTime, :orderTotalPrice, :orderModified)", nativeQuery = true)
-    int insertOrder(Integer userId, Integer spaceId, String statusId, Boolean orderCheck, String userComment,
-                    Timestamp orderStartTime, Timestamp orderEndTime, Integer orderTotalPrice, Timestamp orderModified);
-
-    // 修改訂單信息
-    @Modifying
-    @Query(value = "UPDATE orderinfo SET userId = :userId, spaceId = :spaceId, statusId = :statusId, " +
-            "orderCheck = :orderCheck, userComment = :userComment, orderStartTime = :orderStartTime, " +
-            "orderEndTime = :orderEndTime, orderTotalPrice = :orderTotalPrice, orderModified = :orderModified " +
-            "WHERE orderId = :orderId", nativeQuery = true)
-    int updateOrder(Integer orderId, Integer userId, Integer spaceId, String statusId, Boolean orderCheck,
-                    String userComment, Timestamp orderStartTime, Timestamp orderEndTime, Integer orderTotalPrice, Timestamp orderModified);
+    // 刪除訂單
+    void deleteById(Integer orderId);
 }

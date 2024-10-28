@@ -585,6 +585,7 @@
 </div>
 <!-- Wrapper / End -->
 
+
 <!-- Scripts
 ================================================== -->
 <script type="text/javascript" src="scripts/jquery-3.6.0.min.js"></script>
@@ -600,26 +601,25 @@
 <script type="text/javascript" src="scripts/tooltips.min.js"></script>
 <script type="text/javascript" src="scripts/custom.js"></script>
 
-
 <!-- Google Autocomplete -->
 <script>
-  function initAutocomplete() {
-    var input = document.getElementById('autocomplete-input');
-    var autocomplete = new google.maps.places.Autocomplete(input);
+	function initAutocomplete() {
+		var input = document.getElementById('autocomplete-input');
+		var autocomplete = new google.maps.places.Autocomplete(input);
 
-    autocomplete.addListener('place_changed', function() {
-      var place = autocomplete.getPlace();
-      if (!place.geometry) {
-        return;
-      }
-    });
+		autocomplete.addListener('place_changed', function() {
+			var place = autocomplete.getPlace();
+			if (!place.geometry) {
+				return;
+			}
+		});
 
-	if ($('.main-search-input-item')[0]) {
-	    setTimeout(function(){ 
-	        $(".pac-container").prependTo("#autocomplete-container");
-	    }, 300);
+		if ($('.main-search-input-item')[0]) {
+			setTimeout(function(){
+				$(".pac-container").prependTo("#autocomplete-container");
+			}, 300);
+		}
 	}
-}
 </script>
 
 <!-- Maps -->
@@ -628,6 +628,79 @@
 <script type="text/javascript" src="scripts/markerclusterer.js"></script>
 <script type="text/javascript" src="scripts/maps.js"></script>
 
+<!-- Add new JavaScript code here -->
+<script>
+	$(document).ready(function () {
+		// 搜尋功能 AJAX 請求
+		$('#autocomplete-input').on('change', function () {
+			let keyword = $(this).val();
+			if (keyword) {
+				$.ajax({
+					url: '/order/searchParking',
+					type: 'GET',
+					data: { keyword: keyword },
+					success: function (data) {
+						renderParkingList(data);
+					},
+					error: function (err) {
+						console.error('Error searching parking:', err);
+					}
+				});
+			}
+		});
+
+		// 篩選功能 AJAX 請求
+		$('.distance-radius').on('input', function () {
+			let radius = $(this).val();
+			let latitude = 25.033; // 預設經緯度，可用其他方式獲取
+			let longitude = 121.5654;
+			$.ajax({
+				url: '/order/nearbyParking',
+				type: 'GET',
+				data: {
+					latitude: latitude,
+					longitude: longitude,
+					radius: radius
+				},
+				success: function (data) {
+					renderParkingList(data);
+				},
+				error: function (err) {
+					console.error('Error finding nearby parking:', err);
+				}
+			});
+		});
+
+		// 渲染停車場列表的函數
+		function renderParkingList(parkingData) {
+			$('.fs-listings').empty();
+			parkingData.forEach(function (parking) {
+				$('.fs-listings').append(`
+                <div class="col-lg-12 col-md-12">
+                    <div class="listing-item-container list-layout">
+                        <a href="parking_booking_1.html" class="listing-item">
+                            <div class="listing-item-image">
+                                <img src="${parking.imageUrl}" alt="">
+                                <span class="tag">${parking.type}</span>
+                            </div>
+                            <div class="listing-item-content">
+                                <div class="listing-item-inner">
+                                    <h3>${parking.name}</h3>
+                                    <span>${parking.address}</span>
+                                    <div class="star-rating" data-rating="${parking.rating}">
+                                        <div class="rating-counter">(${parking.reviewCount} reviews)</div>
+                                    </div>
+                                </div>
+                                <span class="like-icon"></span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            `);
+			});
+		}
+	});
+</script>
 
 </body>
 </html>

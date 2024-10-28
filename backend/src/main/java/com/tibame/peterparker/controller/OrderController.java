@@ -88,7 +88,7 @@ public class OrderController {
     @PostMapping("/calculate")
     public ResponseEntity<?> calculateTotalPrice(@RequestBody OrderDTO request) {
         try {
-            Double totalPrice = orderService.calculateTotalPrice(request);
+            Integer totalPrice = orderService.calculateTotalPrice(request);
             return new ResponseEntity<>(Map.of("totalPrice", totalPrice), HttpStatus.OK);
         } catch (EntityNotFoundException enfe) {
             return new ResponseEntity<>(enfe.getMessage(), HttpStatus.NOT_FOUND);

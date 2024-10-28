@@ -11,13 +11,14 @@ public class OrderDTO {
     private String userComment;       // 用戶評價
     private Timestamp orderStartTime; // 訂單開始時間
     private Timestamp orderEndTime;   // 訂單結束時間
+    private Timestamp orderModified;  // 訂單修改時間
     private Integer orderTotalIncome;  // 訂單總金額
 
     // Constructors
     public OrderDTO() {}
 
     public OrderDTO(Integer orderId, Integer userId, Integer spaceId, String statusId, String userComment,
-                    Timestamp orderStartTime, Timestamp orderEndTime, Integer orderTotalIncome) {
+                    Timestamp orderStartTime, Timestamp orderEndTime, Timestamp orderModified, Integer orderTotalIncome) {
         this.orderId = orderId;
         this.userId = userId;
         this.spaceId = spaceId;
@@ -25,6 +26,7 @@ public class OrderDTO {
         this.userComment = userComment;
         this.orderStartTime = orderStartTime;
         this.orderEndTime = orderEndTime;
+        this.orderModified = orderModified;
         this.orderTotalIncome = orderTotalIncome;
     }
 
@@ -83,6 +85,14 @@ public class OrderDTO {
 
     public void setOrderEndTime(Timestamp orderEndTime) {
         this.orderEndTime = orderEndTime;
+    }
+
+    public Timestamp getOrderModified() {
+        return orderModified;
+    }
+
+    public void setOrderModified(Timestamp orderModified) {
+        this.orderModified = orderModified;
     }
 
     public Integer getOrderTotalIncome() {
