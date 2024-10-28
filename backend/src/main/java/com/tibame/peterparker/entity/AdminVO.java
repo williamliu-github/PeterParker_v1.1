@@ -11,8 +11,6 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "admin") // 對應 admin 表
 public class AdminVO {
-
-
 	
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
