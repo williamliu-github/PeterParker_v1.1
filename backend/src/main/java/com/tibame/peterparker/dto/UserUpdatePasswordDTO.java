@@ -1,9 +1,6 @@
 package com.tibame.peterparker.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class UserUpdatePasswordDTO {
-
 
     private String updatePasswordToken;
 

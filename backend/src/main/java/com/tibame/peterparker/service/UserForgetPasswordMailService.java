@@ -1,19 +1,14 @@
 package com.tibame.peterparker.service;
 
-import org.springframework.stereotype.Service;
-
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
-
-
-@Service
-public class EmailService {
+public class UserForgetPasswordMailService {
 
     // 設定傳送郵件:至收信人的Email信箱,Email主旨,Email內容
-    public void sendMail(String to, String verificationCode) {
+    public void sendMail(String to, String passwordResetCode) {
         try {
             // 設定使用SSL連線至 Gmail smtp Server
             Properties props = new Properties();
@@ -48,9 +43,12 @@ public class EmailService {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
             // 設定信中的主旨
-            message.setSubject("[PeterParker] 驗證碼通知");
+            message.setSubject("[Peter Parker] 密碼重設");
+
+            String resetLink = "http://localhost:5500/HTML/user_update_password.html?token=" + passwordResetCode;
+
             // 設定信中的內容
-            message.setText("歡迎您註冊 PeterParker 的會員。您的驗證碼為：" + verificationCode + " (30分鐘後失效)。");
+            message.setText("忘記密碼不要擔心！請點選以下的連接前往重設您的帳號(30分鐘後失效)：\n" + resetLink );
 
             Transport.send(message);
             System.out.println("傳送成功!");

@@ -33,8 +33,13 @@ public class UserVO implements Serializable {
     @Column(name="googleToken", columnDefinition = "TEXT")
     private String googleToken;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    private List<UserFavouriteVO> userFavourites;
+    @Lob  // Defines a column for large objects
+    @Column(name = "profilePhoto", columnDefinition = "LONGBLOB")
+    private byte[] profilePhoto;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<UserFavouriteVO> userFavourites;
 
     public Integer getUserId() {
         return userId;
@@ -92,6 +97,14 @@ public class UserVO implements Serializable {
 
     public void setGoogleToken(String googleToken) {
         this.googleToken = googleToken;
+    }
+
+    public byte[] getProfilePhoto() {
+        return profilePhoto;
+    }
+
+    public void setProfilePhoto(byte[] profilePhoto) {
+        this.profilePhoto = profilePhoto;
     }
 
     public UserVO(){

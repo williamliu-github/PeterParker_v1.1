@@ -1,6 +1,7 @@
 package com.tibame.peterparker.service;
 
 
+import com.tibame.peterparker.dto.UserProfileDTO;
 import com.tibame.peterparker.dto.UserUpdatePasswordDTO;
 import com.tibame.peterparker.entity.UserVO;
 import com.tibame.peterparker.dao.UserRepository;
@@ -9,6 +10,8 @@ import io.jsonwebtoken.Jwts;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
+
 
 @Service
 @Transactional
@@ -16,7 +19,7 @@ public class UserService {
     //The service class is where the core processing of data happens.
 
     private final UserRepository userRepository;
-    private EmailService emailService;
+    private UserEmailService userEmailService;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -29,6 +32,7 @@ public class UserService {
     public UserVO findUserByUserAccountAndUserPassword(String userAccount, String userPassword) {
         return userRepository.findByUserAccountAndUserPassword(userAccount, userPassword);
     }
+
 
     public UserVO findUserByUserId(int userId) {
         return userRepository.findByUserId(userId);
@@ -65,6 +69,31 @@ public class UserService {
         return userRepository.updateUserPassword(userAccount,newUserPassword);
 
     }
+
+    public UserVO findByUserAccount(String userAccount) {
+        return userRepository.findByUserAccount(userAccount);
+    };
+
+    public int updateGoogleToken(String userAccount, String googleToken) {
+        return userRepository.updateGoogleToken(userAccount, googleToken);
+    }
+
+    public int insertGoogleUser(String userName, String userAccount, String userPhone, String carNumber, String googleToken ) {
+        return userRepository.insertGoogleUser(userName, userAccount, userPhone, carNumber, googleToken);
+    }
+
+    public void uploadPhoto(UserProfileDTO userProfileDTO) throws IOException {
+
+            Integer userId = userProfileDTO.getUserId();
+            System.out.println("userId received in backend"+userId);
+            byte[] profilePhoto = userProfileDTO.getProfilePhoto().getBytes(); // Convert file to byte array
+            userRepository.updateProfilePhoto(userId, profilePhoto);
+    }
+
+    public byte[] getProfilePhoto(Integer userId) {
+        return userRepository.getProfilePhoto(userId);
+    }
+
 
 
 

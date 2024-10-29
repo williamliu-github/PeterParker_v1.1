@@ -5,18 +5,16 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.gson.Gson;
-import com.tibame.peterparker.dto.UserChangePasswordRequestDTO;
-import com.tibame.peterparker.dto.UserLoginRequestDTO;
-import com.tibame.peterparker.dto.UserUpdatePasswordDTO;
-import com.tibame.peterparker.dto.UserVerificationCodeDTO;
+import com.tibame.peterparker.dto.*;
 import com.tibame.peterparker.entity.UserVO;
-import com.tibame.peterparker.service.EmailService;
-import com.tibame.peterparker.service.ForgetPasswordMailService;
+import com.tibame.peterparker.service.UserEmailService;
+import com.tibame.peterparker.service.UserForgetPasswordMailService;
 import com.tibame.peterparker.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import redis.clients.jedis.Jedis;
@@ -30,8 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@CrossOrigin(origins = "http://localhost:5500/")
+@CrossOrigin(origins = "http://localhost:5500")
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     final UserService userService;
@@ -42,7 +41,7 @@ public class UserController {
 
     @GetMapping("/")
     public String home() {
-        return "Tomcat runs successfully!"; // or the name of your default view
+        return "Tomcat runs successfully!";
     }
 
     @PostMapping("/login")
@@ -131,7 +130,13 @@ public class UserController {
             if (!userTaken) {
                 // User does not exist, ask for more information
                 response.put("status", "need more information");
-                return new ResponseEntity<>(response, HttpStatus.CONTINUE);
+
+                Jedis jedis = new Jedis();
+                jedis.set("userName",userName);
+                jedis.set("userAccount",userAccount);
+                jedis.set("googleToken",googleToken);
+
+                return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
             }
 
             // Retrieve existing user information
@@ -164,9 +169,25 @@ public class UserController {
         return ResponseEntity.ok(Map.of("jwtToken", jwtToken));
     }
 
+    @PostMapping("/googleRegister")
+    public ResponseEntity<?> googleExtra(@RequestBody UserAdditionalGoogleRegistrationDTO userGoogleRegistrationDTO) {
+        Map<String, Object> response = new HashMap<>();
+        Jedis jedis = new Jedis();
+        String userName = jedis.get("userName");
+        String userAccount = jedis.get("userAccount");
+        String googleToken = jedis.get("googleToken");
+        String carNumber = userGoogleRegistrationDTO.getCarNumber();
+        String userPhone = userGoogleRegistrationDTO.getUserPhone();
+
+        userService.insertGoogleUser(userName, userAccount, userPhone, carNumber, googleToken);
+
+        response.put("status", "success");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
     @PostMapping("/addUser")
-    public ResponseEntity<Map<String, Object>> AddUser(@Valid @RequestBody UserVO userVO) {
-        boolean userTaken = userService.isUserAccountTaken(userVO.getUserAccount());
+    public ResponseEntity<Map<String, Object>> AddUser(@Valid @RequestBody UserAddDTO userAddDTO) {
+        boolean userTaken = userService.isUserAccountTaken(userAddDTO.getUserAccount());
 
         Map<String, Object> response = new HashMap<>();
 
@@ -181,7 +202,7 @@ public class UserController {
 
         try (Jedis jedis = new Jedis()) {
             Gson gson = new Gson(); //Creates an instance of the Gson library.
-            String userJson = gson.toJson(userVO);  //This line converts the userVO object into a JSON string representation.
+            String userJson = gson.toJson(userAddDTO);  //This line converts the userVO object into a JSON string representation.
             // Store the JSON string in Redis with a key
             jedis.setex("code", 1800, verificationCode);
             jedis.setex("pendingUser", 1800, userJson);
@@ -189,8 +210,8 @@ public class UserController {
             System.out.println("pending User added to jedis: " + jedis.get("pendingUser"));
         }
 
-        EmailService emailService = new EmailService();
-        emailService.sendMail(userVO.getUserAccount(), verificationCode);
+        UserEmailService userEmailService = new UserEmailService();
+        userEmailService.sendMail(userAddDTO.getUserAccount(), verificationCode);
 
         response.put("status", "success");
         response.put("message", "Verification email successfully sent");
@@ -284,6 +305,8 @@ public class UserController {
     public ResponseEntity<Map<String, Object>> ChangePasswordRequest (@Valid @RequestBody UserChangePasswordRequestDTO changePasswordRequestDTO) {
         Map<String, Object> response = new HashMap<>();
 
+        System.out.println("後台接收的account"+ changePasswordRequestDTO.getUserAccount());
+
         boolean userTaken = userService.isUserAccountTaken(changePasswordRequestDTO.getUserAccount());
 
         System.out.println(changePasswordRequestDTO.getUserAccount());
@@ -307,8 +330,8 @@ public class UserController {
                 .compact();
 
         // Send the reset password link email
-        ForgetPasswordMailService forgetPasswordMailService = new ForgetPasswordMailService();
-        forgetPasswordMailService.sendMail(userAccount, passwordResetCode);
+        UserForgetPasswordMailService userForgetPasswordMailService = new UserForgetPasswordMailService();
+        userForgetPasswordMailService.sendMail(userAccount, passwordResetCode);
 
         response.put("status", "success");
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -321,4 +344,46 @@ public class UserController {
         response.put("status", "success");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+
+    @PostMapping("/uploadPhoto")
+    public ResponseEntity<String> uploadUserProfile(@ModelAttribute UserProfileDTO userProfileDTO) {
+        try {
+            userService.uploadPhoto(userProfileDTO);
+            return ResponseEntity.ok("Profile photo uploaded successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload profile photo");
+        }
+    }
+
+    @GetMapping("/showPhoto")
+    public ResponseEntity<byte[]> showPhoto(@RequestHeader(value = "Authorization", required = false) String authHeader) {
+        String jwtToken = authHeader.substring(7);  // Extract JWT token by removing "Bearer "
+        String SECRET_KEY = "TheSecretKeyForOurBelovedProjectPeterParker";
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        Claims claims = Jwts.parser()
+                .setSigningKey(SECRET_KEY.getBytes()) // Use the same key for verification
+                .parseClaimsJws(jwtToken) // This will throw an exception if the token is invalid
+                .getBody();
+
+        // Extract user information from the JWT claims
+        String userIdString = claims.getSubject();
+        Integer userId = Integer.parseInt(userIdString);
+
+        System.out.println(userId);
+
+        byte[] userPhoto = userService.getProfilePhoto(userId);
+
+        if (userPhoto == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG) // Set content type based on the image format stored
+                .body(userPhoto);
+    }
+
 }

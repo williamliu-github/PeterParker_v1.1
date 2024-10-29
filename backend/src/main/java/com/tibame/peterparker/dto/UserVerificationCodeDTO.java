@@ -1,6 +1,7 @@
 package com.tibame.peterparker.dto;
 
 public class UserVerificationCodeDTO {
+
     private String code;
 
     public UserVerificationCodeDTO() {
