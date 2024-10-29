@@ -31,17 +31,14 @@
         <spring-cloud.version>2023.0.3</spring-cloud.version>
         <spring-modulith.version>1.2.4</spring-modulith.version>
     </properties>
-    <!--
+
     <distributionManagement>
         <repository>
-            <uniqueVersion>false</uniqueVersion>
-            <id>corp1</id>
-            <name>Corporate Repository</name>
-            <url>scp://repo/maven2</url>
-            <layout>default</layout>
+              <id>myrepository</id>
+              <url>file:./repository/</url>
         </repository>
     </distributionManagement>
-    -->
+
 
     <dependencies>
         <dependency>
