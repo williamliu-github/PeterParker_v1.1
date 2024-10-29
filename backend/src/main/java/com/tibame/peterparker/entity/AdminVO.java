@@ -25,9 +25,7 @@ public class AdminVO {
     
     @Column(name = "admin_name")  // 對應 admin_name 列
     private String adminName;
-    
-    private int test;
-    
+
     
     @Column(name = "admin_status")  // 對應 admin_status 列
     private String adminStatus;
