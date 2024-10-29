@@ -6,8 +6,12 @@ import com.tibame.peterparker.entity.UserVO;
 import com.tibame.peterparker.dao.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.checkerframework.checker.units.qual.A;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
 
 
 @Service
@@ -15,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     //The service class is where the core processing of data happens.
 
+    @Autowired
     private final UserRepository userRepository;
     private EmailService emailService;
 
@@ -66,6 +71,18 @@ public class UserService {
 
     }
 
+    // 根據帳號查找用戶
+    public UserVO findByUserAccount(String userAccount) {
+        return userRepository.findByUserAccount(userAccount);
+    }
+
+    // 更新 Google Token
+    public void updateGoogleToken(String userAccount, String googleToken) {
+        int updatedRows = userRepository.updateGoogleToken(userAccount, googleToken);
+        if (updatedRows == 0) {
+            throw new EntityNotFoundException("User not found with account: " + userAccount);
+        }
+    }
 
 
 

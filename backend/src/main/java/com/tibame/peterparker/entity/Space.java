@@ -1,5 +1,6 @@
 package com.tibame.peterparker.entity;
 
+
 import javax.persistence.*;
 import java.io.Serializable;
 
