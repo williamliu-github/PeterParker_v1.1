@@ -1,6 +1,7 @@
 package com.tibame.peterparker.service;
 
 
+import com.tibame.peterparker.dto.UserProfileDTO;
 import com.tibame.peterparker.dto.UserUpdatePasswordDTO;
 import com.tibame.peterparker.entity.UserVO;
 import com.tibame.peterparker.dao.UserRepository;
@@ -11,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityNotFoundException;
+import java.io.IOException;
 
 
 @Service
@@ -21,7 +22,7 @@ public class UserService {
 
     @Autowired
     private final UserRepository userRepository;
-    private EmailService emailService;
+    private UserEmailService userEmailService;
 
     public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -34,6 +35,7 @@ public class UserService {
     public UserVO findUserByUserAccountAndUserPassword(String userAccount, String userPassword) {
         return userRepository.findByUserAccountAndUserPassword(userAccount, userPassword);
     }
+
 
     public UserVO findUserByUserId(int userId) {
         return userRepository.findByUserId(userId);
@@ -71,18 +73,31 @@ public class UserService {
 
     }
 
-    // 根據帳號查找用戶
     public UserVO findByUserAccount(String userAccount) {
         return userRepository.findByUserAccount(userAccount);
+    };
+
+    public int updateGoogleToken(String userAccount, String googleToken) {
+        return userRepository.updateGoogleToken(userAccount, googleToken);
     }
 
-    // 更新 Google Token
-    public void updateGoogleToken(String userAccount, String googleToken) {
-        int updatedRows = userRepository.updateGoogleToken(userAccount, googleToken);
-        if (updatedRows == 0) {
-            throw new EntityNotFoundException("User not found with account: " + userAccount);
-        }
+    public int insertGoogleUser(String userName, String userAccount, String userPhone, String carNumber, String googleToken ) {
+        return userRepository.insertGoogleUser(userName, userAccount, userPhone, carNumber, googleToken);
     }
+
+    public void uploadPhoto(UserProfileDTO userProfileDTO) throws IOException {
+
+            Integer userId = userProfileDTO.getUserId();
+            System.out.println("userId received in backend"+userId);
+            byte[] profilePhoto = userProfileDTO.getProfilePhoto().getBytes(); // Convert file to byte array
+            userRepository.updateProfilePhoto(userId, profilePhoto);
+    }
+
+    public byte[] getProfilePhoto(Integer userId) {
+        return userRepository.getProfilePhoto(userId);
+    }
+
+
 
 
 

@@ -4,6 +4,7 @@ import com.tibame.peterparker.entity.UserVO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
@@ -32,8 +33,24 @@ public interface UserRepository extends JpaRepository<UserVO, Integer> {
                    String carNumber, int userId);
 
     @Modifying
-    @Query(value = "UPDATE users set googleToken = :googleToken WHERE userAccount = :userAccount", nativeQuery = true)
+    @Query(value = "UPDATE users SET googleToken = :googleToken WHERE userAccount = :userAccount", nativeQuery = true)
     int updateGoogleToken(String userAccount, String googleToken);
+
+    @Modifying
+    @Query(value = "INSERT INTO users (userName, userAccount, userPhone, carNumber, googleToken) VALUES (:userName, :userAccount, :userPhone, :carNumber, :googleToken)", nativeQuery = true)
+    int insertGoogleUser(@Param("userName") String userName,
+                         @Param("userAccount") String userAccount,
+                         @Param("userPhone") String userPhone,
+                         @Param("carNumber") String carNumber,
+                         @Param("googleToken") String googleToken);
+
+
+    @Modifying
+    @Query(value = "UPDATE users SET profilePhoto = :profilePhoto WHERE userId = :userId", nativeQuery = true)
+    int updateProfilePhoto(@Param("userId") Integer userId, @Param("profilePhoto") byte[] profilePhoto);
+
+    @Query(value = "SELECT profilePhoto FROM users WHERE userId = :userId", nativeQuery = true)
+    byte[] getProfilePhoto(Integer userId);
 
 
 }

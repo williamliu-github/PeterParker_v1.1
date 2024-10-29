@@ -1,13 +1,9 @@
 package com.tibame.peterparker.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class UserLoginRequestDTO {
 
     private String userAccount;
-
     private String userPassword;
-
     private boolean rememberMe;
 
 
