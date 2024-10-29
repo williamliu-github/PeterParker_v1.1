@@ -31,7 +31,17 @@
         <spring-cloud.version>2023.0.3</spring-cloud.version>
         <spring-modulith.version>1.2.4</spring-modulith.version>
     </properties>
-
+    <!--
+    <distributionManagement>
+        <repository>
+            <uniqueVersion>false</uniqueVersion>
+            <id>corp1</id>
+            <name>Corporate Repository</name>
+            <url>scp://repo/maven2</url>
+            <layout>default</layout>
+        </repository>
+    </distributionManagement>
+    -->
 
     <dependencies>
         <dependency>
@@ -186,47 +196,48 @@
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.batch</groupId>
-            <artifactId>spring-batch-test</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>junit</groupId>
-                    <artifactId>junit</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.graphql</groupId>
-            <artifactId>spring-graphql-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.integration</groupId>
-            <artifactId>spring-integration-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.modulith</groupId>
-            <artifactId>spring-modulith-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <scope>test</scope>
-        </dependency>
+
+     <dependency>
+         <groupId>org.springframework.boot</groupId>
+         <artifactId>spring-boot-starter-test</artifactId>
+         <scope>test</scope>
+     </dependency>
+     <dependency>
+         <groupId>io.projectreactor</groupId>
+         <artifactId>reactor-test</artifactId>
+         <scope>test</scope>
+     </dependency>
+     <dependency>
+         <groupId>org.springframework.batch</groupId>
+         <artifactId>spring-batch-test</artifactId>
+         <scope>test</scope>
+         <exclusions>
+             <exclusion>
+                 <groupId>junit</groupId>
+                 <artifactId>junit</artifactId>
+             </exclusion>
+         </exclusions>
+     </dependency>
+     <dependency>
+         <groupId>org.springframework.graphql</groupId>
+         <artifactId>spring-graphql-test</artifactId>
+         <scope>test</scope>
+     </dependency>
+     <dependency>
+         <groupId>org.springframework.integration</groupId>
+         <artifactId>spring-integration-test</artifactId>
+         <scope>test</scope>
+     </dependency>
+     <dependency>
+         <groupId>org.springframework.modulith</groupId>
+         <artifactId>spring-modulith-starter-test</artifactId>
+         <scope>test</scope>
+     </dependency>
+     <dependency>
+         <groupId>org.springframework.security</groupId>
+         <artifactId>spring-security-test</artifactId>
+         <scope>test</scope>
+     </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.squareup.okhttp3/okhttp -->
         <dependency>
