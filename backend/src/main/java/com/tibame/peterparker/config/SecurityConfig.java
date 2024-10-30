@@ -92,6 +92,7 @@ public class SecurityConfig {
         http.authorizeRequests(authorize -> {
             authorize.antMatchers("/adminlogin").permitAll();
             authorize.antMatchers("/official/**").permitAll();
+            authorize.antMatchers("/geocode").permitAll();//放行/geocode相關以進行測試
             authorize.antMatchers("/api/**").hasAnyRole("ADMIN");
             authorize.anyRequest().authenticated();
         });
@@ -101,5 +102,6 @@ public class SecurityConfig {
 
         return http.build();
     }
+
 
 }

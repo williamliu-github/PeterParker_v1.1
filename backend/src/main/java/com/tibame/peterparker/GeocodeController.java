@@ -2,6 +2,7 @@ package com.tibame.peterparker;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
@@ -17,6 +18,12 @@ public class GeocodeController {
 
     @RequestMapping(path = "/geocode", method = RequestMethod.GET )
     public String getGeocode(@RequestParam String address) throws IOException {
+
+        // 驗證 API Key 是否已設定
+        if (apiKey == null || apiKey.isEmpty()) {
+            return "{\"error\": \"API key is missing or invalid\"}";
+        }
+
         OkHttpClient client = new OkHttpClient();
         String encodedAddress = URLEncoder.encode(address, "UTF-8");
         Request request = new Request.Builder()
@@ -25,13 +32,19 @@ public class GeocodeController {
                 .addHeader("x-rapidapi-host", "google-maps-geocoding.p.rapidapi.com")
                 .addHeader("x-rapidapi-key", apiKey/*  Use your API Key here */)
                 .build();
-        ResponseBody responseBody = client.newCall(request).execute().body();
-        return responseBody.string();
-    }
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                return "{\"error\": \"Request failed with status: " + response.code() + "\"}";
+            }
 
-    public static void main(String[] args) throws IOException {
-        GeocodeController test  = new GeocodeController();
-        String response = test.getGeocode("164 Townsend St. San Francisco, CA");
-        System.out.println(response);
+            try (ResponseBody responseBody = response.body()) {
+                if (responseBody != null) {
+                    return responseBody.string();
+                } else {
+                    return "{\"error\": \"Empty response body\"}";
+                }
+            }
+        }
+
     }
 }
