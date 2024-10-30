@@ -52,7 +52,7 @@ public class OrderService {
 
     // 查找指定用戶的所有訂單
     public List<OrderVO> findOrdersByUserId(Integer userId) {
-        return orderRepository.findByUserId(userId);
+        return orderRepository.findByUser_UserId(userId);
     }
 
     // 查找指定狀態的訂單

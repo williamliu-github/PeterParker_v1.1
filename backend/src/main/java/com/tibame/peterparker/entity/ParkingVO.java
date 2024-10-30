@@ -30,6 +30,12 @@ public class ParkingVO implements Serializable {
     @Column(name = "workdayHourlyRate", nullable = false)
     private Integer workdayHourlyRate;
 
+    @Column(name = "parkingLat", nullable = false)
+    private Double parkingLat;
+
+    @Column(name = "parkingLong", nullable = false)
+    private Double parkingLong;
+
     // Getters and Setters
     public Integer getParkingId() {
         return parkingId;
@@ -85,5 +91,21 @@ public class ParkingVO implements Serializable {
 
     public void setWorkdayHourlyRate(Integer workdayHourlyRate) {
         this.workdayHourlyRate = workdayHourlyRate;
+    }
+
+    public Double getParkingLat() {
+        return parkingLat;
+    }
+
+    public void setParkingLat(Double parkingLat) {
+        this.parkingLat = parkingLat;
+    }
+
+    public Double getParkingLong() {
+        return parkingLong;
+    }
+
+    public void setParkingLong(Double parkingLong) {
+        this.parkingLong = parkingLong;
     }
 }

@@ -2,15 +2,18 @@ package com.tibame.peterparker.config;
 
 import java.util.List;
 
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,6 +23,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import com.tibame.peterparker.filter.AuthRequestFilter;
+import com.tibame.peterparker.config.AppConfig;
 import com.tibame.peterparker.service.AdminUserDetailsService;
 
 @Configuration // 配置類
@@ -27,10 +31,16 @@ import com.tibame.peterparker.service.AdminUserDetailsService;
 public class SecurityConfig {
 
     @Autowired
-    private AdminUserDetailsService detailsService;
+    private AppConfig detailsService;
 
     @Autowired
     private AuthRequestFilter authRequestFilter;
+
+    @Autowired
+    @Lazy
+    private UserDetailsService userDetailsService;
+
+
 
     // 密碼編碼器
     @Bean
@@ -42,7 +52,7 @@ public class SecurityConfig {
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(detailsService);
+        provider.setUserDetailsService(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }
