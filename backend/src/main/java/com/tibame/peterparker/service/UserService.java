@@ -1,6 +1,7 @@
 package com.tibame.peterparker.service;
 
 
+import com.tibame.peterparker.dto.UserOrderInfoDTO;
 import com.tibame.peterparker.dto.UserProfileDTO;
 import com.tibame.peterparker.dto.UserUpdatePasswordDTO;
 import com.tibame.peterparker.entity.UserVO;
@@ -11,6 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -92,6 +96,28 @@ public class UserService {
 
     public byte[] getProfilePhoto(Integer userId) {
         return userRepository.getProfilePhoto(userId);
+    }
+
+
+    public List<UserOrderInfoDTO> getOrderParkingInfo(String statusId, Integer userId) {
+        List<Object[]> results = userRepository.findOrderParkingInfoByStatusIdAndUserId(statusId, userId);
+
+        // Map the raw Object[] results to the DTOs
+        return results.stream()
+                .map(result -> new UserOrderInfoDTO(
+                        (Integer) result[0], // parkingImg
+                        (String) result[1], // parkingName
+                        (Integer) result[2], // orderId
+                        (Integer) result[3], // spaceId
+                        (Integer) result[4], // userId
+                        (String) result[5], // statusId
+                        (Timestamp) result[6], // orderStartTime
+                        (Timestamp) result[7], // orderEndTime
+                        (Integer) result[8], // orderTotalIncome
+                        (String) result[9], // userComment
+                        (Timestamp) result[10] // orderModified
+                ))
+                .collect(Collectors.toList());
     }
 
 

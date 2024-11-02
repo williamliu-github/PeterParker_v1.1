@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -99,6 +100,7 @@ public class OrderController {
 
     // 根據經緯度查找附近的停車場
     @GetMapping("/nearbyParking")
+    @Lazy
     public ResponseEntity<?> getNearbyParking(@RequestParam Double latitude, @RequestParam Double longitude) {
         try {
             List<Map<String, Object>> nearbyParking = parkingService.findNearbyParking(latitude, longitude);
@@ -110,6 +112,7 @@ public class OrderController {
 
     // 用關鍵字查找停車場
     @GetMapping("/searchParking")
+    @Lazy
     public ResponseEntity<?> searchParking(@RequestParam String keyword) {
         try {
             List<Map<String, Object>> parkingResults = parkingService.searchParkingByKeyword(keyword);
@@ -121,6 +124,7 @@ public class OrderController {
 
     // 顯示停車場的剩餘可用車位數量
     @GetMapping("/availableSpaces/{parkingId}")
+    @Lazy
     public ResponseEntity<?> getAvailableSpaces(@PathVariable Integer parkingId) {
         try {
             Integer availableSpaces = parkingService.getAvailableSpaces(parkingId);

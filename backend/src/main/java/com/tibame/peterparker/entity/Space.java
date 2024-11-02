@@ -1,5 +1,6 @@
 package com.tibame.peterparker.entity;
 
+
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -14,12 +15,12 @@ public class Space implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "parkingId", nullable = false)
-    private ParkingInfo parkingInfo;
+    private ParkingVO parkingInfo;
 
     // Constructors
     public Space() {}
 
-    public Space(ParkingInfo parkingInfo) {
+    public Space(ParkingVO parkingInfo) {
         this.parkingInfo = parkingInfo;
     }
 
@@ -32,11 +33,11 @@ public class Space implements Serializable {
         this.spaceId = spaceId;
     }
 
-    public ParkingInfo getParkingInfo() {
+    public ParkingVO getParkingInfo() {
         return parkingInfo;
     }
 
-    public void setParkingInfo(ParkingInfo parkingInfo) {
+    public void setParkingInfo(ParkingVO parkingInfo) {
         this.parkingInfo = parkingInfo;
     }
 }

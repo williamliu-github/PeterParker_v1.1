@@ -3,6 +3,7 @@ package com.tibame.peterparker.filter;
 import com.tibame.peterparker.service.AdminUserDetailsService;
 import com.tibame.peterparker.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -25,6 +26,7 @@ public class AuthRequestFilter extends OncePerRequestFilter {
     private JwtUtil jwtUtil;
 
     @Autowired
+    @Lazy
     private AdminUserDetailsService userDetailsService;
 
     @Override

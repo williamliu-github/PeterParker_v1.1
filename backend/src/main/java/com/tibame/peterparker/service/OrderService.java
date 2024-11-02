@@ -1,12 +1,12 @@
 package com.tibame.peterparker.service;
 
 import com.tibame.peterparker.dao.OrderRepository;
-import com.tibame.peterparker.dao.ParkingInfoRepository;
+import com.tibame.peterparker.dao.ParkingRepository;
 import com.tibame.peterparker.dao.SpaceRepository;
 import com.tibame.peterparker.dao.UserRepository;
 import com.tibame.peterparker.dto.OrderDTO;
 import com.tibame.peterparker.entity.OrderVO;
-import com.tibame.peterparker.entity.ParkingInfo;
+import com.tibame.peterparker.entity.ParkingVO;
 import com.tibame.peterparker.entity.Space;
 import com.tibame.peterparker.entity.UserVO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,7 @@ public class OrderService {
     private OrderRepository orderRepository;
 
     @Autowired
-    private ParkingInfoRepository parkingInfoRepository;
+    private ParkingRepository ParkingRepository;
 
     @Autowired
     private SpaceRepository spaceRepository;
@@ -36,8 +36,8 @@ public class OrderService {
     private UserRepository userRepository;
 
     // 查找附近的停車場
-    public List<ParkingInfo> findNearbyParking(Double lat, Double lng, Double radius) {
-        return parkingInfoRepository.findByParkingLatBetweenAndParkingLongBetween(lat - radius, lat + radius, lng - radius, lng + radius);
+    public List<ParkingVO> findNearbyParking(Double lat, Double lng, Double radius) {
+        return ParkingRepository.findByParkingLatBetweenAndParkingLongBetween(lat - radius, lat + radius, lng - radius, lng + radius);
     }
 
     // 查找指定停車場的可用車位
@@ -52,7 +52,7 @@ public class OrderService {
 
     // 查找指定用戶的所有訂單
     public List<OrderVO> findOrdersByUserId(Integer userId) {
-        return orderRepository.findByUserId(userId);
+        return orderRepository.findByUser_UserId(userId);
     }
 
     // 查找指定狀態的訂單
@@ -128,7 +128,7 @@ public class OrderService {
                 .orElseThrow(() -> new EntityNotFoundException("Space not found"));
 
         // 獲取 space 所屬的 ParkingInfo
-        ParkingInfo parkingInfo = space.getParkingInfo();
+        ParkingVO parkingInfo = space.getParkingInfo();
 
         // 使用 orderStartTime 轉換為 LocalDate
         LocalDate orderDate = request.getOrderStartTime().toLocalDateTime().toLocalDate();
