@@ -10,3 +10,9 @@ spinner.css.big-title{
 .black-text{
 	color:black;
 }
+
+
+ .typed-words {
+	 font-family: 'Arial', sans-serif; /* Change 'Arial' to any desired font */
+	 color: white; /* Replace with your preferred colour code */
+ }

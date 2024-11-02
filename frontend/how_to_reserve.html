@@ -11,6 +11,9 @@
 ================================================== -->
 <link rel="stylesheet" href="css/style.css">
 <link rel="stylesheet" href="css/main-color.css" id="colors">
+<script src="https://accounts.google.com/gsi/client" async></script>
+<script type="module" src="scripts/login-header-change.js"></script>
+<script src="scripts/google-login.js"></script>
 
 </head>
 
@@ -53,7 +56,7 @@
 
 						<li><a class="current" href="#">如何使用</a>
 							<ul>
-								<li><a class="current" href="#">如何預約停車位</a></li>
+								<li><a class="current" href="how_to_reserve.html">如何預約停車位</a></li>
 								<li><a href="#">如何出租停車位</a></li>
 								</li>
 							</ul>
@@ -121,18 +124,38 @@
 										<input class="input-text" type="password" name="user_password" id="login_user_password" placeholder="請輸入您的密碼"/>
 									</label>
 									<span class="lost_password">
-										<a href="forget-password.html" >忘記密碼?</a>
+										<a href="user_forget_password.html" >忘記密碼?</a>
 									</span>
 								</p>
+								<div>
 
-								<div class="form-row">
-									<input type="submit" class="button border margin-top-5" name="login" value="登入" />
-									<input type="submit" class="button border margin-top-5" name="login" value="用Google帳號登入" />
+									<button type="submit" style="width: 198px; height: 39px; border: none; border-radius: 50px; margin-bottom: 10px; background-color: black;">登入</button>
+								<div>
+									<div id="g_id_onload"
+										data-client_id="690875404460-brvmd1jtk6sfkl5jb2vhsmbc481b4u72.apps.googleusercontent.com"
+										data-context="signin"
+										data-ux_mode="popup"
+										data-callback="handleCredentialResponse"
+										data-auto_prompt="false"
+										>
+									</div>
+
+									<div class="g_id_signin"
+										data-type="standard"
+										data-shape="circle"
+										data-theme="outline"
+										data-text="signin_with"
+										data-size="large"
+										data-logo_alignment="left">
+									</div> 
+								
+							
 									<div class="checkboxes margin-top-10">
 										<input id="login_remember_me" type="checkbox" name="remember_me" value="1">
 										<label for="remember_me" >記住帳號</label>
 									</div>
 								</div>
+							</div>
 								
 							</form>
 						</div>
@@ -178,10 +201,34 @@
 								</label>
 							</p>
 
+							<div style="margin-top: 20px">
+								<button type="submit" style="width: 198px; height: 39px; border: none; border-radius: 50px; margin-bottom: 10px; background-color: black;">
+								創建帳號
+								</button>
+							<div>
+								<div id="g_id_onload"
+									data-client_id="690875404460-brvmd1jtk6sfkl5jb2vhsmbc481b4u72.apps.googleusercontent.com"
+									data-context="signin"
+									data-ux_mode="popup"
+									data-callback="handleCredentialResponse"
+									data-auto_prompt="false"
+									>
+								</div>
 
-							<input type="submit" class="button border fw margin-top-10" name="register" value="繼續" />
-							<input type="submit" class="button border fw margin-top-10" name="google-registry" value="用Google帳號登入" />
+								<div class="g_id_signin"
+									data-type="standard"
+									data-shape="circle"
+									data-theme="outline"
+									data-text="signin_with"
+									data-size="large"
+									data-logo_alignment="left">
+								</div> 
+							</div>
+						</div>	
+						</div>
+						
 	
+
 							</form>
 						</div>
 
@@ -297,7 +344,7 @@
 				<h4>相關連結</h4>
 				<ul class="footer-links">
 					<li><a href="#">最新消息</a></li>
-					<li><a href="how-to-reserve.html">如何預約停車位</a></li>
+					<li><a href="how_to_reserve.html">如何預約停車位</a></li>
 					<li><a href="#">如何出租停車位</a></li>
 				</ul>
 
@@ -374,7 +421,45 @@
 <!-- Leaflet Geocoder + Search Autocomplete // Docs: https://github.com/perliedman/leaflet-control-geocoder -->
 <script src="scripts/leaflet-autocomplete.js"></script>
 <script src="scripts/leaflet-control-geocoder.js"></script>
+<script>
+	function handleCredentialResponse(response) {
+    console.log("Google JWT Token: " + response.credential);
 
+    // Send the Google credential to your backend for verification
+    fetch(`http://localhost:8081/PeterParkerSpring/user/googleLogin`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ googleToken: response.credential }),
+    })
+    .then(response => {
+        if (response.status == 200) {
+            return response.json(); // Convert the response to JSON
+        } else if (response.status == 202){
+			window.location.href = 'user_google_registration.html';
+		} else {  
+            console.error('Unexpected response:', response.status);
+            throw new Error(`Unexpected status code: ${response.status}`);
+        }
+    })
+    .then(data => {
+        // Assuming your backend returns a JWT token after verifying Google sign-in
+        if (data.jwtToken) {
+			console.log(data);
+            localStorage.setItem('peterParkerToken', data.jwtToken);
+            localStorage.setItem('userId',data.user_id);
+            window.location.href = 'user_center.html'; // Redirect on success
+        } else {
+            console.error('JWT not found in response');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+</script>
 
 
 
