@@ -44,12 +44,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("/")
-    public ResponseEntity<String> successlogin(){
-        String response = "tomcat run successful";
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
     // 使用者用帳號密碼登入，產生JWT
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@Valid @RequestBody UserLoginRequestDTO loginRequestDTO) {
