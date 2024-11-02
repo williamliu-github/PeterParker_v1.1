@@ -7,10 +7,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-<!-- CSS
-================================================== -->
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/main-color.css" id="colors">
+	<!-- CSS
+    ================================================== -->
+	<link rel="stylesheet" href="css/style.css">
+	<link rel="stylesheet" href="css/main-color.css" id="colors">
+	<script type="module" src="scripts/userinfo.js"></script>
+	<script type="module" src="scripts/get_photo.js"></script>
 
 </head>
 
@@ -19,185 +21,96 @@
 <!-- Wrapper -->
 <div id="wrapper">
 
-<!-- Header Container
-================================================== -->
-<header id="header-container" class="fixed fullwidth">
+	<!-- Header Container
+    ================================================== -->
+	<header id="header-container" class="fullwidth dashboard">
 
-	<!-- Header -->
-	<div id="header" class="not-sticky">
-		<div class="container">
-			
-			<!-- Left Side Content -->
-			<div class="left-side">
-				
-				<!--  -->
-				<div id="logo">
-					<a href="index.html"><img src="images/Logo/Logo-09.png" alt=""></a>
-				</div>
+		<!-- Header -->
+		<div id="header" class="not-sticky">
+			<div class="container">
 
-				<!-- Mobile Navigation -->
-				<div class="mmenu-trigger">
-					<button class="hamburger hamburger--collapse" type="button">
+				<!-- Left Side Content -->
+				<div class="left-side">
+
+					<!-- Logo -->
+					<div id="logo">
+						<a href="index.html"><img src="images/logo.png" alt=""></a>
+						<a href="index.html" class="dashboard-logo"><img src="images/logo2.png" alt=""></a>
+					</div>
+
+					<!-- Mobile Navigation -->
+					<div class="mmenu-trigger">
+						<button class="hamburger hamburger--collapse" type="button">
 						<span class="hamburger-box">
 							<span class="hamburger-inner"></span>
 						</span>
-					</button>
+						</button>
+					</div>
+
+					<!-- Main Navigation -->
+					<nav id="navigation" class="style-1">
+						<ul id="responsive">
+
+							<li><a href="index.html">首頁</a>
+							</li>
+
+							<li><a>如何使用</a>
+								<ul>
+									<li><a href="how_to_reserve.html">如何預約車位</a></li>
+									<li><a href="dashboard-messages.html">如何出租車位</a></li>
+								</ul>
+							</li>
+
+							<li><a>最新消息</a>
+								<ul>
+									<li><a href="dashboard.html">Dashboard</a></li>
+									<li><a href="dashboard-messages.html">Messages</a></li>
+									<li><a href="dashboard-bookings.html">Bookings</a></li>
+									<li><a href="dashboard-wallet.html">Wallet</a></li>
+									<li><a href="dashboard-my-listings.html">My Listings</a></li>
+									<li><a href="dashboard-reviews.html">Reviews</a></li>
+									<li><a href="dashboard-bookmarks.html">Bookmarks</a></li>
+									<li><a href="dashboard-add-listing.html">Add Listing</a></li>
+									<li><a href="dashboard-my-profile.html">My Profile</a></li>
+									<li><a href="dashboard-invoice.html">Invoice</a></li>
+								</ul>
+							</li>
+
+							<li><a href="#">聯絡我們</a></li>
+
+							<li><a href="#">業主登入</a></li>
+
+
+						</ul>
+					</nav>
+					<div class="clearfix"></div>
+					<!-- Main Navigation / End -->
+
 				</div>
+				<!-- Left Side Content / End -->
 
-				<!-- Main Navigation -->
-				<nav id="navigation" class="style-1">
-					<ul id="responsive">
-
-						<li><a href="index.html">首頁</a></li>
-
-						<li><a href="#">如何使用</a>
+				<!-- Right Side Content / End-->
+				<div class="right-side">
+					<!-- Header Widget -->
+					<div class="header-widget">
+						<!-- User Menu -->
+						<div class="user-menu">
+							<div class="user-name"><span><img id="avatar-preview" src="images/dashboard-avatar.jpg" alt=""></span><p style="display:inline "id="username2"></p></div>
 							<ul>
-								<li><a href="#">如何租用車位</a></li>
-								<li><a href="#">如何成為業主</a></li>
+								<li><a href="user_center.html"><i class="sl sl-icon-settings"></i>會員中心</a></li>
+								<li><a href="user_profile.html"><i class="sl sl-icon-user"></i>會員個人資料</a></li>
 							</ul>
-						</li>
-
-						<li><a href="listings-half-screen-map-list.html">預約車位</a></li>
-
-						<li><a href="#">會員中心</a>
-							<ul>
-								<li><a href="#">會員個人資料</a></li>
-								<li><a href="#">我的訂單</a>
-									<ul>
-										<li><a href="#">已完成訂單</a></li>
-										<li><a href="#">待完成訂單</a></li>
-									</ul>
-								</li>
-								<li><a href="#">我的訂單</a></li>
-								<li><a href="#">我的黑名單</a></li>
-							</ul>
-						</li>
-
-						<li><a href="#">最新消息</a>
-							<ul>
-								<li><a href="#">系統訊息</a></li>
-								<li><a href="#">個人訊息</a></li>
-								<li><a href="#">全部訊息</a></li>
-							</ul>
-						</li>
-
-						<li><a href="#">聯絡我們</a></li>					
-
-						
-					</ul>
-				</nav>
-				<div class="clearfix"></div>
-				<!-- Main Navigation / End -->
-				
-			</div>
-			<!-- Left Side Content / End -->
-
-			<!-- Right Side Content / End -->
-			<div class="right-side">
-				<div class="header-widget">
-					<a href="#sign-in-dialog" class="sign-in popup-with-zoom-anim"><i class="sl sl-icon-login"></i> 登入</a>
-					<a href="#" class="button border with-icon">創建帳號 <i class="sl sl-icon-plus"></i></a>
-				</div>
-			</div>
-			<!-- Right Side Content / End -->
-
-			<!-- Sign In Popup -->
-			<div id="sign-in-dialog" class="zoom-anim-dialog mfp-hide">
-
-				<div class="small-dialog-header">
-					<h3>Sign In</h3>
-				</div>
-
-				<!--Tabs -->
-				<div class="sign-in-form style-1">
-
-					<ul class="tabs-nav">
-						<li class=""><a href="#tab1">Log In</a></li>
-						<li><a href="#tab2">Register</a></li>
-					</ul>
-
-					<div class="tabs-container alt">
-
-						<!-- Login -->
-						<div class="tab-content" id="tab1" style="display: none;">
-							<form method="post" class="login">
-
-								<p class="form-row form-row-wide">
-									<label for="username">Username:
-										<i class="im im-icon-Male"></i>
-										<input type="text" class="input-text" name="username" id="username" value="" />
-									</label>
-								</p>
-
-								<p class="form-row form-row-wide">
-									<label for="password">Password:
-										<i class="im im-icon-Lock-2"></i>
-										<input class="input-text" type="password" name="password" id="password"/>
-									</label>
-									<span class="lost_password">
-										<a href="#" >Lost Your Password?</a>
-									</span>
-								</p>
-
-								<div class="form-row">
-									<input type="submit" class="button border margin-top-5" name="login" value="Login" />
-									<div class="checkboxes margin-top-10">
-										<input id="remember-me" type="checkbox" name="check">
-										<label for="remember-me">Remember Me</label>
-									</div>
-								</div>
-								
-							</form>
 						</div>
-
-						<!-- Register -->
-						<div class="tab-content" id="tab2" style="display: none;">
-
-							<form method="post" class="register">
-								
-							<p class="form-row form-row-wide">
-								<label for="username2">Username:
-									<i class="im im-icon-Male"></i>
-									<input type="text" class="input-text" name="username" id="username2" value="" />
-								</label>
-							</p>
-								
-							<p class="form-row form-row-wide">
-								<label for="email2">Email Address:
-									<i class="im im-icon-Mail"></i>
-									<input type="text" class="input-text" name="email" id="email2" value="" />
-								</label>
-							</p>
-
-							<p class="form-row form-row-wide">
-								<label for="password1">Password:
-									<i class="im im-icon-Lock-2"></i>
-									<input class="input-text" type="password" name="password1" id="password1"/>
-								</label>
-							</p>
-
-							<p class="form-row form-row-wide">
-								<label for="password2">Repeat Password:
-									<i class="im im-icon-Lock-2"></i>
-									<input class="input-text" type="password" name="password2" id="password2"/>
-								</label>
-							</p>
-
-							<input type="submit" class="button border fw margin-top-10" name="register" value="Register" />
-	
-							</form>
-						</div>
-
+						<a href="index.html" id="logout_btn" class="button border with-icon" onclick="localStorage.removeItem('peterParkerToken'); localStorage.removeItem('userId');"></i>會員登出</a>
 					</div>
 				</div>
 			</div>
-			<!-- Sign In Popup / End -->
-
+			<!-- Header Widget / End -->
 		</div>
-	</div>
-	<!-- Header / End -->
+		<!-- Right Side Content / End -->
 
 </header>
+<!-- Header / End -->
 <div class="clearfix"></div>
 <!-- Header Container / End -->
 
@@ -570,14 +483,12 @@
 		</div>
 	</div>
 	<div class="fs-inner-container map-fixed">
-
 		<!-- Map -->
 		<div id="map-container">
-		    <div id="map" data-map-zoom="9" data-map-scroll="true">
-		        <!-- map goes here -->
-		    </div>
+			<div id="map" data-map-zoom="9" data-map-scroll="true" style="height: 100%; width: 100%;">
+				<!-- map goes here -->
+			</div>
 		</div>
-
 	</div>
 </div>
 
@@ -603,6 +514,27 @@
 
 <!-- Google Autocomplete -->
 <script>
+	var googleMap;
+	var markers = [];
+	var infoWindow;
+
+	function initMap() {
+		// Initialize the Google Map
+		googleMap = new google.maps.Map(document.getElementById('map'), {
+			center: { lat: 25.0330, lng: 121.5654 }, // Taipei default center
+			zoom: 13,
+			scrollwheel: true,
+		});
+
+		infoWindow = new google.maps.InfoWindow();
+
+		// Initialize autocomplete
+		initAutocomplete();
+
+		// Fetch initial parking data and place markers
+		fetchAndDisplayParking();
+	}
+
 	function initAutocomplete() {
 		var input = document.getElementById('autocomplete-input');
 		var autocomplete = new google.maps.places.Autocomplete(input);
@@ -612,18 +544,89 @@
 			if (!place.geometry) {
 				return;
 			}
+
+			// Center the map to the selected place
+			googleMap.setCenter(place.geometry.location);
+			googleMap.setZoom(15);
+
+			// Fetch and display nearby parking
+			fetchAndDisplayParking();
 		});
 
 		if ($('.main-search-input-item')[0]) {
-			setTimeout(function(){
+			setTimeout(function() {
 				$(".pac-container").prependTo("#autocomplete-container");
 			}, 300);
 		}
 	}
+
+	function fetchAndDisplayParking() {
+		// Assuming the back-end API provides filtered parking listings based on current map bounds
+		var bounds = googleMap.getBounds();
+		if (!bounds) return;
+
+		var ne = bounds.getNorthEast();
+		var sw = bounds.getSouthWest();
+
+		fetch('/api/getParkingListings', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				northEast: { lat: ne.lat(), lng: ne.lng() },
+				southWest: { lat: sw.lat(), lng: sw.lng() },
+			})
+		})
+				.then(response => response.json())
+				.then(data => {
+					clearMarkers(); // Clear previous markers
+					data.forEach(parking => {
+						createMarker(parking);
+					});
+				})
+				.catch(error => {
+					console.error('Error fetching parking listings:', error);
+				});
+	}
+
+	function createMarker(parking) {
+		var marker = new google.maps.Marker({
+			map: googleMap,
+			position: { lat: parking.parkingLat, lng: parking.parkingLong },
+			title: parking.parkingName,
+		});
+
+		marker.addListener('click', function() {
+			infoWindow.setContent(`
+                <div class="infobox-content">
+                    <h5>${parking.parkingName}</h5>
+                    <p>${parking.parkingLocation}</p>
+                    <p>Hourly Rate: $${parking.workdayHourlyRate}</p>
+                    <a href="parking_booking_1.html?parkingId=${parking.parkingId}">Book Now</a>
+                </div>
+            `);
+			infoWindow.open(googleMap, marker);
+		});
+
+		markers.push(marker);
+	}
+
+	function clearMarkers() {
+		markers.forEach(marker => {
+			marker.setMap(null);
+		});
+		markers = [];
+	}
+
+	// Listen to map changes and fetch parking data accordingly
+	googleMap.addListener('bounds_changed', function() {
+		fetchAndDisplayParking();
+	});
 </script>
 
-<!-- Maps -->
-<script src="https://maps.googleapis.com/maps/api/js?libraries=places&callback=initAutocomplete"></script>
+<!-- Load Google Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDm8zpLXPf2UtxecZZmABNScrbKfa31AIQ&libraries=places&callback=initMap" async defer></script>
 <script type="text/javascript" src="scripts/infobox.min.js"></script>
 <script type="text/javascript" src="scripts/markerclusterer.js"></script>
 <script type="text/javascript" src="scripts/maps.js"></script>
@@ -700,7 +703,90 @@
 			});
 		}
 	});
+	document.getElementById('apply-filters').addEventListener('click', function () {
+		// 獲取選擇的篩選條件
+		var selectedTypes = [];
+		document.querySelectorAll('.filter-option:checked').forEach(function (checkbox) {
+			selectedTypes.push(checkbox.value);
+		});
+
+		var distance = document.querySelector('.distance-radius').value;
+
+		// 調用後端 API，根據篩選條件獲取停車場列表
+		fetchFilteredParkingListings(selectedTypes, distance);
+	});
+
+	function fetchFilteredParkingListings(types, distance) {
+		// 向後端發送篩選條件並獲取停車場列表
+		fetch('/api/getFilteredParkingListings', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				types: types,
+				distance: distance
+			})
+		})
+				.then(response => response.json())
+				.then(data => {
+					renderParkingList(data); // 使用後端返回的資料渲染列表
+				})
+				.catch(error => {
+					console.error('Error fetching filtered parking listings:', error);
+				});
+	}
+
+	function renderParkingList(parkingData) {
+		var listingResults = document.getElementById('listing-results');
+		listingResults.innerHTML = '';
+		parkingData.forEach(function (parking, index) {
+			var listingItem = `
+            <div class="col-lg-12 col-md-12">
+                <div class="listing-item-container list-layout" data-marker-id="${index + 1}">
+                    <a href="parking_booking_1.html?parkingId=${parking.parkingId}" class="listing-item">
+                        <!-- Image -->
+                        <div class="listing-item-image">
+                            <img src="${parking.parkingImg}" alt="">
+                            <span class="tag">${parking.parkingType}</span>
+                        </div>
+                        <!-- Content -->
+                        <div class="listing-item-content">
+                            <div class="listing-item-inner">
+                                <h3>${parking.parkingName} <i class="verified-icon"></i></h3>
+                                <h4>${parking.hourlyRate}元<span>/小時</span></h4>
+                                <div class="star-rating" data-rating="${parking.rating}">
+                                    <div class="rating-counter">(${parking.reviewCount} 則評論)</div>
+                                </div>
+                            </div>
+                            <span class="like-icon"></span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        `;
+			listingResults.insertAdjacentHTML('beforeend', listingItem);
+		});
+		document.getElementById('showing-results').textContent = `共找到${parkingData.length}個結果`;
+	}
+
 </script>
+<!--
+<script>
+	window.onload = function() {
+		// Check if the jwt_token exists in localStorage
+		let token = localStorage.getItem('peterParkerToken');
+
+		// If no token is found, redirect to index.html
+		if (!token) {
+			window.location.href = 'index.html';
+		}
+
+		// Optionally, you can also check if the token has a valid format or expiration time
+		// if your application uses such validation on the client-side.
+	};
+</script>
+-->
 
 </body>
 </html>
