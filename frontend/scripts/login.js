@@ -57,7 +57,8 @@ function login(){
     fetch(`http://${config}/${artifact}/user/login`, {
         method: 'POST',
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'jwtToken':'wefwefwefwf'
         },
         body: JSON.stringify(loginData)
     })

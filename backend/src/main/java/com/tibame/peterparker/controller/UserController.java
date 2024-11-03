@@ -31,7 +31,7 @@ import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:5500")
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/PeterParkerSpring/user")
 public class UserController {
 
     @Autowired
@@ -66,21 +66,22 @@ public class UserController {
         String jwtToken;
         String SECRET_KEY = "TheSecretKeyForOurBelovedProjectPeterParker";
 
-        if (!rememberMe) {
-            jwtToken = Jwts.builder()
-                    .setSubject(String.valueOf(userVO.getUserId()))
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hour in milliseconds
-                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes()) // Signing with byte array
-                    .compact();
-        } else {
-            jwtToken = Jwts.builder()
-                    .setSubject(String.valueOf(userVO.getUserId()))
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 604800000)) // 1 week in milliseconds
-                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes()) // Signing with byte array
-                    .compact();
-        }
+        jwtToken ="qwgeWEGWEGWEGWEG";
+//        if (!rememberMe) {
+//            jwtToken = Jwts.builder()
+//                    .setSubject(String.valueOf(userVO.getUserId()))
+//                    .setIssuedAt(new Date())
+//                    .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hour in milliseconds
+//                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes()) // Signing with byte array
+//                    .compact();
+//        } else {
+//            jwtToken = Jwts.builder()
+//                    .setSubject(String.valueOf(userVO.getUserId()))
+//                    .setIssuedAt(new Date())
+//                    .setExpiration(new Date(System.currentTimeMillis() + 604800000)) // 1 week in milliseconds
+//                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes()) // Signing with byte array
+//                    .compact();
+//        }
 
         String loginUserAccount = userVO.getUserAccount();
         Integer loginUserId = userVO.getUserId();

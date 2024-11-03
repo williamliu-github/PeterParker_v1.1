@@ -15,7 +15,8 @@ import { config, artifact } from './config.js';
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${peterParkerToken}`,  // Include JWT in the Authorization header
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Access-Control-Allow-Origin':"*"
         }
     })
     .then(response => {
