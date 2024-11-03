@@ -650,6 +650,7 @@
 
 <!-- Add new JavaScript code here -->
 <script>
+	import { config, artifact } from './config.js';
 
 	$(document).ready(function () {
 
@@ -659,7 +660,7 @@
 			let keyword = $(this).val();
 			if (keyword) {
 				$.ajax({
-					url: '/order/searchParking',
+					url: `${config}/${artifact}/order/searchParking`,
 					type: 'GET',
 					data: {keyword: keyword},
 					success: function (data) {
