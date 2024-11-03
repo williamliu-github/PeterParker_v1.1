@@ -533,6 +533,11 @@
 
 		// Fetch initial parking data and place markers
 		fetchAndDisplayParking();
+
+		// Listen to map changes and fetch parking data accordingly
+		google.maps.event.addListener(googleMap, 'bounds_changed', function() {
+			fetchAndDisplayParking();
+		});
 	}
 
 	function initAutocomplete() {
@@ -578,7 +583,12 @@
 				southWest: { lat: sw.lat(), lng: sw.lng() },
 			})
 		})
-				.then(response => response.json())
+				.then(response => {
+					if (!response.ok) {
+						throw new Error('Network response was not ok');
+					}
+					return response.json();
+				})
 				.then(data => {
 					clearMarkers(); // Clear previous markers
 					data.forEach(parking => {
@@ -618,15 +628,13 @@
 		});
 		markers = [];
 	}
-
-	// Listen to map changes and fetch parking data accordingly
-	googleMap.addListener('bounds_changed', function() {
-		fetchAndDisplayParking();
-	});
+</script>
+<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDm8zpLXPf2UtxecZZmABNScrbKfa31AIQ&libraries=places&callback=initMap">
 </script>
 
+
 <!-- Load Google Maps -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDm8zpLXPf2UtxecZZmABNScrbKfa31AIQ&libraries=places&callback=initMap" async defer></script>
 <script type="text/javascript" src="scripts/infobox.min.js"></script>
 <script type="text/javascript" src="scripts/markerclusterer.js"></script>
 <script type="text/javascript" src="scripts/maps.js"></script>
@@ -641,7 +649,7 @@
 				$.ajax({
 					url: '/order/searchParking',
 					type: 'GET',
-					data: { keyword: keyword },
+					data: {keyword: keyword},
 					success: function (data) {
 						renderParkingList(data);
 					},
@@ -649,14 +657,20 @@
 						console.error('Error searching parking:', err);
 					}
 				});
+			} else {
+				// 如果輸入為空，顯示所有可用的停車場或提示訊息
+				console.warn('Please enter a keyword for searching.');
 			}
 		});
 
 		// 篩選功能 AJAX 請求
 		$('.distance-radius').on('input', function () {
 			let radius = $(this).val();
-			let latitude = 25.033; // 預設經緯度，可用其他方式獲取
-			let longitude = 121.5654;
+			// 使用地圖的當前中心經緯度作為篩選條件
+			let center = googleMap.getCenter();
+			let latitude = center.lat();
+			let longitude = center.lng();
+
 			$.ajax({
 				url: '/order/nearbyParking',
 				type: 'GET',
@@ -674,24 +688,71 @@
 			});
 		});
 
+		// 篩選按鈕點擊事件
+		document.getElementById('apply-filters').addEventListener('click', function () {
+			// 獲取選擇的篩選條件
+			var selectedTypes = [];
+			document.querySelectorAll('.filter-option:checked').forEach(function (checkbox) {
+				selectedTypes.push(checkbox.value);
+			});
+
+			var distance = document.querySelector('.distance-radius').value;
+
+			// 調用後端 API，根據篩選條件獲取停車場列表
+			fetchFilteredParkingListings(selectedTypes, distance);
+		});
+
+		// 向後端發送篩選條件並獲取停車場列表
+		function fetchFilteredParkingListings(types, distance) {
+			fetch('/api/getFilteredParkingListings', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					types: types,
+					distance: distance
+				})
+			})
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok');
+						}
+						return response.json();
+					})
+					.then(data => {
+						renderParkingList(data); // 使用後端返回的資料渲染列表
+					})
+					.catch(error => {
+						console.error('Error fetching filtered parking listings:', error);
+					});
+		}
+
 		// 渲染停車場列表的函數
 		function renderParkingList(parkingData) {
-			$('.fs-listings').empty();
-			parkingData.forEach(function (parking) {
-				$('.fs-listings').append(`
+			var listingResults = document.getElementById('listing-results');
+			listingResults.innerHTML = ''; // 清除原有內容
+
+			if (parkingData.length === 0) {
+				listingResults.innerHTML = '<p>未找到符合條件的停車場。</p>';
+			} else {
+				parkingData.forEach(function (parking, index) {
+					var listingItem = `
                 <div class="col-lg-12 col-md-12">
-                    <div class="listing-item-container list-layout">
-                        <a href="parking_booking_1.html" class="listing-item">
+                    <div class="listing-item-container list-layout" data-marker-id="${index + 1}">
+                        <a href="parking_booking_1.html?parkingId=${parking.parkingId}" class="listing-item">
+                            <!-- Image -->
                             <div class="listing-item-image">
-                                <img src="${parking.imageUrl}" alt="">
-                                <span class="tag">${parking.type}</span>
+                                <img src="${parking.parkingImg}" alt="">
+                                <span class="tag">${parking.parkingType}</span>
                             </div>
+                            <!-- Content -->
                             <div class="listing-item-content">
                                 <div class="listing-item-inner">
-                                    <h3>${parking.name}</h3>
-                                    <span>${parking.address}</span>
+                                    <h3>${parking.parkingName} <i class="verified-icon"></i></h3>
+                                    <h4>${parking.hourlyRate}元<span>/小時</span></h4>
                                     <div class="star-rating" data-rating="${parking.rating}">
-                                        <div class="rating-counter">(${parking.reviewCount} reviews)</div>
+                                        <div class="rating-counter">(${parking.reviewCount} 則評論)</div>
                                     </div>
                                 </div>
                                 <span class="like-icon"></span>
@@ -699,78 +760,17 @@
                         </a>
                     </div>
                 </div>
-            `);
-			});
-		}
-	});
-	document.getElementById('apply-filters').addEventListener('click', function () {
-		// 獲取選擇的篩選條件
-		var selectedTypes = [];
-		document.querySelectorAll('.filter-option:checked').forEach(function (checkbox) {
-			selectedTypes.push(checkbox.value);
-		});
-
-		var distance = document.querySelector('.distance-radius').value;
-
-		// 調用後端 API，根據篩選條件獲取停車場列表
-		fetchFilteredParkingListings(selectedTypes, distance);
-	});
-
-	function fetchFilteredParkingListings(types, distance) {
-		// 向後端發送篩選條件並獲取停車場列表
-		fetch('/api/getFilteredParkingListings', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				types: types,
-				distance: distance
-			})
-		})
-				.then(response => response.json())
-				.then(data => {
-					renderParkingList(data); // 使用後端返回的資料渲染列表
-				})
-				.catch(error => {
-					console.error('Error fetching filtered parking listings:', error);
+            `;
+					listingResults.insertAdjacentHTML('beforeend', listingItem);
 				});
-	}
+			}
 
-	function renderParkingList(parkingData) {
-		var listingResults = document.getElementById('listing-results');
-		listingResults.innerHTML = '';
-		parkingData.forEach(function (parking, index) {
-			var listingItem = `
-            <div class="col-lg-12 col-md-12">
-                <div class="listing-item-container list-layout" data-marker-id="${index + 1}">
-                    <a href="parking_booking_1.html?parkingId=${parking.parkingId}" class="listing-item">
-                        <!-- Image -->
-                        <div class="listing-item-image">
-                            <img src="${parking.parkingImg}" alt="">
-                            <span class="tag">${parking.parkingType}</span>
-                        </div>
-                        <!-- Content -->
-                        <div class="listing-item-content">
-                            <div class="listing-item-inner">
-                                <h3>${parking.parkingName} <i class="verified-icon"></i></h3>
-                                <h4>${parking.hourlyRate}元<span>/小時</span></h4>
-                                <div class="star-rating" data-rating="${parking.rating}">
-                                    <div class="rating-counter">(${parking.reviewCount} 則評論)</div>
-                                </div>
-                            </div>
-                            <span class="like-icon"></span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        `;
-			listingResults.insertAdjacentHTML('beforeend', listingItem);
-		});
-		document.getElementById('showing-results').textContent = `共找到${parkingData.length}個結果`;
-	}
+			document.getElementById('showing-results').textContent = `共找到${parkingData.length}個結果`;
+		}
+	})
 
 </script>
+
 <!--
 <script>
 	window.onload = function() {

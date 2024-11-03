@@ -1,11 +1,9 @@
 package com.tibame.peterparker.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
+import com.tibame.peterparker.dto.FilterRequest;
+import com.tibame.peterparker.dto.ParkingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -99,16 +97,20 @@ public class OrderController {
     }
 
     // 根據經緯度查找附近的停車場
-    @GetMapping("/nearbyParking")
-    @Lazy
-    public ResponseEntity<?> getNearbyParking(@RequestParam Double latitude, @RequestParam Double longitude) {
+    @PostMapping("/nearbyParking")
+    public ResponseEntity<?> getNearbyParking(@RequestBody Map<String, Object> request) {
         try {
-            List<Map<String, Object>> nearbyParking = parkingService.findNearbyParking(latitude, longitude);
+            Double latitude = (Double) request.get("latitude");
+            Double longitude = (Double) request.get("longitude");
+            Double radius = (Double) request.get("radius");
+
+            List<Map<String, Object>> nearbyParking = parkingService.findNearbyParking(latitude, longitude, radius);
             return new ResponseEntity<>(nearbyParking, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error finding nearby parking: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
     // 用關鍵字查找停車場
     @GetMapping("/searchParking")
@@ -133,4 +135,35 @@ public class OrderController {
             return new ResponseEntity<>("Error retrieving available spaces: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/getParkingListings")
+    public ResponseEntity<?> getParkingListings(@RequestBody Map<String, Object> bounds) {
+        try {
+            Double northEastLat = (Double) ((Map<String, Object>) bounds.get("northEast")).get("lat");
+            Double northEastLng = (Double) ((Map<String, Object>) bounds.get("northEast")).get("lng");
+            Double southWestLat = (Double) ((Map<String, Object>) bounds.get("southWest")).get("lat");
+            Double southWestLng = (Double) ((Map<String, Object>) bounds.get("southWest")).get("lng");
+
+            List<Map<String, Object>> parkingListings = parkingService.findParkingByBounds(northEastLat, northEastLng, southWestLat, southWestLng);
+            return new ResponseEntity<>(parkingListings, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error fetching parking listings: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/filteredParkingListings")
+    public ResponseEntity<?> getFilteredParkingListings(@RequestBody FilterRequest filterRequest) {
+        try {
+            List<ParkingDTO> parkingList = parkingService.getFilteredParkingListings(filterRequest);
+            if (parkingList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(parkingList, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error fetching filtered parking listings: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
 }
