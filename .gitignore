@@ -3,6 +3,8 @@ backend/target/
 !backend/.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/repository/com/tibame/Peterparker/0.0.1-SNAPSHOT/
+
 
 ### STS ###
 .apt_generated
