@@ -1,5 +1,5 @@
 // Ajax to show the photo
-import { config, artifact } from './config.js';
+import { config } from './config.js';
 
 document.addEventListener('DOMContentLoaded', function() {
     const peterParkerToken = localStorage.getItem('peterParkerToken');
@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    fetch(`http://${config}/${artifact}/user/showPhoto`, {
+    fetch(`http://${config}/user/showPhoto`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${peterParkerToken}`

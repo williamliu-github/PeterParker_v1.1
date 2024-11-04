@@ -1,4 +1,4 @@
-import { config, artifact } from './config.js';
+import { config} from './config.js';
 
 
 	document.addEventListener('DOMContentLoaded', function() {
@@ -11,7 +11,7 @@ import { config, artifact } from './config.js';
         return;
     }
 
-    fetch(`http://${config}/${artifact}/user/userinfo`, {
+    fetch(`http://${config}/user/userinfo`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${peterParkerToken}`,  // Include JWT in the Authorization header

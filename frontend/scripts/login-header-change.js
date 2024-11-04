@@ -1,4 +1,4 @@
-import { config, artifact } from './config.js';
+import { config } from './config.js';
 
 document.addEventListener("DOMContentLoaded", function () {
     // Check if the JWT token exists in local storage
@@ -98,7 +98,7 @@ document.addEventListener("DOMContentLoaded", function () {
 		headerContainer.classList.add('dashboard');
 
 
-        fetch(`http://${config}/${artifact}/user/userinfo`, {
+        fetch(`http://${config}/user/userinfo`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${peterParkerToken}`,  // Include JWT in the Authorization header
@@ -133,7 +133,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
 
-        fetch(`http://${config}/${artifact}/user/showPhoto`, {
+        fetch(`http://${config}/user/showPhoto`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${peterParkerToken}`

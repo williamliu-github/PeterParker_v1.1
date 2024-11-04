@@ -1,4 +1,4 @@
-import { config, artifact } from './config.js';
+import { config} from './config.js';
 
 
 /*-------------------------------------------*/
@@ -54,7 +54,7 @@ function login(){
     };
     
     // Send the form data as JSON using the fetch API
-    fetch(`http://${config}/${artifact}/user/login`, {
+    fetch(`http://${config}/user/login`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -161,7 +161,7 @@ document.getElementById('register_form').addEventListener('submit', function(eve
 
     // Send the form data as JSON using the fetch API
     if(isFilled){
-		fetch(`http://${config}/${artifact}/user/addUser`, {
+		fetch(`http://${config}/user/addUser`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
