@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -31,11 +30,11 @@ import com.tibame.peterparker.service.AdminUserDetailsService;
 @EnableWebSecurity // 啟用 Spring Security
 public class SecurityConfig {
 
+    @Autowired
     private AppConfig detailsService;
 
     @Autowired
     private AuthRequestFilter authRequestFilter;
-
 
     @Autowired
     @Lazy
@@ -68,7 +67,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081"));
+        config.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081","http://localhost:5500"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
         config.setAllowCredentials(true);
         config.setAllowedHeaders(List.of("*"));
@@ -82,12 +81,6 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
-        //return http
-        //        .httpBasic(Customizer.withDefaults())
-        //        .csrf(csrf -> csrf.disable())
-        //        .authorizeHttpRequests(requests -> requests.anyRequest().permitAll())
-        //        .build();
-
         http.cors() // 啟用 CORS
                 .and().csrf().disable(); // 禁用 CSRF
 
@@ -96,13 +89,13 @@ public class SecurityConfig {
                 .addFilterBefore(authRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         // 控制 api 使用權限
-//        http.authorizeRequests(authorize -> {
-//            authorize.antMatchers("/adminlogin").permitAll();
-//            authorize.antMatchers("/official/**").permitAll();
-//            authorize.antMatchers("/geocode").permitAll();//放行/geocode相關以進行測試
-//            authorize.antMatchers("/api/**").hasAnyRole("ADMIN");
-//            authorize.anyRequest().authenticated();
-//        });
+        http.authorizeRequests(authorize -> {
+            authorize.antMatchers("/adminlogin","/user/**").permitAll();
+            authorize.antMatchers("/official/**").permitAll();
+            authorize.antMatchers("/geocode").permitAll();//放行/geocode相關以進行測試
+            authorize.antMatchers("/api/**").hasAnyRole("ADMIN");
+            authorize.anyRequest().authenticated();
+        });
 
         // 設置會話策略為無狀態（使用 JWT 時推薦的配置）
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

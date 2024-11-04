@@ -136,7 +136,7 @@ document.getElementById('buttonVerify').addEventListener('click', function(event
         const overlay = document.getElementById('loadingOverlay');
         overlay.style.display = 'block';
 
-        fetch("http://localhost:8081/PeterParkerSpring/user/googleRegister", {
+        fetch("http://localhost:8081/user/googleRegister", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

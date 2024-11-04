@@ -61,18 +61,6 @@
 						</li>
 
 						<li><a>最新消息</a>
-							<ul>
-								<li><a href="dashboard.html">Dashboard</a></li>
-								<li><a href="dashboard-messages.html">Messages</a></li>
-								<li><a href="dashboard-bookings.html">Bookings</a></li>
-								<li><a href="dashboard-wallet.html">Wallet</a></li>
-								<li><a href="dashboard-my-listings.html">My Listings</a></li>
-								<li><a href="dashboard-reviews.html">Reviews</a></li>
-								<li><a href="dashboard-bookmarks.html">Bookmarks</a></li>
-								<li><a href="dashboard-add-listing.html">Add Listing</a></li>
-								<li><a href="dashboard-my-profile.html">My Profile</a></li>
-								<li><a href="dashboard-invoice.html">Invoice</a></li>
-							</ul>
 						</li>
 
 						<li><a href="#">聯絡我們</a></li>
@@ -257,7 +245,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    fetch("http://localhost:8081/PeterParkerSpring/user/userinfo", {
+    fetch("http://localhost:8081/user/userinfo", {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${peterParkerToken}`,  // Include JWT in the Authorization header
@@ -316,7 +304,7 @@ document.getElementById('updateForm').addEventListener('submit', function(event)
 
 
     // Send the AJAX POST request
-    fetch(`http://localhost:8081/PeterParkerSpring/user/update`, {
+    fetch(`http://localhost:8081/user/update`, {
 		method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -356,7 +344,7 @@ document.getElementById('file-upload').addEventListener('change', async function
     formData.append('profilePhoto', file);
 
     try {
-        const response = await fetch('http://localhost:8081/PeterParkerSpring/user/uploadPhoto', {
+        const response = await fetch('http://localhost:8081/user/uploadPhoto', {
             method: 'POST',
             body: formData,
             headers: {
@@ -388,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    fetch(`http://localhost:8081/PeterParkerSpring/user/showPhoto`, {
+    fetch(`http://localhost:8081/user/showPhoto`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${peterParkerToken}`
