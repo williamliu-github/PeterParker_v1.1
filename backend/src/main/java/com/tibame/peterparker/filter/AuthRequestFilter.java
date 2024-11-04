@@ -50,6 +50,14 @@ public class AuthRequestFilter extends OncePerRequestFilter {
 
 
             String jwtHeader = request.getHeader("Authorization");
+
+            //檢查jwtHeader是否為Null
+            if (jwtHeader == null || !jwtHeader.startsWith("Bearer ")) {
+                // 當 JWT 標頭為 null 或者不包含 Bearer 前綴時，直接放行請求
+                chain.doFilter(request, response);
+                return;
+            }
+
             if(!jwtHeader.contains("Bearer"))
                 throw new BadCredentialsException("Invalid JWT token");
 

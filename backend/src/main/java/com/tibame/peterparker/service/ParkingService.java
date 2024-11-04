@@ -1,12 +1,18 @@
 package com.tibame.peterparker.service;
 
+import com.tibame.peterparker.dao.OrderRepository;
 import com.tibame.peterparker.dao.ParkingRepository;
+import com.tibame.peterparker.dao.SpaceRepository;
 import com.tibame.peterparker.dto.FilterRequest;
 import com.tibame.peterparker.dto.ParkingDTO;
+import com.tibame.peterparker.entity.OrderVO;
 import com.tibame.peterparker.entity.ParkingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
+import java.sql.Date;
+import java.sql.Time;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +24,12 @@ public class ParkingService {
 
     @Autowired
     private ParkingRepository parkingRepository;
+
+    @Autowired
+    private SpaceRepository spaceRepository;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     // 獲取所有停車場資訊
     public List<ParkingVO> getAllParkingInfos() {
@@ -50,18 +62,42 @@ public class ParkingService {
 
     // 根據關鍵字查找停車場
     public List<Map<String, Object>> searchParkingByKeyword(String keyword) {
-        // 實現根據關鍵字查找停車場的邏輯（這裡可以根據關鍵字進行篩選）
-        List<ParkingVO> parkingInfos = parkingRepository.findAll(); // 佔位符
+        // 檢查是否有提供關鍵字
+        if (keyword == null || keyword.trim().isEmpty()) {
+            throw new IllegalArgumentException("Keyword must not be empty");
+        }
+
+        // 使用自定義查詢來查找符合關鍵字的停車場
+        List<ParkingVO> parkingInfos = parkingRepository.searchByKeyword(keyword);
 
         // 將 ParkingInfo 轉換為 Map<String, Object>
         return parkingInfos.stream().map(this::convertToMap).collect(Collectors.toList());
     }
 
     // 獲取指定停車場的可用車位數量
-    public Integer getAvailableSpaces(Integer parkingId) {
-        // 實現獲取可用車位的邏輯
-        return 0; // 佔位符
+    public Integer getAvailableSpaces(Integer parkingId, Date date, String timeRange) {
+        // 取得該停車場總車位數量
+        Integer totalSpaces = parkingRepository.findById(parkingId)
+                .orElseThrow(() -> new EntityNotFoundException("ParkingInfo not found for id: " + parkingId))
+                .getCapacity();
+
+        // 將timeRange拆分為開始和結束時間
+        String[] times = timeRange.split("-");
+        if (times.length != 2) {
+            throw new IllegalArgumentException("Invalid time range format. Expected 'HH:mm-HH:mm'");
+        }
+        Time startTime = Time.valueOf(times[0] + ":00");
+        Time endTime = Time.valueOf(times[1] + ":00");
+
+        // 找出指定日期和時間段內與該停車場有衝突的訂單
+        List<OrderVO> conflictingOrders = orderRepository.findConflictingOrdersByParkingIdAndDate(parkingId, date, startTime, endTime);
+
+        // 剩餘可用空位 = 總車位數量 - 已被預定的車位數量
+        int availableSpaces = totalSpaces - conflictingOrders.size();
+
+        return availableSpaces;
     }
+
 
     // 將 ParkingInfo 轉換為 Map<String, Object>
     private Map<String, Object> convertToMap(ParkingVO parkingInfo) {

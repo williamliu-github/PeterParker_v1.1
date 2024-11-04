@@ -9,5 +9,8 @@ import java.util.List;
 @Repository
 public interface SpaceRepository extends JpaRepository<Space, Integer> {
     List<Space> findByParkingInfoParkingId(Integer parkingId);
+    int countByParkingInfoParkingId(Integer parkingId);
+
+
 }
 

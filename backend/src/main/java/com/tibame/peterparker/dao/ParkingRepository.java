@@ -17,5 +17,8 @@ public interface ParkingRepository extends JpaRepository<ParkingVO, Integer> {
     @Query("SELECT p FROM ParkingVO p WHERE (:types IS NULL)")
     List<ParkingVO> findFilteredParkingListings(@Param("types") List<String> types);
 
+    @Query("SELECT p FROM ParkingVO p WHERE LOWER(p.parkingName) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+            "OR LOWER(p.parkingLocation) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<ParkingVO> searchByKeyword(@Param("keyword") String keyword);
 
 }

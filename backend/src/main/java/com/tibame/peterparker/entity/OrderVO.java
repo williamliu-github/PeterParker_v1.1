@@ -2,6 +2,7 @@ package com.tibame.peterparker.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.Timestamp;
 
 @Entity
@@ -18,8 +19,10 @@ public class OrderVO implements Serializable {
     @JoinColumn(name = "userId", nullable = false)
     private UserVO user;
 
-    @Column(name = "spaceId", nullable = false)
-    private Integer spaceId;
+    // 直接與 Space 關聯
+    @ManyToOne
+    @JoinColumn(name = "spaceId", nullable = false)
+    private Space space;
 
     @Column(name = "statusId", nullable = false, length = 20)
     private String statusId;
@@ -40,13 +43,16 @@ public class OrderVO implements Serializable {
     @Version
     private Timestamp orderModified;
 
+    @Column(name = "orderDate")
+    private Date orderDate;
+
     // Constructors
     public OrderVO() {
     }
 
-    public OrderVO(UserVO user, Integer spaceId, String statusId, String userComment, Timestamp orderStartTime, Timestamp orderEndTime, Integer orderTotalIncome, Timestamp orderModified) {
+    public OrderVO(UserVO user, Space space, String statusId, String userComment, Timestamp orderStartTime, Timestamp orderEndTime, Integer orderTotalIncome, Timestamp orderModified) {
         this.user = user;
-        this.spaceId = spaceId;
+        this.space = space;
         this.statusId = statusId;
         this.userComment = userComment;
         this.orderStartTime = orderStartTime;
@@ -72,12 +78,12 @@ public class OrderVO implements Serializable {
         this.user = user;
     }
 
-    public Integer getSpaceId() {
-        return spaceId;
+    public Space getSpace() {
+        return space;
     }
 
-    public void setSpaceId(Integer spaceId) {
-        this.spaceId = spaceId;
+    public void setSpace(Space space) {
+        this.space = space;
     }
 
     public String getStatusId() {
@@ -126,5 +132,13 @@ public class OrderVO implements Serializable {
 
     public void setOrderModified(Timestamp orderModified) {
         this.orderModified = orderModified;
+    }
+
+    public Date getOrderDate() {
+        return orderDate;
+    }
+
+    public void setOrderDate(Date orderDate) {
+        this.orderDate = orderDate;
     }
 }

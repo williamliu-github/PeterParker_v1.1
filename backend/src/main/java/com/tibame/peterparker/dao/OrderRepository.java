@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -22,11 +24,12 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer> {
     List<OrderVO> findByUser_UserId(Integer userId);
 
     // 查找在指定時間段內已被預訂的停車位
-    @Query("SELECT o FROM OrderVO o WHERE o.spaceId = :spaceId AND " +
+    @Query("SELECT o FROM OrderVO o WHERE o.space.spaceId = :spaceId AND " +
             "((o.orderStartTime <= :startTime AND o.orderEndTime >= :startTime) OR " +
             "(o.orderStartTime <= :endTime AND o.orderEndTime >= :endTime) OR " +
             "(o.orderStartTime >= :startTime AND o.orderEndTime <= :endTime))")
     List<OrderVO> findConflictingOrders(Integer spaceId, Timestamp startTime, Timestamp endTime);
+
 
     // 修改訂單狀態
     @Modifying
@@ -35,4 +38,11 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer> {
 
     // 刪除訂單
     void deleteById(Integer orderId);
+
+    //查找指定停車場特定日期時間段的衝突訂單
+    @Query("SELECT o FROM OrderVO o WHERE o.space.parkingInfo.parkingId = :parkingId AND o.orderDate = :date AND " +
+            "((o.orderStartTime <= :startTime AND o.orderEndTime >= :startTime) OR " +
+            "(o.orderStartTime <= :endTime AND o.orderEndTime >= :endTime) OR " +
+            "(o.orderStartTime >= :startTime AND o.orderEndTime <= :endTime))")
+    List<OrderVO> findConflictingOrdersByParkingIdAndDate(Integer parkingId, Date date, Time startTime, Time endTime);
 }

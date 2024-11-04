@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,7 +81,11 @@ public class OrderService {
             }
             order.setUser(user);  // 設置 UserVO
 
-            order.setSpaceId(orderDTO.getSpaceId());
+            // 查找 Space
+            Space space = spaceRepository.findById(orderDTO.getSpaceId())
+                    .orElseThrow(() -> new EntityNotFoundException("Space not found"));
+            order.setSpace(space);  // 設置 Space
+
             order.setStatusId(orderDTO.getStatusId());
             order.setUserComment(orderDTO.getUserComment());
             order.setOrderStartTime(orderDTO.getOrderStartTime());
@@ -99,7 +105,12 @@ public class OrderService {
         Optional<OrderVO> existingOrderOpt = orderRepository.findById(updatedOrder.getOrderId());
         if (existingOrderOpt.isPresent()) {
             OrderVO existingOrder = existingOrderOpt.get();
-            existingOrder.setSpaceId(updatedOrder.getSpaceId());
+
+            // 查找 Space
+            Space space = spaceRepository.findById(updatedOrder.getSpace().getSpaceId())
+                    .orElseThrow(() -> new EntityNotFoundException("Space not found"));
+            existingOrder.setSpace(space);  // 設置 Space
+
             existingOrder.setStatusId(updatedOrder.getStatusId());
             existingOrder.setUserComment(updatedOrder.getUserComment());
             existingOrder.setOrderStartTime(updatedOrder.getOrderStartTime());
@@ -122,13 +133,47 @@ public class OrderService {
     }
 
     // 計算訂單總金額
-    public Integer calculateTotalPrice(OrderDTO request) {
-        // 查找指定的 space
-        Space space = spaceRepository.findById(request.getSpaceId())
-                .orElseThrow(() -> new EntityNotFoundException("Space not found"));
+    public Integer calculateTotalPrice(OrderVO request) {
+        // 檢查是否有空值
+        if (request.getOrderStartTime() == null) {
+            throw new IllegalArgumentException("訂單開始時間不可為null");
+        }
+
+        // 如果訂單狀態為 "已取消"，設置 orderTotalIncome 為 0 並保存，然後拋出異常
+        if ("已取消".equals(request.getStatusId())) {
+            request.setOrderTotalIncome(0);
+            orderRepository.save(request);
+            throw new IllegalArgumentException("訂單未成立或已取消");
+        }
+
+        // 如果 orderEndTime 為 null，設置預設結束時間
+        if (request.getOrderEndTime() == null) {
+            // 設置 orderEndTime 為開始時間後 1 小時，並取整點
+            Timestamp defaultEndTime = new Timestamp(
+                    request.getOrderStartTime().toLocalDateTime().plusHours(1).withMinute(0).withSecond(0).withNano(0)
+                            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+            // 如果 defaultEndTime 早於當前時間，則設置為當前時間後的一小時，並取整點
+            Timestamp currentPlusOneHour = new Timestamp(
+                    LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0).withNano(0)
+                            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+            // 如果 defaultEndTime 早於當前時間，則使用 currentPlusOneHour，否則使用 defaultEndTime
+            request.setOrderEndTime(
+                    defaultEndTime.before(new Timestamp(System.currentTimeMillis())) ? currentPlusOneHour : defaultEndTime);
+        }
+
+        // 從 OrderVO 中獲取 space 對象
+        Space space = request.getSpace();
+        if (space == null) {
+            throw new EntityNotFoundException("並未找到此訂單的車位資訊");
+        }
 
         // 獲取 space 所屬的 ParkingInfo
         ParkingVO parkingInfo = space.getParkingInfo();
+        if (parkingInfo == null) {
+            throw new EntityNotFoundException("並未找到此訂單的停車場資訊");
+        }
 
         // 使用 orderStartTime 轉換為 LocalDate
         LocalDate orderDate = request.getOrderStartTime().toLocalDateTime().toLocalDate();
@@ -141,9 +186,19 @@ public class OrderService {
 
         // 計算訂單持續時間（小時）
         long durationInHours = (request.getOrderEndTime().getTime() - request.getOrderStartTime().getTime()) / (1000 * 60 * 60);
+        if (durationInHours <= 0) {
+            throw new IllegalArgumentException("訂單結束時間不可早於訂單開始時間");
+        }
 
-        // 計算並返回訂單總金額
-        return Math.toIntExact(pricePerHour * durationInHours);
+        // 計算訂單總金額
+        Integer totalPrice = Math.toIntExact(pricePerHour * durationInHours);
+
+        // 更新訂單總金額
+        request.setOrderTotalIncome(totalPrice);
+        orderRepository.save(request);
+
+        // 返回計算的總金額
+        return totalPrice;
     }
 
 
