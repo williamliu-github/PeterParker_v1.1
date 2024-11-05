@@ -9,6 +9,8 @@ import com.tibame.peterparker.entity.UserVO;
 import com.tibame.peterparker.dao.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.web.servlet.filter.OrderedRequestContextFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,8 +25,13 @@ import java.util.stream.Collectors;
 @Transactional
 public class UserService {
 
+    @Autowired
     private final UserRepository userRepository;
+
+    @Autowired
     private UserEmailService userEmailService;
+
+    @Autowired
     private OrderRepository orderRepository;
 
     public UserService(UserRepository userRepository) {
