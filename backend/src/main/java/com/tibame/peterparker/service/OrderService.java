@@ -37,6 +37,9 @@ public class OrderService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private OrderMailService orderMailService;
+
     // 查找附近的停車場
     public List<ParkingVO> findNearbyParking(Double lat, Double lng, Double radius) {
         return ParkingRepository.findByParkingLatBetweenAndParkingLongBetween(lat - radius, lat + radius, lng - radius, lng + radius);
@@ -86,6 +89,7 @@ public class OrderService {
                     .orElseThrow(() -> new EntityNotFoundException("Space not found"));
             order.setSpace(space);  // 設置 Space
 
+            //設置訂單相關訊息
             order.setStatusId(orderDTO.getStatusId());
             order.setUserComment(orderDTO.getUserComment());
             order.setOrderStartTime(orderDTO.getOrderStartTime());
@@ -93,12 +97,32 @@ public class OrderService {
             order.setOrderTotalIncome(orderDTO.getOrderTotalIncome());
             order.setOrderModified(new Timestamp(System.currentTimeMillis()));
 
+            //保存訂單
             OrderVO savedOrder = orderRepository.save(order);
+
+            //發送郵件通知
+            String userAccount = user.getUserAccount(); // 獲取 userAccount
+            String mailText = generateMailText(savedOrder); // 根據訂單生成郵件內容
+            orderMailService.sendMail(userAccount, mailText); // 調用郵件服務發送通知
+
             return savedOrder.getOrderId();
         } else {
             throw new IllegalStateException("The selected space is not available for the chosen time period.");
         }
     }
+
+    //訂單完成通知內容
+    private String generateMailText(OrderVO order) {
+        return "親愛的用戶，您好，您的訂單已經完成，以下是您的訂單詳情：\n" +
+                "訂單編號: " + order.getOrderId() + "\n" +
+                "停車場: " + order.getSpace().getParkingInfo().getParkingName() + "\n" +
+                "開始時間: " + order.getOrderStartTime() + "\n" +
+                "結束時間: " + order.getOrderEndTime() + "\n" +
+                "總金額: " + order.getOrderTotalIncome() + " NTD\n" +
+                "感謝您的使用！";
+    }
+
+
 
     // 更新訂單
     public OrderVO updateOrder(OrderVO updatedOrder) {
@@ -200,6 +224,17 @@ public class OrderService {
         // 返回計算的總金額
         return totalPrice;
     }
+
+    //根據userId查找userAccount
+    public String getUserAccountByUserId(Integer userId) {
+        Optional<UserVO> optionalUser = userRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get().getUserAccount();
+        } else {
+            throw new EntityNotFoundException("User not found for ID: " + userId);
+        }
+    }
+
 
 
 }

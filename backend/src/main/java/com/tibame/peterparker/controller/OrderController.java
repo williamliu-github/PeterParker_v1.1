@@ -6,6 +6,7 @@ import java.util.*;
 import com.tibame.peterparker.dto.FilterRequest;
 import com.tibame.peterparker.dto.ParkingDTO;
 import com.tibame.peterparker.entity.ParkingVO;
+import com.tibame.peterparker.service.OrderMailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,6 +34,9 @@ public class OrderController {
 
     @Autowired
     private ParkingService parkingService;
+
+    @Autowired
+    private OrderMailService orderMailService;
 
     // 查詢用戶所有訂單
     @GetMapping("/user/{userId}")
@@ -72,13 +76,21 @@ public class OrderController {
 
 
         try {
+            // 創建訂單
             Integer orderId = orderService.createOrder(orderDTO);
+
+            // 獲取用戶的 email（userAccount）
+            String userEmail = orderService.getUserAccountByUserId(loginUserId); // 假設 userService 中有此方法
+
+            // 發送訂單完成郵件
+            OrderMailService orderMailService = new OrderMailService();
+            orderMailService.sendMail(userEmail, "您的訂單已創建成功！訂單號：" + orderId);
+
             return new ResponseEntity<>(orderId, HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("Error creating order: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
     // 根據 orderId 查詢訂單
     @GetMapping("/{orderId}")
     public ResponseEntity<?> findById(@PathVariable Integer orderId) {
@@ -226,7 +238,6 @@ public class OrderController {
             return new ResponseEntity<>("Error fetching parking info: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 
 
 

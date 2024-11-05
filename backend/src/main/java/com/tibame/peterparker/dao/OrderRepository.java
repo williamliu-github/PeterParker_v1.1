@@ -45,4 +45,5 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer> {
             "(o.orderStartTime <= :endTime AND o.orderEndTime >= :endTime) OR " +
             "(o.orderStartTime >= :startTime AND o.orderEndTime <= :endTime))")
     List<OrderVO> findConflictingOrdersByParkingIdAndDate(Integer parkingId, Date date, Time startTime, Time endTime);
+
 }
