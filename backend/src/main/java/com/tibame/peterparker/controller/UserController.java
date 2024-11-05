@@ -438,6 +438,8 @@ public class UserController {
     // 取消使用者的訂單
     @GetMapping("/updateOrderStatus/{orderId}/{statusId}")
     public ResponseEntity<Integer> updateOrderStatus(@PathVariable Integer orderId, @PathVariable String statusId) {
+        System.out.println("orderId" + orderId);
+        System.out.println("statusId" + statusId);
         userService.cancelExistingOrder(orderId, statusId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
