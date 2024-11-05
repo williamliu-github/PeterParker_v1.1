@@ -29,7 +29,6 @@ import java.security.GeneralSecurityException;
 import java.util.*;
 
 
-@CrossOrigin(origins = "http://localhost:5500")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -421,6 +420,7 @@ public class UserController {
         return ResponseEntity.ok(orders);
     }
 
+    // 使用者訂單，我的最愛，我的黑名單停車場的圖片
     @GetMapping("/image/{parkingId}")
     public ResponseEntity<ByteArrayResource> getParkingImage(@PathVariable Integer parkingId) {
         Optional<ParkingVO> parkingLotOptional = parkingRepository.findById(parkingId);
@@ -433,6 +433,15 @@ public class UserController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    // 取消使用者的訂單
+    @GetMapping("/updateOrderStatus/{orderId}/{statusId}")
+    public ResponseEntity<Integer> updateOrderStatus(@PathVariable Integer orderId, @PathVariable String statusId) {
+        System.out.println("orderId" + orderId);
+        System.out.println("statusId" + statusId);
+        userService.cancelExistingOrder(orderId, statusId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }

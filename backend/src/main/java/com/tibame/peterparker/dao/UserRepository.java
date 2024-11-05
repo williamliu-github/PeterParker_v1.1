@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserVO, Integer> {
@@ -64,5 +65,7 @@ public interface UserRepository extends JpaRepository<UserVO, Integer> {
                                                            @Param("userId") Integer userId);
 
 
+    //獲取userAccount作為寄信mail
+    Optional<UserVO> findById(Integer userId);
 
 }

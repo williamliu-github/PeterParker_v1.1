@@ -11,8 +11,8 @@
     ================================================== -->
 	<link rel="stylesheet" href="css/style.css">
 	<link rel="stylesheet" href="css/main-color.css" id="colors">
-	<script type="module" src="scripts/userinfo.js"></script>
-	<script type="module" src="scripts/get_photo.js"></script>
+<!--	<script type="module" src="scripts/userinfo.js"></script>-->
+<!--	<script type="module" src="scripts/get_photo.js"></script>-->
 
 </head>
 
@@ -117,47 +117,35 @@
 
 <!-- Content
 ================================================== -->
-<div class="fs-container">
+	<div class="fs-container">
+		<div class="fs-inner-container content">
+			<div class="fs-content">
 
-	<div class="fs-inner-container content">
-		<div class="fs-content">
-
-			<!-- Search -->
-			<section class="search">
-
-				<div class="row">
-					<div class="col-md-12">
-
+				<!-- Search -->
+				<section class="search">
+					<div class="row">
+						<div class="col-md-12">
 							<!-- Row With Forms -->
 							<div class="row with-forms">
 
 								<!-- Main Search Input -->
 								<div class="col-fs-6">
-									<div class="input-with-icon">
-										<i class="sl sl-icon-magnifier"></i>
-										<input type="text" placeholder="想停哪裡?" value=""/>
-									</div>
-								</div>
-
-								<!-- Main Search Input -->
-								<div class="col-fs-6">
 									<div class="input-with-icon location">
 										<div id="autocomplete-container">
+											<!-- 搜索輸入框 -->
 											<input id="autocomplete-input" type="text" placeholder="尋找附近的車位">
 										</div>
-										<a href="#"><i class="fa fa-map-marker"></i></a>
+										<!-- 搜索按鈕，觸發搜索事件 -->
+										<a href="#" id="search-button"><i class="fa fa-search"></i></a>
 									</div>
 								</div>
-						
 
 								<!-- Filters -->
 								<div class="col-fs-12">
-
-									<!-- Panel Dropdown / End -->
+									<!-- Panel Dropdown -->
 									<div class="panel-dropdown">
 										<a href="#">類型</a>
 										<div class="panel-dropdown-content checkboxes categories">
-											
 											<!-- Checkboxes -->
 											<div class="row">
 												<div class="col-md-6">
@@ -172,29 +160,25 @@
 
 													<input id="check-4" type="checkbox" name="check">
 													<label for="check-4">地下停車場</label>
-												</div>	
-
+												</div>
 											</div>
-											
 											<!-- Buttons -->
 											<div class="panel-buttons">
 												<button class="panel-cancel">取消</button>
 												<button class="panel-apply">接受</button>
 											</div>
-
 										</div>
 									</div>
 									<!-- Panel Dropdown / End -->
 
-									<!-- Panel Dropdown -->
+									<!-- More Filters Dropdown -->
 									<div class="panel-dropdown wide">
 										<a href="#">更多</a>
 										<div class="panel-dropdown-content checkboxes">
-
 											<!-- Checkboxes -->
 											<div class="row">
 												<div class="col-md-6">
-													<input id="check-a" type="checkbox" name="check"  checked class="all">
+													<input id="check-a" type="checkbox" name="check" checked class="all">
 													<label for="check-a">全部</label>
 
 													<input id="check-b" type="checkbox" name="check">
@@ -202,22 +186,18 @@
 
 													<input id="check-c" type="checkbox" name="check">
 													<label for="check-c">目前剩餘車位少於10</label>
-
-												</div>	
-
+												</div>
 											</div>
-											
 											<!-- Buttons -->
 											<div class="panel-buttons">
 												<button class="panel-cancel">取消</button>
 												<button class="panel-apply">接受</button>
 											</div>
-
 										</div>
 									</div>
 									<!-- Panel Dropdown / End -->
 
-									<!-- Panel Dropdown -->
+									<!-- Distance Filter Dropdown -->
 									<div class="panel-dropdown">
 										<a href="#">距離</a>
 										<div class="panel-dropdown-content">
@@ -229,232 +209,67 @@
 										</div>
 									</div>
 									<!-- Panel Dropdown / End -->
-									
 								</div>
 								<!-- Filters / End -->
-	
 							</div>
 							<!-- Row With Forms / End -->
-
+						</div>
 					</div>
-				</div>
+				</section>
+				<!-- Search / End -->
 
-			</section>
-			<!-- Search / End -->
+				<!-- Listings Container -->
+				<section class="listings-container margin-top-30">
+					<!-- Sorting / Layout Switcher -->
+					<div class="row fs-switcher">
+						<div class="col-md-6">
+							<!-- Showing Results -->
+							<p id="showing-results" class="showing-results">共找到0個結果</p>
+						</div>
+					</div>
 
+					<!-- Listings -->
+					<div id="listing-results" class="row fs-listings">
+						!-- Listing Item -->
+						<div class="col-lg-12 col-md-12">
+							<div class="listing-item-container list-layout" data-marker-id="1">
+								<a href="parking_booking_1.html" class="listing-item">
 
-		<section class="listings-container margin-top-30">
-			<!-- Sorting / Layout Switcher -->
-			<div class="row fs-switcher">
-
-				<div class="col-md-6">
-					<!-- Showing Results -->
-					<p class="showing-results">共找到14個結果</p>
-				</div>
-
-			</div>
-
-
-			<!-- Listings -->
-			<div class="row fs-listings">
-				
-				<!-- Listing Item -->
-				<div class="col-lg-12 col-md-12">
-					<div class="listing-item-container list-layout" data-marker-id="1">
-						<a href="parking_booking_1.html" class="listing-item">
-							
-							<!-- Image -->
-							<div class="listing-item-image">
-								<img src="images/Parking_pic/螢幕擷取畫面 2024-09-30 184944.jpg" alt="">
-								<span class="tag">地下停車場</span>
-							</div>
-							
-							<!-- Content -->
-							<div class="listing-item-content">
-								<div class="listing-badge now-open">24小時共享</div>
-
-								<div class="listing-item-inner">
-									<h3>CITY PARKING 城市車旅停車場 國泰南京商業大樓站 <i class="verified-icon"></i></h3>
-									<h4>50元
-										<span>/小時</span>
-									</h4>
-									<span>(限小車)(非低底盤)</span>
-									<div class="star-rating" data-rating="3.5">
-										<div class="rating-counter">(12 則評論)</div>
+									<!-- Image -->
+									<div class="listing-item-image">
+										<img src="images/Parking_pic/螢幕擷取畫面 2024-09-30 184944.jpg" alt="">
+										<span class="tag">地下停車場</span>
 									</div>
-								</div>
 
-								
-								<span class="like-icon"></span>
-							</div>
-						</a>
-						
-					</div>
-				</div>
-				<!-- Listing Item / End -->
+									<!-- Content -->
+									<div class="listing-item-content">
+										<div class="listing-badge now-open">24小時共享</div>
 
-				<!-- Listing Item -->
-				<div class="col-lg-12 col-md-12">
-					<div class="listing-item-container list-layout" data-marker-id="2">
-						<a href="listings-single-page.html" class="listing-item">
-							
-							<!-- Image -->
-							<div class="listing-item-image">
-								<img src="images/listing-item-02.jpg" alt="">
-								<span class="tag">平面停車場</span>
-							</div>
-							
-							<!-- Content -->
-							<div class="listing-item-content">
+										<div class="listing-item-inner">
+											<h3>CITY PARKING 城市車旅停車場 國泰南京商業大樓站 <i class="verified-icon"></i></h3>
+											<h4>50元
+												<span>/小時</span>
+											</h4>
+											<span>(限小車)(非低底盤)</span>
+											<div class="star-rating" data-rating="3.5">
+												<div class="rating-counter">(12 則評論)</div>
+											</div>
+										</div>
 
-								<div class="listing-item-inner">
-								<h3>Sticky Band</h3>
-								<span>Bishop Avenue, New York</span>
-									<div class="star-rating" data-rating="5.0">
-										<div class="rating-counter">(23 reviews)</div>
+
+										<span class="like-icon"></span>
 									</div>
-								</div>
+								</a>
 
-								<span class="like-icon"></span>
-
-								<div class="listing-item-details">Friday, August 10</div>
 							</div>
-						</a>
+						</div>
+						<!-- Listing Item / End -->
+						<!-- 搜索結果會被插入到這個容器中 -->
 					</div>
-				</div>
-				<!-- Listing Item / End -->
+					<!-- Listings Container / End -->
 
-				<!-- Listing Item -->
-				<div class="col-lg-12 col-md-12">
-					<div class="listing-item-container list-layout" data-marker-id="3">
-						<a href="listings-single-page.html" class="listing-item">
-							
-							<!-- Image -->
-							<div class="listing-item-image">
-								<img src="images/listing-item-03.jpg" alt="">
-								<span class="tag">Hotels</span>
-							</div>
-							
-							<!-- Content -->
-							<div class="listing-item-content">
-
-								<div class="listing-item-inner">
-								<h3>Hotel Govendor</h3>
-								<span>778 Country Street, New York</span>
-									<div class="star-rating" data-rating="2.0">
-										<div class="rating-counter">(17 reviews)</div>
-									</div>
-								</div>
-
-								<span class="like-icon"></span>
-
-								<div class="listing-item-details">Starting from $59 per night</div>
-							</div>
-						</a>
-					</div>
-				</div>
-				<!-- Listing Item / End -->
-
-				<!-- Listing Item -->
-				<div class="col-lg-12 col-md-12">
-					<div class="listing-item-container list-layout" data-marker-id="4">
-						<a href="listings-single-page.html" class="listing-item">
-							
-							<!-- Image -->
-							<div class="listing-item-image">
-								<img src="images/listing-item-04.jpg" alt="">
-								<span class="tag">Eat & Drink</span>
-							</div>
-							
-							<!-- Content -->
-							<div class="listing-item-content">
-								<div class="listing-badge now-open">Now Open</div>
-								
-								<div class="listing-item-inner">
-								<h3>Burger House <i class="verified-icon"></i></h3>
-								<span>2726 Shinn Street, New York</span>
-									<div class="star-rating" data-rating="5.0">
-										<div class="rating-counter">(31 reviews)</div>
-									</div>
-								</div>
-
-								<span class="like-icon"></span>
-							</div>
-						</a>
-					</div>
-				</div>
-				<!-- Listing Item / End -->
-
-				<!-- Listing Item -->
-				<div class="col-lg-12 col-md-12">
-					<div class="listing-item-container list-layout" data-marker-id="5">
-						<a href="listings-single-page.html" class="listing-item">
-							
-							<!-- Image -->
-							<div class="listing-item-image">
-								<img src="images/listing-item-05.jpg" alt="">
-								<span class="tag">Other</span>
-							</div>
-							
-							<!-- Content -->
-							<div class="listing-item-content">
-
-								<div class="listing-item-inner">
-								<h3>Airport</h3>
-								<span>1512 Duncan Avenue, New York</span>
-									<div class="star-rating" data-rating="3.5">
-										<div class="rating-counter">(46 reviews)</div>
-									</div>
-								</div>
-
-								<span class="like-icon"></span>
-							</div>
-						</a>
-					</div>
-				</div>
-				<!-- Listing Item / End -->
-
-				<!-- Listing Item -->
-				<div class="col-lg-12 col-md-12">
-					<div class="listing-item-container list-layout" data-marker-id="6">
-						<a href="listings-single-page.html" class="listing-item">
-							
-							<!-- Image -->
-							<div class="listing-item-image">
-								<img src="images/listing-item-06.jpg" alt="">
-								<span class="tag">Eat & Drink</span>
-							</div>
-							
-							<!-- Content -->
-							<div class="listing-item-content">
-								<div class="listing-badge now-closed">Now Closed</div>
-
-								<div class="listing-item-inner">
-								<h3>Think Coffee</h3>
-								<span>215 Terry Lane, New York</span>
-									<div class="star-rating" data-rating="5.0">
-										<div class="rating-counter">(31 reviews)</div>
-									</div>
-								</div>
-
-								<span class="like-icon"></span>
-							</div>
-						</a>
-					</div>
-				</div>
-				<!-- Listing Item / End -->
-
-			</div>
-			<!-- Listings Container / End -->
-
-
-			<!-- Pagination Container -->
-			<div class="row fs-listings">
-				<div class="col-md-12">
-
-					<!-- Pagination -->
-					<div class="clearfix"></div>
-					<div class="row">
+					<!-- Pagination Container -->
+					<div class="row fs-listings">
 						<div class="col-md-12">
 							<!-- Pagination -->
 							<div class="pagination-container margin-top-15 margin-bottom-40">
@@ -467,34 +282,25 @@
 									</ul>
 								</nav>
 							</div>
+							<div class="copyrights margin-top-0">© 2024 Peter Parker. All Rights Reserved.</div>
 						</div>
 					</div>
-					<div class="clearfix"></div>
-					<!-- Pagination / End -->
-					
-					<!-- Copyrights -->
-					<div class="copyrights margin-top-0">© 2021 Listeo. All Rights Reserved.</div>
+					<!-- Pagination Container / End -->
+				</section>
+			</div>
+		</div>
 
+		<div class="fs-inner-container map-fixed">
+			<!-- Map -->
+			<div id="map-container">
+				<div id="map" data-map-zoom="9" data-map-scroll="true" style="height: 100%; width: 100%;">
+					<!-- map goes here -->
 				</div>
 			</div>
-			<!-- Pagination Container / End -->
-		</section>
-
 		</div>
 	</div>
-	<div class="fs-inner-container map-fixed">
-		<!-- Map -->
-		<div id="map-container">
-			<div id="map" data-map-zoom="9" data-map-scroll="true" style="height: 100%; width: 100%;">
-				<!-- map goes here -->
-			</div>
-		</div>
-	</div>
-</div>
+	<!-- Wrapper / End -->
 
-
-</div>
-<!-- Wrapper / End -->
 
 
 <!-- Scripts
@@ -513,280 +319,19 @@
 <script type="text/javascript" src="scripts/custom.js"></script>
 
 <!-- Google Autocomplete -->
-<script>
-	var googleMap;
-	var markers = [];
-	var infoWindow;
-
-	function initMap() {
-		// Initialize the Google Map
-		googleMap = new google.maps.Map(document.getElementById('map'), {
-			center: { lat: 25.0330, lng: 121.5654 }, // Taipei default center
-			zoom: 13,
-			scrollwheel: true,
-		});
-
-		infoWindow = new google.maps.InfoWindow();
-
-		// Initialize autocomplete
-		initAutocomplete();
-
-		// Fetch initial parking data and place markers
-		fetchAndDisplayParking();
-	}
-
-	function initAutocomplete() {
-		var input = document.getElementById('autocomplete-input');
-		var autocomplete = new google.maps.places.Autocomplete(input);
-
-		autocomplete.addListener('place_changed', function() {
-			var place = autocomplete.getPlace();
-			if (!place.geometry) {
-				return;
-			}
-
-			// Center the map to the selected place
-			googleMap.setCenter(place.geometry.location);
-			googleMap.setZoom(15);
-
-			// Fetch and display nearby parking
-			fetchAndDisplayParking();
-		});
-
-		if ($('.main-search-input-item')[0]) {
-			setTimeout(function() {
-				$(".pac-container").prependTo("#autocomplete-container");
-			}, 300);
-		}
-	}
-
-	function fetchAndDisplayParking() {
-		// Assuming the back-end API provides filtered parking listings based on current map bounds
-		var bounds = googleMap.getBounds();
-		if (!bounds) return;
-
-		var ne = bounds.getNorthEast();
-		var sw = bounds.getSouthWest();
-
-		fetch('/api/getParkingListings', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				northEast: { lat: ne.lat(), lng: ne.lng() },
-				southWest: { lat: sw.lat(), lng: sw.lng() },
-			})
-		})
-				.then(response => response.json())
-				.then(data => {
-					clearMarkers(); // Clear previous markers
-					data.forEach(parking => {
-						createMarker(parking);
-					});
-				})
-				.catch(error => {
-					console.error('Error fetching parking listings:', error);
-				});
-	}
-
-	function createMarker(parking) {
-		var marker = new google.maps.Marker({
-			map: googleMap,
-			position: { lat: parking.parkingLat, lng: parking.parkingLong },
-			title: parking.parkingName,
-		});
-
-		marker.addListener('click', function() {
-			infoWindow.setContent(`
-                <div class="infobox-content">
-                    <h5>${parking.parkingName}</h5>
-                    <p>${parking.parkingLocation}</p>
-                    <p>Hourly Rate: $${parking.workdayHourlyRate}</p>
-                    <a href="parking_booking_1.html?parkingId=${parking.parkingId}">Book Now</a>
-                </div>
-            `);
-			infoWindow.open(googleMap, marker);
-		});
-
-		markers.push(marker);
-	}
-
-	function clearMarkers() {
-		markers.forEach(marker => {
-			marker.setMap(null);
-		});
-		markers = [];
-	}
-
-	// Listen to map changes and fetch parking data accordingly
-	googleMap.addListener('bounds_changed', function() {
-		fetchAndDisplayParking();
-	});
+<script src="scripts/parkingorder.js"></script>
+<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDm8zpLXPf2UtxecZZmABNScrbKfa31AIQ&libraries=places,marker&callback=initMap">
 </script>
+
 
 <!-- Load Google Maps -->
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDm8zpLXPf2UtxecZZmABNScrbKfa31AIQ&libraries=places&callback=initMap" async defer></script>
-<script type="text/javascript" src="scripts/infobox.min.js"></script>
+<!--<script type="text/javascript" src="scripts/infobox.min.js"></script>-->
 <script type="text/javascript" src="scripts/markerclusterer.js"></script>
-<script type="text/javascript" src="scripts/maps.js"></script>
+<!--<script type="text/javascript" src="scripts/maps.js"></script>-->
 
-<!-- Add new JavaScript code here -->
-<script>
-	$(document).ready(function () {
-		// 搜尋功能 AJAX 請求
-		$('#autocomplete-input').on('change', function () {
-			let keyword = $(this).val();
-			if (keyword) {
-				$.ajax({
-					url: '/order/searchParking',
-					type: 'GET',
-					data: { keyword: keyword },
-					success: function (data) {
-						renderParkingList(data);
-					},
-					error: function (err) {
-						console.error('Error searching parking:', err);
-					}
-				});
-			}
-		});
 
-		// 篩選功能 AJAX 請求
-		$('.distance-radius').on('input', function () {
-			let radius = $(this).val();
-			let latitude = 25.033; // 預設經緯度，可用其他方式獲取
-			let longitude = 121.5654;
-			$.ajax({
-				url: '/order/nearbyParking',
-				type: 'GET',
-				data: {
-					latitude: latitude,
-					longitude: longitude,
-					radius: radius
-				},
-				success: function (data) {
-					renderParkingList(data);
-				},
-				error: function (err) {
-					console.error('Error finding nearby parking:', err);
-				}
-			});
-		});
-
-		// 渲染停車場列表的函數
-		function renderParkingList(parkingData) {
-			$('.fs-listings').empty();
-			parkingData.forEach(function (parking) {
-				$('.fs-listings').append(`
-                <div class="col-lg-12 col-md-12">
-                    <div class="listing-item-container list-layout">
-                        <a href="parking_booking_1.html" class="listing-item">
-                            <div class="listing-item-image">
-                                <img src="${parking.imageUrl}" alt="">
-                                <span class="tag">${parking.type}</span>
-                            </div>
-                            <div class="listing-item-content">
-                                <div class="listing-item-inner">
-                                    <h3>${parking.name}</h3>
-                                    <span>${parking.address}</span>
-                                    <div class="star-rating" data-rating="${parking.rating}">
-                                        <div class="rating-counter">(${parking.reviewCount} reviews)</div>
-                                    </div>
-                                </div>
-                                <span class="like-icon"></span>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            `);
-			});
-		}
-	});
-	document.getElementById('apply-filters').addEventListener('click', function () {
-		// 獲取選擇的篩選條件
-		var selectedTypes = [];
-		document.querySelectorAll('.filter-option:checked').forEach(function (checkbox) {
-			selectedTypes.push(checkbox.value);
-		});
-
-		var distance = document.querySelector('.distance-radius').value;
-
-		// 調用後端 API，根據篩選條件獲取停車場列表
-		fetchFilteredParkingListings(selectedTypes, distance);
-	});
-
-	function fetchFilteredParkingListings(types, distance) {
-		// 向後端發送篩選條件並獲取停車場列表
-		fetch('/api/getFilteredParkingListings', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				types: types,
-				distance: distance
-			})
-		})
-				.then(response => response.json())
-				.then(data => {
-					renderParkingList(data); // 使用後端返回的資料渲染列表
-				})
-				.catch(error => {
-					console.error('Error fetching filtered parking listings:', error);
-				});
-	}
-
-	function renderParkingList(parkingData) {
-		var listingResults = document.getElementById('listing-results');
-		listingResults.innerHTML = '';
-		parkingData.forEach(function (parking, index) {
-			var listingItem = `
-            <div class="col-lg-12 col-md-12">
-                <div class="listing-item-container list-layout" data-marker-id="${index + 1}">
-                    <a href="parking_booking_1.html?parkingId=${parking.parkingId}" class="listing-item">
-                        <!-- Image -->
-                        <div class="listing-item-image">
-                            <img src="${parking.parkingImg}" alt="">
-                            <span class="tag">${parking.parkingType}</span>
-                        </div>
-                        <!-- Content -->
-                        <div class="listing-item-content">
-                            <div class="listing-item-inner">
-                                <h3>${parking.parkingName} <i class="verified-icon"></i></h3>
-                                <h4>${parking.hourlyRate}元<span>/小時</span></h4>
-                                <div class="star-rating" data-rating="${parking.rating}">
-                                    <div class="rating-counter">(${parking.reviewCount} 則評論)</div>
-                                </div>
-                            </div>
-                            <span class="like-icon"></span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-        `;
-			listingResults.insertAdjacentHTML('beforeend', listingItem);
-		});
-		document.getElementById('showing-results').textContent = `共找到${parkingData.length}個結果`;
-	}
-
-</script>
-<!--
-<script>
-	window.onload = function() {
-		// Check if the jwt_token exists in localStorage
-		let token = localStorage.getItem('peterParkerToken');
-
-		// If no token is found, redirect to index.html
-		if (!token) {
-			window.location.href = 'index.html';
-		}
-
-		// Optionally, you can also check if the token has a valid format or expiration time
-		// if your application uses such validation on the client-side.
-	};
-</script>
--->
+<script type="module" src="scripts/orderlist.js"></script>
 
 </body>
 </html>

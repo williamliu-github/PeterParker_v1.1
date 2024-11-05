@@ -212,40 +212,20 @@
 	<div class="row sticky-wrapper">
 		<div class="col-lg-8 col-md-8 padding-right-30">
 
-			<h2>CITY PARKING 城市車旅停車場 國泰南京商業大樓站</h2>
+			<h2 id="parking-name"></h2>
 			<div class="address">
-				<strong>地址：</strong>台北市中山區遼寧街 119 號
-				<button style="float: right;">複製</button>
+				<strong>地址：</strong><span id="parking-address"></span>
+				<button style="float: right;" onclick="copyAddress()">複製</button>
 			</div>
-			<div class="parking-info">
-				<p>(限小車)(低底盤不停)</p>
-			</div>
-	
+			<div class="parking-info" id="parking-info"></div>
+
+
 			<div class="steps">
 				<div class="active">1. 保留車位</div>
 				<div>2. 確認預約時間</div>
 				<div>3. 完成預約</div>
 			</div>
 
-
-			<!-- <div class="parking-info">
-				<h2>CITY PARKING 城市車旅停車場 國泰南京商業大樓站<span class="listing-tag">地下停車場</span></h2>
-				<p>(限小車)(低底盤不停)</p>
-			</div> -->
-	
-			<!-- <div class="address">
-				<strong>地址：</strong>台北市中山區遼寧街 119 號
-				<button style="float: right;">複製</button>
-			</div> -->
-	
-			<!-- <div class="fees">
-				<p class="note">備註：24 小時共享<br>本車位限小車！底盤低於 15 公分請勿停放！</p>
-				<p>當天費率：每小時 50 元 | 當日上限 240 元</p>
-				<p>零端發票設定：一般發票</p>
-			</div> -->
-	
-			<!-- <div class="free-cancel">10 分鐘內可免費取消停車</div> -->
-	
 			<!-- Book Now -->
 			<div id="booking-widget-anchor" class="boxed-widget booking-widget margin-top-35">
 				<h3><i class="fa fa-calendar-check-o "></i> 選擇預約時段</h3>
@@ -328,7 +308,7 @@
 				<div class="note">可提前最多 3 天前免費取消</div>
 		
 				<!-- Terms and Conditions Section -->
-				<div class="note">參閱條款</div>
+				<!-- <div class="note">參閱條款</div> -->
 
 				<!-- Book Now -->
 				<a class="button book-now fullwidth margin-top-5" onclick="goToNextPage()">下一步</a>
@@ -342,36 +322,21 @@
 			<!-- Book Now / End -->
 
 
-			<!-- Titlebar -->
-			<!-- <div id="titlebar" class="listing-titlebar">
-				<div class="listing-titlebar-title">
-					<h2>CITY PARKING 城市車旅停車場 國泰南京商業大樓站<span class="listing-tag">地下停車場</span></h2>
-					<span>
-						<a href="#listing-location" class="listing-address">
-							<i class="fa fa-map-marker"></i>
-							台北市中山區龍江路91巷2-1號
-						</a>
-					</span>
-					<div class="star-rating" data-rating="5">
-						<div class="rating-counter"><a href="#listing-reviews">(31 reviews)</a></div>
-					</div>
-				</div>
-			</div> -->
-
 
 			<!-- Location -->
 			<div id="listing-location" class="listing-section">
 				<h3 class="listing-desc-headline margin-top-60 margin-bottom-30">位置</h3>
 
 				<div id="singleListingMap-container">
-					<div id="singleListingMap" data-latitude="40.70437865245596" data-longitude="-73.98674011230469" data-map-icon="im im-icon-Hamburger"></div>
+					<div id="singleListingMap" style="width: 100%; height: 400px;"></div>
 					<a href="#" id="streetView">街景</a>
 				</div>
 			</div>
-				
-			
 
-				<!-- Pagination -->
+
+
+
+			<!-- Pagination -->
 				
 				<!-- Pagination / End -->
 			</div>
@@ -400,20 +365,14 @@
 			<!-- Contact -->
 			<div class="boxed-widget booking-widget margin-top-35">
 				<div class="hosted-by-title">
-					<h4><span>停車場業主</span> <a href="pages-user-profile.html">Peter</a></h4>
+					<h4><span>停車場業主</span> <a href="pages-user-profile.html" id="owner-name">Peter</a></h4>
 					<a href="pages-user-profile.html" class="hosted-by-avatar"><img src="images/dashboard-avatar.jpg" alt=""></a>
 				</div>
 				<ul class="listing-details-sidebar">
-					<li><i class="sl sl-icon-phone"></i> (123) 123-456</li>
-					<!-- <li><i class="sl sl-icon-globe"></i> <a href="#">http://example.com</a></li> -->
-					<li><i class="fa fa-envelope-o"></i> <a href="#">peter@example.com</a></li>
+					<li><i class="sl sl-icon-phone"></i> <span id="owner-phone">(123) 123-456</span></li>
+					<li><i class="fa fa-envelope-o"></i> <span id="owner-email">peter@example.com</span></li>
 				</ul>
 
-				<ul class="listing-details-sidebar social-profiles">
-					<li><a href="#" class="facebook-profile"><i class="fa fa-facebook-square"></i> Facebook</a></li>
-					<li><a href="#" class="twitter-profile"><i class="fa fa-twitter"></i> Twitter</a></li>
-					<!-- <li><a href="#" class="gplus-profile"><i class="fa fa-google-plus"></i> Google Plus</a></li> -->
-				</ul>
 
 				<!-- Reply to review popup -->
 				<div id="small-dialog" class="zoom-anim-dialog mfp-hide">
@@ -421,10 +380,11 @@
 						<h3>聯絡業主</h3>
 					</div>
 					<div class="message-reply margin-top-0">
-						<textarea cols="40" rows="3" placeholder="Your message to Tom"></textarea>
-						<button class="button">聯絡業主</button>
+						<textarea id="owner-message" cols="40" rows="3" placeholder="Your message to the owner"></textarea>
+						<button class="button" id="contact-owner-button">聯絡業主</button>
 					</div>
 				</div>
+
 
 				<a href="#small-dialog" class="send-message-to-owner button popup-with-zoom-anim"><i class="sl sl-icon-envelope-open"></i> Send Message</a>
 			</div>
@@ -525,8 +485,13 @@
 <script type="text/javascript" src="scripts/custom.js"></script>
 
 <script type="text/javascript" src="scripts/test.js"></script>
+<script src="scripts/order.js"></script>
 
-<!-- 額外 -->
+<!-- Google Autocomplete -->
+<script src="scripts/parkingorder.js"></script>
+<script async defer
+		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDm8zpLXPf2UtxecZZmABNScrbKfa31AIQ&libraries=places,marker&callback=initMap">
+</script>
 
 
 <!-- Maps -->

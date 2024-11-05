@@ -210,32 +210,34 @@
 <!-- Content
 ================================================== -->
 
-<!-- Container -->
-<div class="container">
-	<div class="row">
-		<div class="col-md-12">
+	<!-- Container -->
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
 
-			<div class="steps">
-				<div>1. 選擇時間</div>
-				<div>2. 確認預約時間</div>
-				<div class="active">3. 完成預約</div>
+				<div class="steps">
+					<div>1. 選擇時間</div>
+					<div>2. 確認預約時間</div>
+					<div class="active">3. 完成預約</div>
+				</div>
+
+				<div class="booking-confirmation-page">
+					<i class="fa fa-check-circle"></i>
+					<h2 class="margin-top-30">預約完成！</h2>
+					<p>預約日期 <span id="reservation-date"></span></p>
+					<p>預約時間 <span id="reservation-time"></span></p>
+					<p>時數 <span id="reservation-duration"></span></p>
+					<p class="total-costs">總金額 <span id="total-cost"></span> NTD</p>
+					<p>預約確認信件將於幾分鐘內送至您的信箱</p>
+					<a href="user_ongoing_reservation.html" class="button margin-top-30">查看訂單內容</a>
+				</div>
+
 			</div>
-
-			<div class="booking-confirmation-page">
-				<i class="fa fa-check-circle"></i>
-				<h2 class="margin-top-30">預約完成！</h2>
-				<p>預約日期 <span>2024/11/22</span></p>
-				<p>預約時間 <span id="display-time" class="display-container">12:00~16:00</span></p>					
-				<p>時數 <span id="timecount" class="display-container">4小時</span></p>
-				<p class="total-costs">總金額 <span>200 NTD</span></p>
-				<p>預約確認信件將於幾分鐘內送至您的信箱</p>
-				<a href="dashboard-invoice.html" class="button margin-top-30">查看訂單內容</a>
-			</div>
-
 		</div>
 	</div>
-</div>
-<!-- Container / End -->
+	<!-- Container / End -->
+
+
 
 
 
@@ -311,6 +313,8 @@
 <script type="text/javascript" src="scripts/jquery-ui.min.js"></script>
 <script type="text/javascript" src="scripts/tooltips.min.js"></script>
 <script type="text/javascript" src="scripts/custom.js"></script>
+
+<script src="scripts/order_confirm.js"></script>
 
 
 <!-- Style Switcher

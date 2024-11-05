@@ -2,7 +2,7 @@ function handleCredentialResponse(response) {
     console.log("Google JWT Token: " + response.credential);
 
     // Send the Google credential to your backend for verification
-    fetch(`http://localhost:8081/PeterParkerSpring/user/googleLogin`, {
+    fetch(`http://localhost:8081/user/googleLogin`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

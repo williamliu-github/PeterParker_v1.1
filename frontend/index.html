@@ -66,10 +66,6 @@
 						</li>
 
 						<li><a href="#">最新消息</a>
-							<ul>
-								<li><a href="dashboard.html">Dashboard</a></li>
-								<li><a href="dashboard-messages.html">Messages</a></li>
-							</ul>
 						</li>
 
 						<li><a>聯絡我們</a>
@@ -275,8 +271,8 @@
 					<a href="#sign-in-dialog" class="button-overlay-transparent with-icon sign-in popup-with-zoom-anim">創建帳號  <i class="sl sl-icon-plus"></i></a>
 					</div>
 					<div style="display:none" id="afterLoginElement">
-						<a href="#" class="button-overlay popup-with-zoom-anim"></i>開始預約  <i class="sl sl-icon-arrow-right"></i></a>
-						<a href="how_to_reserve.html" class="button-overlay-transparent with-icon sign-in popup-with-zoom-anim">如何預約  <i class="sl sl-icon-plus"></i></a>
+						<a href="#" class="button-overlay"></i>開始預約  <i class="sl sl-icon-arrow-right"></i></a>
+						<a href="how_to_reserve.html" class="button-overlay-transparent with-icon sign-in">如何預約</a>
 					</div>
 				</div>
 			</div>
@@ -356,7 +352,7 @@
 			</h1>
 			<p class="black-text">自由選擇時間和地點，輕鬆預約車位。<br>透過我們的平台找到最適合的停車位，省時又方便。<br></p>
 			<a href="how_to_reserve.html"><button class="button border margin-top-20" style="background-color: black">如何使用</button></a>
-			<a class="beforeLoginElement" href="how_to_reserve.html" class="sign-in popup-with-zoom-anim">已經有帳戶了嗎？登入</a>
+			<a class="beforeLoginElement" href="how_to_reserve.html" class="sign-in">已經有帳戶了嗎？登入</a>
 		</div>
 	</div>
 </div>
@@ -588,7 +584,7 @@ function handleCredentialResponse(response) {
 	overlay.style.display = "block";
 
     // Send the Google credential to your backend for verification
-    fetch(`http://localhost:8081/PeterParkerSpring/user/googleLogin`, {
+    fetch(`http://localhost:8081/user/googleLogin`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
