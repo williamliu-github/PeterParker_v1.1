@@ -21,11 +21,16 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 // 更新停車場名稱和地址
-                document.querySelector('h2').textContent = data.parkingName;
-                document.querySelector('.address strong').nextSibling.textContent = data.parkingLocation;
+                document.getElementById('parking-name').textContent = data.parkingName;
+                document.getElementById('parking-address').textContent = data.parkingLocation;
                 // 更新摘要側欄
-                document.querySelector('.listing-item-content h3').textContent = data.parkingName;
-                document.querySelector('.listing-item-content span').textContent = data.parkingLocation;
+                document.getElementById('sidebar-parking-name').textContent = data.parkingName;
+                document.getElementById('sidebar-parking-address').textContent = data.parkingLocation;
+
+                // 如果後端有提供停車場的圖片
+                if (data.parkingImg) {
+                    document.getElementById('parking-img').src = `data:image/jpeg;base64,${data.parkingImg}`;
+                }
             })
             .catch(error => {
                 console.error('Error fetching parking details:', error);
@@ -48,7 +53,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(response => response.json())
             .then(data => {
                 if (data.totalPrice) {
-                    document.querySelector('.total-costs span').textContent = `${data.totalPrice} NTD`;
+                    document.getElementById('total-cost').textContent = `${data.totalPrice} NTD`;
                 } else {
                     console.error('無法取得總金額');
                 }
@@ -102,3 +107,15 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     });
 });
+
+// 地址複製功能
+function copyAddress() {
+    const address = document.getElementById('parking-address').textContent;
+    navigator.clipboard.writeText(address)
+        .then(() => {
+            alert('地址已複製到剪貼簿');
+        })
+        .catch(err => {
+            console.error('Error copying address:', err);
+        });
+}
