@@ -5,18 +5,13 @@ import java.util.*;
 
 import com.tibame.peterparker.dto.FilterRequest;
 import com.tibame.peterparker.dto.ParkingDTO;
+import com.tibame.peterparker.entity.ParkingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.tibame.peterparker.dto.OrderDTO;
 import com.tibame.peterparker.entity.OrderVO;
@@ -28,6 +23,7 @@ import javax.servlet.http.HttpSession;
 
 import java.sql.Date;
 
+@CrossOrigin(origins = "*") //本地端佈署用來允許所有跨域
 @RestController
 @RequestMapping(path = "/order")
 public class OrderController {
@@ -187,7 +183,6 @@ public class OrderController {
         }
     }
 
-
     @PostMapping("/getParkingListings")
     public ResponseEntity<?> getParkingListings(@RequestBody Map<String, Object> bounds) {
         try {
@@ -215,6 +210,24 @@ public class OrderController {
             return new ResponseEntity<>("Error fetching filtered parking listings: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    // 根據 parkingId 查詢停車場資訊
+    @GetMapping("/parking/{parkingId}")
+    public ResponseEntity<?> getParkingInfoById(@PathVariable Integer parkingId) {
+        try {
+            Optional<ParkingVO> optional = parkingService.getParkingInfoById(parkingId);
+            if (optional.isPresent()) {
+                ParkingDTO parkingDTO = parkingService.convertToDTO(optional.get());
+                return new ResponseEntity<>(parkingDTO, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>("未找到停車場", HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>("Error fetching parking info: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 
 
 

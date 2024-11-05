@@ -13,10 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityNotFoundException;
 import java.sql.Date;
 import java.sql.Time;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -109,6 +106,12 @@ public class ParkingService {
         map.put("parkingLocation", parkingInfo.getParkingLocation());
         map.put("holidayHourlyRate", parkingInfo.getHolidayHourlyRate());
         map.put("workdayHourlyRate", parkingInfo.getWorkdayHourlyRate());
+        map.put("parkingLat", parkingInfo.getParkingLat());
+        map.put("parkingLong", parkingInfo.getParkingLong());
+        // 將圖片轉換為 Base64 字符串
+        if (parkingInfo.getParkingImg() != null) {
+            map.put("parkingImg", Base64.getEncoder().encodeToString(parkingInfo.getParkingImg()));
+        }
         return map;
     }
 
@@ -158,10 +161,32 @@ public class ParkingService {
             dto.setParkingLocation(parking.getParkingLocation());
             dto.setWorkdayHourlyRate(parking.getWorkdayHourlyRate());
             dto.setHolidayHourlyRate(parking.getHolidayHourlyRate());
-            // 根據需要可以加入更多屬性
+            dto.setCapacity(parking.getCapacity());
+            dto.setParkingLat(parking.getParkingLat());
+            dto.setParkingLong(parking.getParkingLong());
+            // 將圖片轉換為 Base64 字符串
+            if (parking.getParkingImg() != null) {
+                dto.setParkingImg(Base64.getEncoder().encodeToString(parking.getParkingImg()));
+            }
             return dto;
         }).collect(Collectors.toList());
     }
+
+    public ParkingDTO convertToDTO(ParkingVO parkingVO) {
+        ParkingDTO parkingDTO = new ParkingDTO();
+        parkingDTO.setParkingId(parkingVO.getParkingId());
+        parkingDTO.setParkingName(parkingVO.getParkingName());
+        parkingDTO.setParkingRegion(parkingVO.getParkingRegion());
+        parkingDTO.setParkingLocation(parkingVO.getParkingLocation());
+        parkingDTO.setHolidayHourlyRate(parkingVO.getHolidayHourlyRate());
+        parkingDTO.setWorkdayHourlyRate(parkingVO.getWorkdayHourlyRate());
+        parkingDTO.setCapacity(parkingVO.getCapacity());
+        parkingDTO.setParkingLat(parkingVO.getParkingLat());
+        parkingDTO.setParkingLong(parkingVO.getParkingLong());
+        // 根據需要加入更多屬性
+        return parkingDTO;
+    }
+
 
 
 

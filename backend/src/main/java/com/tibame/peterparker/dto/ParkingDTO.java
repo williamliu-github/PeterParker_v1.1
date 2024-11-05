@@ -2,8 +2,10 @@ package com.tibame.peterparker.dto;
 
 public class ParkingDTO {
     private Integer parkingId; // 停車場 ID
+    private Integer capacity; // 停車場總車位 I
     private String parkingName; // 停車場名稱
     private String parkingType; // 停車場類型（例如 "地下停車場"、"平面停車場"）
+    private String parkingRegion;// 停車場地區
     private String parkingLocation; // 停車場地址
     private Double parkingLat; // 停車場緯度
     private Double parkingLong; // 停車場經度
@@ -15,6 +17,14 @@ public class ParkingDTO {
     private Integer availableSpaces; // 可用車位數量
 
     // Getters and Setters
+
+    public String getParkingRegion() {
+        return parkingRegion;
+    }
+
+    public void setParkingRegion(String parkingRegion) {
+        this.parkingRegion = parkingRegion;
+    }
 
     public Integer getParkingId() {
         return parkingId;
@@ -110,5 +120,13 @@ public class ParkingDTO {
 
     public void setAvailableSpaces(Integer availableSpaces) {
         this.availableSpaces = availableSpaces;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
     }
 }

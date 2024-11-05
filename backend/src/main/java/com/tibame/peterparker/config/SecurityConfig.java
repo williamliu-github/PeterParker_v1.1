@@ -90,7 +90,7 @@ public class SecurityConfig {
 
         // 控制 api 使用權限
         http.authorizeRequests(authorize -> {
-            authorize.antMatchers("/adminlogin","/user/**").permitAll();
+            authorize.antMatchers("/adminlogin","/user/**","/order/**").permitAll();
             authorize.antMatchers("/official/**").permitAll();
             authorize.antMatchers("/geocode").permitAll();//放行/geocode相關以進行測試
             authorize.antMatchers("/api/**").hasAnyRole("ADMIN");
