@@ -5,6 +5,7 @@ import com.tibame.peterparker.dao.ParkingRepository;
 import com.tibame.peterparker.dao.SpaceRepository;
 import com.tibame.peterparker.dao.UserRepository;
 import com.tibame.peterparker.dto.OrderDTO;
+import com.tibame.peterparker.dto.ParkingDTO;
 import com.tibame.peterparker.entity.OrderVO;
 import com.tibame.peterparker.entity.ParkingVO;
 import com.tibame.peterparker.entity.Space;
@@ -157,50 +158,25 @@ public class OrderService {
     }
 
     // 計算訂單總金額
-    public Integer calculateTotalPrice(OrderVO request) {
+    public Integer calculateTotalPrice(ParkingDTO parkingInfo, Timestamp orderStartTime, Timestamp orderEndTime) {
         // 檢查是否有空值
-        if (request.getOrderStartTime() == null) {
+        if (orderStartTime == null) {
             throw new IllegalArgumentException("訂單開始時間不可為null");
         }
 
-        // 如果訂單狀態為 "已取消"，設置 orderTotalIncome 為 0 並保存，然後拋出異常
-        if ("已取消".equals(request.getStatusId())) {
-            request.setOrderTotalIncome(0);
-            orderRepository.save(request);
-            throw new IllegalArgumentException("訂單未成立或已取消");
+        if (orderEndTime == null) {
+            // 如果 orderEndTime 為 null，設置預設結束時間
+            orderEndTime = Timestamp.from(orderStartTime.toLocalDateTime().plusHours(1)
+                    .withMinute(0).withSecond(0).withNano(0)
+                    .atZone(ZoneId.systemDefault()).toInstant());
         }
 
-        // 如果 orderEndTime 為 null，設置預設結束時間
-        if (request.getOrderEndTime() == null) {
-            // 設置 orderEndTime 為開始時間後 1 小時，並取整點
-            Timestamp defaultEndTime = new Timestamp(
-                    request.getOrderStartTime().toLocalDateTime().plusHours(1).withMinute(0).withSecond(0).withNano(0)
-                            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-
-            // 如果 defaultEndTime 早於當前時間，則設置為當前時間後的一小時，並取整點
-            Timestamp currentPlusOneHour = new Timestamp(
-                    LocalDateTime.now().plusHours(1).withMinute(0).withSecond(0).withNano(0)
-                            .atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
-
-            // 如果 defaultEndTime 早於當前時間，則使用 currentPlusOneHour，否則使用 defaultEndTime
-            request.setOrderEndTime(
-                    defaultEndTime.before(new Timestamp(System.currentTimeMillis())) ? currentPlusOneHour : defaultEndTime);
-        }
-
-        // 從 OrderVO 中獲取 space 對象
-        Space space = request.getSpace();
-        if (space == null) {
-            throw new EntityNotFoundException("並未找到此訂單的車位資訊");
-        }
-
-        // 獲取 space 所屬的 ParkingInfo
-        ParkingVO parkingInfo = space.getParkingInfo();
-        if (parkingInfo == null) {
-            throw new EntityNotFoundException("並未找到此訂單的停車場資訊");
+        if (orderEndTime.before(orderStartTime)) {
+            throw new IllegalArgumentException("訂單結束時間不可早於訂單開始時間");
         }
 
         // 使用 orderStartTime 轉換為 LocalDate
-        LocalDate orderDate = request.getOrderStartTime().toLocalDateTime().toLocalDate();
+        LocalDate orderDate = orderStartTime.toLocalDateTime().toLocalDate();
 
         // 判斷是否為週末
         boolean isHoliday = orderDate.getDayOfWeek() == DayOfWeek.SATURDAY || orderDate.getDayOfWeek() == DayOfWeek.SUNDAY;
@@ -209,21 +185,18 @@ public class OrderService {
         int pricePerHour = isHoliday ? parkingInfo.getHolidayHourlyRate() : parkingInfo.getWorkdayHourlyRate();
 
         // 計算訂單持續時間（小時）
-        long durationInHours = (request.getOrderEndTime().getTime() - request.getOrderStartTime().getTime()) / (1000 * 60 * 60);
+        long durationInHours = (orderEndTime.getTime() - orderStartTime.getTime()) / (1000 * 60 * 60);
         if (durationInHours <= 0) {
             throw new IllegalArgumentException("訂單結束時間不可早於訂單開始時間");
         }
 
         // 計算訂單總金額
-        Integer totalPrice = Math.toIntExact(pricePerHour * durationInHours);
-
-        // 更新訂單總金額
-        request.setOrderTotalIncome(totalPrice);
-        orderRepository.save(request);
-
-        // 返回計算的總金額
-        return totalPrice;
+        return Math.toIntExact(pricePerHour * durationInHours);
     }
+
+
+
+
 
     //根據userId查找userAccount
     public String getUserAccountByUserId(Integer userId) {

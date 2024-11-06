@@ -1,11 +1,15 @@
 package com.tibame.peterparker.controller;
 
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
+import com.tibame.peterparker.dto.CalculatePriceRequest;
 import com.tibame.peterparker.dto.FilterRequest;
 import com.tibame.peterparker.dto.ParkingDTO;
 import com.tibame.peterparker.entity.ParkingVO;
+import com.tibame.peterparker.entity.Space;
 import com.tibame.peterparker.service.OrderMailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
@@ -105,16 +109,18 @@ public class OrderController {
 
     // 訂單總金額計算***
     @PostMapping("/calculate")
-    public ResponseEntity<?> calculateTotalPrice(@RequestParam Integer orderId) {
+    public ResponseEntity<?> calculateTotalPrice(@RequestBody CalculatePriceRequest calculatePriceRequest) {
         try {
-            // 通過 orderId 獲取訂單的詳細資料
-            Optional<OrderVO> order = orderService.findOrderById(orderId);
-            if (order.isEmpty()) {
-                return new ResponseEntity<>("並未找到此訂單: " + orderId, HttpStatus.NOT_FOUND);
+            // 通過 ParkingDTO 信息計算總金額
+            Optional<ParkingVO> parkingInfoOptional = parkingService.getParkingInfoById(calculatePriceRequest.getParkingId());
+
+            if (parkingInfoOptional.isEmpty()) {
+                return new ResponseEntity<>("並未找到此停車場: " + calculatePriceRequest.getParkingId(), HttpStatus.NOT_FOUND);
             }
 
-            // 使用獲取的訂單資料進行計算
-            Integer totalPrice = orderService.calculateTotalPrice(order.get());
+            ParkingVO parkingInfo = parkingInfoOptional.get();
+            Integer totalPrice = orderService.calculateTotalPrice(parkingService.convertToDTO(parkingInfo), calculatePriceRequest.getOrderStartTime(), calculatePriceRequest.getOrderEndTime());
+
             return new ResponseEntity<>(Map.of("totalPrice", totalPrice), HttpStatus.OK);
         } catch (IllegalArgumentException iae) {
             return new ResponseEntity<>(iae.getMessage(), HttpStatus.BAD_REQUEST);
@@ -124,6 +130,11 @@ public class OrderController {
             return new ResponseEntity<>("在計算總金額時發生錯誤: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+
+
+
 
 
     // 根據經緯度查找附近的停車場

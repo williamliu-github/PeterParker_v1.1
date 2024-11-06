@@ -142,7 +142,12 @@
 			<div class="col-lg-8 col-md-8 padding-right-30">
 
 				<!-- 停車場名稱 -->
-				<h2 id="parking-name"></h2> <!-- 此處顯示從暫存的停車場資料中獲取的名稱 -->
+				<h2 id="parking-name"></h2>
+				<div class="address">
+				<strong>地址：</strong><span id="parking-address"></span>
+				<button style="float: right;" onclick="copyAddress()">複製</button>
+				</div>
+				<div class="parking-info" id="parking-info"></div>
 
 				<div class="steps">
 					<div>1. 選擇時間</div>
@@ -151,12 +156,6 @@
 				</div>
 
 				<div class="row">
-
-					<!-- 地址 Section -->
-					<div class="address">
-						<strong>地址：</strong><span id="parking-address"></span> <!-- 此處顯示從暫存的停車場資料中獲取的地址 -->
-						<button style="float: right;" onclick="copyAddress()">複製</button>
-					</div>
 
 					<!-- 預估價格 Section -->
 					<div class="boxed-widget opening-hours summary margin-top-0">

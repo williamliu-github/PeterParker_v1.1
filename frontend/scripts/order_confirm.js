@@ -16,4 +16,10 @@
     document.getElementById('reservation-time').textContent = `${reservationStartTime} ~ ${reservationEndTime}`;
     document.getElementById('reservation-duration').textContent = `${duration} 小時`;
     document.getElementById('total-cost').textContent = totalPrice;
+    // 更新停車場名稱和地址
+    document.getElementById('parking-name').textContent = data.parkingName;
+    document.getElementById('parking-address').textContent = data.parkingLocation;
+    // 更新摘要側欄
+    document.getElementById('sidebar-parking-name').textContent = data.parkingName;
+    document.getElementById('sidebar-parking-address').textContent = data.parkingLocation;
 });

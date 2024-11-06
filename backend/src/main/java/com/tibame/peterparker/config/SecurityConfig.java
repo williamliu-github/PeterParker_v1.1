@@ -68,7 +68,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of("http://localhost:8080", "http://localhost:8081","http://localhost:5500"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE"));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE","OPTIONS"));//增加以確保包含OPTIONS方法
         config.setAllowCredentials(true);
         config.setAllowedHeaders(List.of("*"));
 
@@ -80,8 +80,8 @@ public class SecurityConfig {
     // 安全過濾鏈
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
-        http.cors() // 啟用 CORS
+        //啟用CORS
+        http.cors().configurationSource(corsConfigurationSource()) // 明確指定 CORS 配置來源
                 .and().csrf().disable(); // 禁用 CSRF
 
         // 設定驗證的提供者
