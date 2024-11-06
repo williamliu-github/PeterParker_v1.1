@@ -7,7 +7,7 @@ $(document).ready(function () {
         let keyword = $(this).val();
         if (keyword) {
             $.ajax({
-                url: `${config}/order/searchParking`,
+                url: `http://${config}/order/searchParking`,
                 type: 'GET',
                 data: { keyword: keyword },
                 success: function (data) {
@@ -28,7 +28,7 @@ $(document).ready(function () {
         let keyword = $('#autocomplete-input').val();
         if (keyword) {
             $.ajax({
-                url: `${config}/order/searchParking`,
+                url: `:http://${config}/order/searchParking`,
                 type: 'GET',
                 data: { keyword: keyword },
                 success: function (data) {
@@ -52,7 +52,7 @@ $(document).ready(function () {
         let longitude = center.lng();
 
         $.ajax({
-            url: `${config}/order/nearbyParking`,
+            url: `http://${config}/order/nearbyParking`,
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({

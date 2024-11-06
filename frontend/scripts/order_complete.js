@@ -1,59 +1,109 @@
 document.addEventListener("DOMContentLoaded", function () {
+    // 取出保存的停車場資訊
+    const selectedParking = JSON.parse(localStorage.getItem("selectedParking"));
+
+    if (selectedParking) {
+        // 動態填充停車場的詳細信息到頁面中
+        const parkingNameElement = document.getElementById('parking-name');
+        const parkingAddressElement = document.getElementById('parking-address');
+        const parkingInfoElement = document.getElementById('parking-info');
+
+        if (parkingNameElement) {
+            parkingNameElement.textContent = selectedParking.parkingName;
+        } else {
+            console.error('找不到停車場名稱元素');
+        }
+
+        if (parkingAddressElement) {
+            parkingAddressElement.textContent = selectedParking.parkingLocation;
+        } else {
+            console.error('找不到停車場地址元素');
+        }
+
+        if (parkingInfoElement) {
+            parkingInfoElement.textContent = `(容量: ${selectedParking.capacity} 車位, 費率: 假日 ${selectedParking.holidayHourlyRate} 元 / 平日 ${selectedParking.workdayHourlyRate} 元)`;
+        } else {
+            console.error('找不到停車場資訊元素');
+        }
+    } else {
+        console.error("未找到選擇的停車場資訊");
+    }
+
     // 獲取暫存的預約資料
     const parkingId = sessionStorage.getItem('parkingId');
-    const date = sessionStorage.getItem('date');
+    const dateRange = sessionStorage.getItem('date'); // 使用 dateRange 替代 date
     const startTime = sessionStorage.getItem('startTime');
     const endTime = sessionStorage.getItem('endTime');
 
-    if (parkingId && date && startTime && endTime) {
+    if (parkingId && dateRange && startTime && endTime) {
         // 更新預約日期和時間段
-        document.querySelector('#display-date').textContent = date;
-        document.querySelector('#display-time').textContent = `${startTime}~${endTime}`;
+        const displayDateElement = document.querySelector('#display-date');
+        const displayTimeElement = document.querySelector('#display-time');
+        const timeCountElement = document.getElementById('timecount');
 
-        // 計算時數
-        const startHour = parseInt(startTime.split(':')[0], 10);
-        const endHour = parseInt(endTime.split(':')[0], 10);
-        const timeCount = endHour - startHour;
-        document.getElementById('timecount').textContent = `${timeCount}小時`;
+        if (displayDateElement) {
+            displayDateElement.textContent = dateRange;
+        } else {
+            console.error('找不到顯示預約日期的元素');
+        }
 
-        // 從後端獲取該停車場的詳細資訊，並在頁面中顯示
-        fetch(`/order/${parkingId}`)
-            .then(response => response.json())
-            .then(data => {
-                // 更新停車場名稱和地址
-                document.getElementById('parking-name').textContent = data.parkingName;
-                document.getElementById('parking-address').textContent = data.parkingLocation;
-                // 更新摘要側欄
-                document.getElementById('sidebar-parking-name').textContent = data.parkingName;
-                document.getElementById('sidebar-parking-address').textContent = data.parkingLocation;
+        if (displayTimeElement) {
+            displayTimeElement.textContent = `${startTime}~${endTime}`;
+        } else {
+            console.error('找不到顯示預約時間的元素');
+        }
 
-                // 如果後端有提供停車場的圖片
-                if (data.parkingImg) {
-                    document.getElementById('parking-img').src = `data:image/jpeg;base64,${data.parkingImg}`;
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching parking details:', error);
-            });
+        if (timeCountElement) {
+            // 計算時數
+            const startHour = parseInt(startTime.split(':')[0], 10);
+            const endHour = parseInt(endTime.split(':')[0], 10);
+            const timeCount = endHour - startHour;
+            timeCountElement.textContent = `${timeCount}小時`;
+        } else {
+            console.error('找不到顯示時數的元素');
+        }
+
+        // 確保日期範圍格式為 "MM/DD/YYYY - MM/DD/YYYY"，並進行拆分
+        const [startDateStr, endDateStr] = dateRange.split(" - ");
+        const [startMonth, startDay, startYear] = startDateStr.split("/");
+        const [endMonth, endDay, endYear] = endDateStr.split("/");
+
+        // 格式化日期為 "YYYY-MM-DD"
+        const formattedStartDate = `${startYear}-${startMonth.padStart(2, '0')}-${startDay.padStart(2, '0')}`;
+        const formattedEndDate = `${endYear}-${endMonth.padStart(2, '0')}-${endDay.padStart(2, '0')}`;
+
+        // 打印確認用
+        console.log('Formatted Start Date:', formattedStartDate);
+        console.log('Formatted End Date:', formattedEndDate);
 
         // 計算預估金額
-        const orderDTO = {
-            parkingId: parseInt(parkingId),
-            orderStartTime: `${date}T${startTime}:00`,
-            orderEndTime: `${date}T${endTime}:00`,
+        const orderData = {
+            orderStartTime: `${formattedStartDate}T${startTime}:00`.replace(/\s+/g, ''),  // 去掉任何多餘空格
+            orderEndTime: `${formattedEndDate}T${endTime}:00`.replace(/\s+/g, ''),      // 去掉任何多餘空格
+            parkingId: parseInt(parkingId)
         };
 
-        fetch(`/order/calculate`, {
+        console.log('Order data:', orderData); // 測試用
+
+        fetch(`http://localhost:8081/order/calculate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(orderDTO)
+            body: JSON.stringify(orderData)
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.totalPrice) {
-                    document.getElementById('total-cost').textContent = `${data.totalPrice} NTD`;
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(priceData => {
+                const totalCostElement = document.getElementById('total-cost');
+                if (priceData && priceData.totalPrice && totalCostElement) {
+                    totalCostElement.textContent = `${priceData.totalPrice} NTD`;
+                } else if (priceData.error) {
+                    console.error('無法計算總金額:', priceData.error);
                 } else {
                     console.error('無法取得總金額');
                 }
@@ -67,55 +117,48 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // 當用戶確認預約並提交時
-    document.getElementById('confirm-booking-button').addEventListener('click', function () {
-        if (!parkingId || !date || !startTime || !endTime) {
-            alert('無法提交訂單，缺少必要的預約信息');
-            return;
-        }
+    const confirmBookingButton = document.getElementById('confirm-booking-button');
+    if (confirmBookingButton) {
+        confirmBookingButton.addEventListener('click', function () {
+            if (!parkingId || !dateRange || !startTime || !endTime) {
+                alert('無法提交訂單，缺少必要的預約信息');
+                return;
+            }
 
-        const orderDTO = {
-            parkingId: parseInt(parkingId),
-            orderStartTime: `${date}T${startTime}:00`,
-            orderEndTime: `${date}T${endTime}:00`,
-            statusId: '預約中' // 設置預約狀態
-        };
+            const orderDTO = {
+                parkingId: parseInt(parkingId),
+                orderStartTime: `${formattedStartDate}T${startTime}:00`,
+                orderEndTime: `${formattedEndDate}T${endTime}:00`,
+                statusId: '預約中' // 設置預約狀態
+            };
 
-        // 將訂單提交到後端
-        fetch('/order/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(orderDTO)
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data && data.orderId) {
-                    alert(`預約成功，訂單號：${data.orderId}`);
-                    // 清空 sessionStorage 中的預約資料
-                    sessionStorage.clear();
-                    // 跳轉到訂單確認頁面
-                    window.location.href = 'parking_booking_confirm.html';
-                } else {
-                    console.error('創建訂單失敗');
-                    alert('創建訂單失敗，請稍後重試');
-                }
+            // 將訂單提交到後端
+            fetch('http://localhost:8081/order/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderDTO)
             })
-            .catch(error => {
-                console.error('Error creating order:', error);
-                alert('創建訂單時發生錯誤，請稍後重試');
-            });
-    });
-});
-
-// 地址複製功能
-function copyAddress() {
-    const address = document.getElementById('parking-address').textContent;
-    navigator.clipboard.writeText(address)
-        .then(() => {
-            alert('地址已複製到剪貼簿');
-        })
-        .catch(err => {
-            console.error('Error copying address:', err);
+                .then(response => response.json())
+                .then(data => {
+                    if (data && data.orderId) {
+                        alert(`預約成功，訂單號：${data.orderId}`);
+                        // 清空 sessionStorage 中的預約資料
+                        sessionStorage.clear();
+                        // 跳轉到訂單確認頁面
+                        window.location.href = 'parking_booking_confirm.html';
+                    } else {
+                        console.error('創建訂單失敗');
+                        alert('創建訂單失敗，請稍後重試');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error creating order:', error);
+                    alert('創建訂單時發生錯誤，請稍後重試');
+                });
         });
-}
+    } else {
+        console.error("找不到確認預約按鈕元素");
+    }
+});
