@@ -35,6 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const startTime = sessionStorage.getItem('startTime');
     const endTime = sessionStorage.getItem('endTime');
 
+    let formattedStartDate, formattedEndDate;
+
     if (parkingId && dateRange && startTime && endTime) {
         // 更新預約日期和時間段
         const displayDateElement = document.querySelector('#display-date');
@@ -69,8 +71,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const [endMonth, endDay, endYear] = endDateStr.split("/");
 
         // 格式化日期為 "YYYY-MM-DD"
-        const formattedStartDate = `${startYear}-${startMonth.padStart(2, '0')}-${startDay.padStart(2, '0')}`;
-        const formattedEndDate = `${endYear}-${endMonth.padStart(2, '0')}-${endDay.padStart(2, '0')}`;
+        formattedStartDate = `${startYear}-${startMonth.padStart(2, '0')}-${startDay.padStart(2, '0')}`;
+        formattedEndDate = `${endYear}-${endMonth.padStart(2, '0')}-${endDay.padStart(2, '0')}`;
 
         // 打印確認用
         console.log('Formatted Start Date:', formattedStartDate);
@@ -100,8 +102,12 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(priceData => {
                 const totalCostElement = document.getElementById('total-cost');
-                if (priceData && priceData.totalPrice && totalCostElement) {
-                    totalCostElement.textContent = `${priceData.totalPrice} NTD`;
+                if (priceData && priceData.totalPrice) {
+                    if (totalCostElement) {
+                        totalCostElement.textContent = `${priceData.totalPrice} NTD`;
+                    }
+                    // 保存總金額到 sessionStorage
+                    sessionStorage.setItem('totalCost', priceData.totalPrice);
                 } else if (priceData.error) {
                     console.error('無法計算總金額:', priceData.error);
                 } else {
@@ -125,10 +131,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+            // 使用已經計算的 formattedStartDate 和 formattedEndDate
             const orderDTO = {
                 parkingId: parseInt(parkingId),
-                orderStartTime: `${formattedStartDate}T${startTime}:00`,
-                orderEndTime: `${formattedEndDate}T${endTime}:00`,
+                orderStartTime: `${formattedStartDate}T${startTime}:00`.replace(/\s+/g, ''),  // 去掉任何多餘空格
+                orderEndTime: `${formattedEndDate}T${endTime}:00`.replace(/\s+/g, ''),      // 去掉任何多餘空格
                 statusId: '預約中' // 設置預約狀態
             };
 

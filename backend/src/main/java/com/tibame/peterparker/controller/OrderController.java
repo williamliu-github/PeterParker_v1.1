@@ -67,14 +67,14 @@ public class OrderController {
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO, HttpSession session) {
         Integer loginUserId = (Integer) session.getAttribute("loginUserId");
         //使用者未登入則阻止成立
-//        if (loginUserId == null) {
-//            return new ResponseEntity<>("使用者未登入", HttpStatus.UNAUTHORIZED);
-//        }
+        if (loginUserId == null) {
+            return new ResponseEntity<>("使用者未登入", HttpStatus.UNAUTHORIZED);
+        }
 
         // 如果用戶未登入，使用預設 ID 999
-        if (loginUserId == null) {
-            loginUserId = 1; // 預設的未登入用戶 ID
-        }
+//        if (loginUserId == null) {
+//            loginUserId = 1; // 預設的未登入用戶 ID
+//        }
 
         orderDTO.setUserId(loginUserId);
 
