@@ -141,16 +141,34 @@ public class OrderController {
     @PostMapping("/nearbyParking")
     public ResponseEntity<?> getNearbyParking(@RequestBody Map<String, Object> request) {
         try {
-            Double latitude = (Double) request.get("latitude");
-            Double longitude = (Double) request.get("longitude");
-            Double radius = (Double) request.get("radius");
+            // 嘗試將 latitude, longitude, radius 從請求中獲取，並轉換為 Double 類型
+            Double latitude = null;
+            Double longitude = null;
+            Double radius = null;
 
+            if (request.get("latitude") instanceof Number) {
+                latitude = ((Number) request.get("latitude")).doubleValue();
+            }
+            if (request.get("longitude") instanceof Number) {
+                longitude = ((Number) request.get("longitude")).doubleValue();
+            }
+            if (request.get("radius") instanceof Number) {
+                radius = ((Number) request.get("radius")).doubleValue();
+            }
+
+            // 確保參數不為空
+            if (latitude == null || longitude == null || radius == null) {
+                throw new IllegalArgumentException("Missing or invalid latitude, longitude, or radius");
+            }
+
+            // 呼叫 service 查找附近的停車場
             List<Map<String, Object>> nearbyParking = parkingService.findNearbyParking(latitude, longitude, radius);
             return new ResponseEntity<>(nearbyParking, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error finding nearby parking: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
     // 用關鍵字查找停車場
