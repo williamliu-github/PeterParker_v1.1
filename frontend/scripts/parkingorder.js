@@ -69,7 +69,7 @@ function fetchAndDisplayParking() {
     var sw = bounds.getSouthWest();
 
     //暫時設定連接位址
-    fetch('/order/getParkingListings', {
+    fetch('http://localhost:8081/order/getParkingListings', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

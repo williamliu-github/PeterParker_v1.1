@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('timecount').textContent = `${timeCount}小時`;
 
         // 從後端獲取該停車場的詳細資訊，並在頁面中顯示
-        fetch(`/order/${parkingId}`)
+        fetch(`http://localhost:8081/order/${parkingId}`)
             .then(response => response.json())
             .then(data => {
                 // 更新停車場名稱和地址
@@ -43,7 +43,7 @@ document.addEventListener("DOMContentLoaded", function () {
             orderEndTime: `${date}T${endTime}:00`,
         };
 
-        fetch(`/order/calculate`, {
+        fetch(`http://localhost:8081/order/calculate`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
