@@ -1,20 +1,20 @@
 <!DOCTYPE html>
 <head>
 
-<!-- Basic Page Needs
-================================================== -->
-<title>PETER.PARKER</title>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-	<!-- CSS
+    <!-- Basic Page Needs
     ================================================== -->
-	<link rel="stylesheet" href="css/style.css">
-	<link rel="stylesheet" href="css/main-color.css" id="colors">
-	<script type="module" src="scripts/userinfo.js"></script>
-<!--	<script type="module" src="scripts/get_photo.js"></script>-->
-
-</head>
+    <title>PETER.PARKER</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    
+        <!-- CSS
+        ================================================== -->
+        <link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="css/main-color.css" id="colors">
+        <script type="module" src="scripts/userinfo.js"></script>
+    <!--	<script type="module" src="scripts/get_photo.js"></script>-->
+    
+    </head>
 
 <body>
 
@@ -103,62 +103,48 @@
 <!-- Header Container / End -->
 
 
+
 <!-- Content
 ================================================== -->
-	<div class="fs-container">
-		<div class="fs-inner-container content">
-			<div class="fs-content">
+<div class="fs-container">
 
-				<!-- Search -->
-				<section class="search">
-					<div class="row">
-						<div class="col-md-12">
+	<div class="fs-inner-container content">
+		<div class="fs-content">
+
+			<!-- Search -->
+			<section class="search">
+
+				<div class="row">
+					<div class="col-md-12">
+
 							<!-- Row With Forms -->
 							<div class="row with-forms">
 
 								<!-- Main Search Input -->
 								<div class="col-fs-6">
+									<div class="input-with-icon">
+										<i class="sl sl-icon-magnifier"></i>
+										<input id="search-parking" type="text" placeholder="你想尋找哪個停車場？">
+									</div>
+                                    <!-- 搜索按鈕，觸發搜索事件 -->
+										<a href="#" id="search-button"><i class="fa fa-search"></i></a>
+								</div>
+
+								<!-- Main Search Input -->
+								<div class="col-fs-6">
 									<div class="input-with-icon location">
 										<div id="autocomplete-container">
-											<!-- 搜索輸入框 -->
-											<input id="autocomplete-input" type="text" placeholder="尋找附近的車位">
+											<input id="autocomplete-input" type="text" placeholder="地區">
 										</div>
-										<!-- 搜索按鈕，觸發搜索事件 -->
-										<a href="#" id="search-button"><i class="fa fa-search"></i></a>
+										<a href="#"><i class="fa fa-map-marker"></i></a>
 									</div>
 								</div>
+						
 
 								<!-- Filters -->
 								<div class="col-fs-12">
-									<!-- Panel Dropdown -->
-								<!--	<div class="panel-dropdown">
-										<a href="#">類型</a>
-										<div class="panel-dropdown-content checkboxes categories"> -->
-											<!-- Checkboxes -->
-									<!--	<div class="row">
-												<div class="col-md-6">
-													<input id="check-1" type="checkbox" name="check" checked class="all">
-													<label for="check-1">全部</label>
 
-													<input id="check-2" type="checkbox" name="check">
-													<label for="check-2">平面停車場</label>
-
-													<input id="check-3" type="checkbox" name="check">
-													<label for="check-3">立體停車場</label>
-
-													<input id="check-4" type="checkbox" name="check">
-													<label for="check-4">地下停車場</label>
-												</div>
-											</div> -->
-											<!-- Buttons -->
-									<!--	<div class="panel-buttons">
-												<button class="panel-cancel">取消</button>
-												<button class="panel-apply">接受</button>
-											</div>
-										</div>
-									</div> -->
 									<!-- Panel Dropdown / End -->
-
 									<!-- More Filters Dropdown -->
 									<div class="panel-dropdown wide">
 										<a href="#">車位</a>
@@ -206,7 +192,10 @@
 				</section>
 				<!-- Search / End -->
 
-				<!-- Listings Container -->
+
+
+
+            <!-- Listings Container -->
 				<section class="listings-container margin-top-30">
 					<!-- Sorting / Layout Switcher -->
 					<div class="row fs-switcher">
@@ -216,15 +205,21 @@
 						</div>
 					</div>
 
-					<!-- Listings -->
-					<div id="listing-results" class="row fs-listings">
+			<!-- Listings -->
+            <div id="listing-results" class="row fs-listings">
 					
-						<!-- 搜索結果會被插入到這個容器中 -->
-					</div>
-					<!-- Listings Container / End -->
+                <!-- 搜索結果會被插入到這個容器中 -->
+            </div>
+            <!-- Listings Container / End -->
 
-					<!-- Pagination Container -->
-					<div class="row fs-listings">
+
+			<!-- Pagination Container -->
+			<div class="row fs-listings">
+				<div class="col-md-12">
+
+					<!-- Pagination -->
+					<div class="clearfix"></div>
+					<div class="row">
 						<div class="col-md-12">
 							<!-- Pagination -->
 							<div class="pagination-container margin-top-15 margin-bottom-40">
@@ -237,26 +232,36 @@
 									</ul>
 								</nav>
 							</div>
-							<div class="copyrights margin-top-0">© 2024 Peter Parker. All Rights Reserved.</div>
 						</div>
 					</div>
-					<!-- Pagination Container / End -->
-				</section>
-			</div>
-		</div>
+					<div class="clearfix"></div>
+					<!-- Pagination / End -->
+					
+					<!-- Copyrights -->
+					<div class="copyrights margin-top-0">© 2024 Peter Parker. All Rights Reserved.</div>
 
-		<div class="fs-inner-container map-fixed">
-			<!-- Map -->
-			<div id="map-container">
-				<div id="map" data-map-zoom="9" data-map-scroll="true" style="height: 100%; width: 100%;">
-					<!-- map goes here -->
 				</div>
 			</div>
+			<!-- Pagination Container / End -->
+		</section>
+
 		</div>
 	</div>
-	<!-- Wrapper / End -->
+	<div class="fs-inner-container map-fixed">
+
+		<!-- Map -->
+		<div id="map-container">
+		    <div id="map" data-map-zoom="9" data-map-scroll="true" style="height: 100%; width: 100%;">
+		        <!-- map goes here -->
+		    </div>
+		</div>
+
+	</div>
+</div>
 
 
+</div>
+<!-- Wrapper / End -->
 
 <!-- Scripts
 ================================================== -->
@@ -272,21 +277,37 @@
 <script type="text/javascript" src="scripts/jquery-ui.min.js"></script>
 <script type="text/javascript" src="scripts/tooltips.min.js"></script>
 <script type="text/javascript" src="scripts/custom.js"></script>
+<script type="module" src="scripts/orderlist.js"></script>
+<script src="scripts/parkingorder.js"></script>
+
 
 <!-- Google Autocomplete -->
-<script src="scripts/parkingorder.js"></script>
-<script async defer
-		src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDm8zpLXPf2UtxecZZmABNScrbKfa31AIQ&libraries=places&callback=initMap">
+<script>
+  function initAutocomplete() {
+    var input = document.getElementById('autocomplete-input');
+    var autocomplete = new google.maps.places.Autocomplete(input);
+
+    autocomplete.addListener('place_changed', function() {
+      var place = autocomplete.getPlace();
+      if (!place.geometry) {
+        return;
+      }
+    });
+
+	if ($('.main-search-input-item')[0]) {
+	    setTimeout(function(){ 
+	        $(".pac-container").prependTo("#autocomplete-container");
+	    }, 300);
+	}
+}
 </script>
 
-
-<!-- Load Google Maps -->
+<!-- Maps -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDm8zpLXPf2UtxecZZmABNScrbKfa31AIQ&libraries=places&callback=initAutocomplete"></script>
 <script type="text/javascript" src="scripts/infobox.min.js"></script>
 <script type="text/javascript" src="scripts/markerclusterer.js"></script>
 <script type="text/javascript" src="scripts/maps.js"></script>
 
-
-<script type="module" src="scripts/orderlist.js"></script>
 
 </body>
 </html>

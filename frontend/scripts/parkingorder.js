@@ -1,4 +1,4 @@
-<!-- Google Autocomplete -->
+
 var googleMap;
 var markers = [];
 var infoWindow;
