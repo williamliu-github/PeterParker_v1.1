@@ -108,6 +108,7 @@ document.getElementById('contact-owner-button').addEventListener('click', functi
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${peterParkerToken}`,
             },
             body: JSON.stringify({
                 parkingId: selectedParking.parkingId,

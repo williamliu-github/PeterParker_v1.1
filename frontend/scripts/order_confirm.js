@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", function () {
     // 獲取暫存的訂單資料
     const reservationDate = sessionStorage.getItem('date');

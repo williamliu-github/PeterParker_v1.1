@@ -87,6 +87,7 @@ $(document).ready(function () {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${peterParkerToken}`,
             },
             body: JSON.stringify({
                 types: types,

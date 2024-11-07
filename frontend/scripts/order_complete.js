@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error('找不到顯示時數的元素');
         }
 
-        // 確保日期範圍格式為 "MM/DD/YYYY - MM/DD/YYYY"，並進行拆分
+        // 格式化日期範圍並進行拆分
         const [startDateStr, endDateStr] = dateRange.split(" - ");
         const [startMonth, startDay, startYear] = startDateStr.split("/");
         const [endMonth, endDay, endYear] = endDateStr.split("/");
@@ -80,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // 計算預估金額
         const orderData = {
-            orderStartTime: `${formattedStartDate}T${startTime}:00`.replace(/\s+/g, ''),  // 去掉任何多餘空格
-            orderEndTime: `${formattedEndDate}T${endTime}:00`.replace(/\s+/g, ''),      // 去掉任何多餘空格
+            orderStartTime: `${formattedStartDate}T${startTime}:00`,
+            orderEndTime: `${formattedEndDate}T${endTime}:00`,
             parkingId: parseInt(parkingId)
         };
 
@@ -91,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${peterParkerToken}`,
             },
             body: JSON.stringify(orderData)
         })
@@ -134,8 +135,8 @@ document.addEventListener("DOMContentLoaded", function () {
             // 使用已經計算的 formattedStartDate 和 formattedEndDate
             const orderDTO = {
                 parkingId: parseInt(parkingId),
-                orderStartTime: `${formattedStartDate}T${startTime}:00`.replace(/\s+/g, ''),  // 去掉任何多餘空格
-                orderEndTime: `${formattedEndDate}T${endTime}:00`.replace(/\s+/g, ''),      // 去掉任何多餘空格
+                orderStartTime: `${formattedStartDate}T${startTime}:00`,
+                orderEndTime: `${formattedEndDate}T${endTime}:00`,
                 statusId: '預約中' // 設置預約狀態
             };
 
@@ -144,10 +145,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${peterParkerToken}`,
                 },
                 body: JSON.stringify(orderDTO)
             })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data && data.orderId) {
                         alert(`預約成功，訂單號：${data.orderId}`);

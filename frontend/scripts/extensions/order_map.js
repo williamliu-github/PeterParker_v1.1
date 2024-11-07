@@ -1,11 +1,11 @@
-<!-- Google Autocomplete -->
+
 var googleMap;
 var markers = [];
 var infoWindow;
 
 function initMap() {
     // Initialize the Google Map
-    googleMap = new google.maps.Map(document.getElementById('map'), {
+    googleMap = new google.maps.Map(document.getElementById('singleListingMap'), {
         center: { lat: 25.0330, lng: 121.5654 }, // Taipei default center
         zoom: 13,
         scrollwheel: true,
