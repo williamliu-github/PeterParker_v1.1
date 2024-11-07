@@ -28,7 +28,7 @@ import javax.servlet.http.HttpSession;
 
 import java.sql.Date;
 
-@CrossOrigin(origins = "*") //本地端佈署用來允許所有跨域
+//@CrossOrigin(origins = "http://localhost:5500") //本地端佈署用來允許所有跨域
 @RestController
 @RequestMapping(path = "/order")
 public class OrderController {
