@@ -19,6 +19,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import java.io.IOException;
 
@@ -63,6 +64,9 @@ public class AuthRequestFilter extends OncePerRequestFilter {
                             userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+
+                    HttpSession session = request.getSession();
+                    session.setAttribute("loginUserId", userId);
                 }
             }
         }
