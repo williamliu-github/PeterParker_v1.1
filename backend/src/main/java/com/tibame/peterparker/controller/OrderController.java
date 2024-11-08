@@ -65,7 +65,7 @@ public class OrderController {
     // 創建訂單
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO, HttpSession session) {
-        Integer loginUserId = (Integer) session.getAttribute("loginUserId");
+        Integer loginUserId = Integer.parseInt( (String)session.getAttribute("loginUserId"));
         //使用者未登入則阻止成立
         if (loginUserId == null) {
             return new ResponseEntity<>("使用者未登入", HttpStatus.UNAUTHORIZED);
