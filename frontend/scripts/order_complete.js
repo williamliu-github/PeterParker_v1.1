@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${peterParkerToken}`,
+                // 'Authorization': `Bearer ${peterParkerToken}`,
             },
             body: JSON.stringify(orderData)
         })
@@ -140,12 +140,23 @@ document.addEventListener("DOMContentLoaded", function () {
                 statusId: '預約中' // 設置預約狀態
             };
 
+             // 獲取 JWT token
+            const peterParkerToken = localStorage.getItem('peterParkerToken');
+            if (!peterParkerToken) {
+                console.error('JWT token not found, redirecting to login');
+                window.location.href = 'index.html'; // Redirect to login if token is missing
+                return;
+            }
+
+            console.log("Token being sent:", peterParkerToken);
+
+
             // 將訂單提交到後端
             fetch('http://localhost:8081/order/create', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${peterParkerToken}`,
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(orderDTO)
             })

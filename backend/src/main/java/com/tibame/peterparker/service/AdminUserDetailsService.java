@@ -10,7 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
+@Service
 public class AdminUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -22,13 +22,11 @@ public class AdminUserDetailsService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    // 根據用戶名和密碼進行用戶驗證。
+    // 根據用戶 ID 進行用戶驗證
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserVO userVO = userRepository.findByUserAccountAndUserPassword(username, "password");
-        if (userVO == null) {
-            throw new UsernameNotFoundException("User not found.");
-        }
+    public UserDetails loadUserByUsername(String userId) throws UsernameNotFoundException {
+        UserVO userVO = userRepository.findById(Integer.parseInt(userId))
+                .orElseThrow(() -> new UsernameNotFoundException("User not found."));
 
         return User.withUsername(userVO.getUserAccount())
                 .password(passwordEncoder.encode(userVO.getUserPassword()))

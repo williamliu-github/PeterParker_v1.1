@@ -40,53 +40,55 @@ var infoBox_ratingType = 'star-rating';
   ];
 
   // 獲取後端資料並更新 locations
-  function fetchAndUpdateLocations() {
-    return fetch('http://localhost:8081/order/getParkingListings', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-            northEast: {
-                lat: 30.0800,  // 固定的北東緯度
-                lng: 130.5700  // 固定的北東經度
-            },
-            southWest: {
-                lat: 20.0200,  // 固定的南西緯度
-                lng: 110.5000  // 固定的南西經度
-            }
-        })
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        // 將資料轉換為 locations 可以接受的格式
-        locations = data.map((parking, index) => {
-            return [
-                locationData(
-                    'listings-single-page.html',
-                    parking.parkingImg ? `data:image/jpeg;base64,${parking.parkingImg}` : 'images/default-image.jpg', // 如果沒有圖片則使用默認圖片
-                    parking.parkingName,
-                    `${parking.parkingRegion}, ${parking.parkingLocation}`,
-                    '4.5', // 假設評分，實際應從後端獲取
-                    `${parking.capacity} 車位`
-                ),
-                parking.parkingLat,
-                parking.parkingLong,
-                index + 1, // 用 index 作為 marker ID
-                '<i class="im im-icon-Car"></i>' // 可根據需求修改圖標
-            ];
-        });
-    })
-    .catch(error => {
-        console.error('Error fetching parking listings:', error);
-        throw error; // 如果發生錯誤，向上拋出錯誤
-    });
+function fetchAndUpdateLocations() {
+  return fetch('http://localhost:8081/order/getParkingListings', {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+          northEast: {
+              lat: 30.0800,  // 固定的北東緯度
+              lng: 130.5700  // 固定的北東經度
+          },
+          southWest: {
+              lat: 20.0200,  // 固定的南西緯度
+              lng: 110.5000  // 固定的南西經度
+          }
+      })
+  })
+  .then(response => {
+      if (!response.ok) {
+          throw new Error('Network response was not ok');
+      }
+      return response.json();
+  })
+  .then(data => {
+      // 將資料轉換為 locations 可以接受的格式
+      locations = data.map((parking, index) => {
+          return [
+              locationData(
+                  'parking_booking_1.html',
+                  parking.parkingImg ? `data:image/jpeg;base64,${parking.parkingImg}` : 'images/default-image.jpg', // 如果沒有圖片則使用默認圖片
+                  parking.parkingName,
+                  `${parking.parkingRegion}, ${parking.parkingLocation}`,
+                  '4.5', // 假設評分，實際應從後端獲取
+                  `${parking.capacity} 車位`
+              ),
+              parking.parkingLat,
+              parking.parkingLong,
+              index + 1, // 用 index 作為 marker ID
+              '<i class="im im-icon-Car"></i>', // 可根據需求修改圖標
+              parking.parkingId // 新增 parkingId
+          ];
+      });
+  })
+  .catch(error => {
+      console.error('Error fetching parking listings:', error);
+      throw error; // 如果發生錯誤，向上拋出錯誤
+  });
 }
+
 
     function mainMap() {
 
@@ -227,29 +229,45 @@ var infoBox_ratingType = 'star-rating';
         allMarkers.push(overlay);
 
         google.maps.event.addDomListener(overlay, 'click', (function(overlay, i) {
-
-        return function() {
-             ib.setOptions(boxOptions);
-             boxText.innerHTML = locations[i][0];
-             ib.close();
-             ib.open(map, overlay);
-             currentInfobox = locations[i][3];
-             // var latLng = new google.maps.LatLng(locations[i][1], locations[i][2]);
-             // map.panTo(latLng);
-             // map.panBy(0,-90);
-
-
-            google.maps.event.addListener(ib,'domready',function(){
-              $('.infoBox-close').click(function(e) {
-                  e.preventDefault();
-                  ib.close();
-                  $('.map-marker-container').removeClass('clicked infoBox-opened');
+          return function() {
+              ib.setOptions(boxOptions);
+              boxText.innerHTML = locations[i][0]; // 設置資訊框的內容
+              ib.close();
+              ib.open(map, overlay);
+              currentInfobox = locations[i][3];
+      
+              google.maps.event.addListener(ib, 'domready', function() {
+                  // 當資訊框已準備好後，增加點擊處理程序
+                  $('.infoBox-close').click(function(e) {
+                      e.preventDefault();
+                      ib.close();
+                      $('.map-marker-container').removeClass('clicked infoBox-opened');
+                  });
+      
+                  // 這裡新增停車場名稱點擊事件的處理程序
+                  $('.listing-img-container').on('click', function(e) {
+                      e.preventDefault();
+      
+                      // 保存選擇的停車場信息到 localStorage，包括 parkingId
+                      const selectedParking = {
+                          parkingId: locations[i][5], // 保存 parkingId
+                          parkingName: locations[i][0].match(/<h3>(.*?)<\/h3>/)[1], // 從 HTML 提取停車場名稱
+                          parkingAddress: locations[i][0].match(/<span>(.*?)<\/span>/)[1], // 從 HTML 提取地址
+                          parkingLat: locations[i][1],
+                          parkingLong: locations[i][2],
+                          capacity: locations[i][0].match(/<div class="rating-counter">\((.*?)\)/)[1] // 提取容量信息
+                      };
+      
+                      localStorage.setItem('selectedParking', JSON.stringify(selectedParking));
+      
+                      // 跳轉到新頁面
+                      window.location.href = 'parking_booking_1.html';
+                  });
               });
+          };
+      })(overlay, i));
+      
 
-            });
-
-          }
-        })(overlay, i));
 
       }
 
@@ -370,9 +388,79 @@ var infoBox_ratingType = 'star-rating';
     // Single Listing Map
     // ----------------------------------------------- //
 
+    // 在頁面載入時，從 localStorage 中讀取選擇的停車場資料
+document.addEventListener("DOMContentLoaded", function() {
+  const selectedParkingJSON = localStorage.getItem("selectedParking");
+  if (selectedParkingJSON) {
+      const selectedParking = JSON.parse(selectedParkingJSON);
+
+      // 如果成功讀取到停車場資料，設置地圖位置
+      if (selectedParking.parkingLat && selectedParking.parkingLong) {
+          initSingleMap(selectedParking.parkingLat, selectedParking.parkingLong);
+      } else {
+          console.error("Invalid parking data found in localStorage.");
+      }
+  } else {
+      console.error("No parking data found in localStorage.");
+  }
+});
+
+// 初始化單一地圖的函數，接收緯度和經度作為參數
+function initSingleMap(lat, lng) {
+  const myLatlng = new google.maps.LatLng(lat, lng);
+
+  const single_map = new google.maps.Map(document.getElementById('singleListingMap'), {
+      zoom: 15,
+      center: myLatlng,
+      scrollwheel: false,
+      zoomControl: false,
+      mapTypeControl: false,
+      scaleControl: false,
+      panControl: false,
+      navigationControl: false,
+      streetViewControl: false,
+      styles: [/* 地圖樣式... */]
+  });
+
+  // 添加地圖標記
+  new google.maps.Marker({
+      map: single_map,
+      position: myLatlng,
+      title: "Selected Parking",
+  });
+}
+
+
     function singleListingMap() {
 
-      var myLatlng = new google.maps.LatLng({lng: $( '#singleListingMap' ).data('longitude'),lat: $( '#singleListingMap' ).data('latitude'), });
+      // 確保 google 對象已定義
+      if (typeof google === 'undefined' || typeof google.maps === 'undefined') {
+        console.error('Google Maps API 未加載，無法初始化單一地圖。');
+        return;
+    }
+    // 檢查是否存在選擇的停車場經緯度
+    const selectedParkingJSON = localStorage.getItem("selectedParking");
+    let lat, lng;
+
+    if (selectedParkingJSON) {
+        const selectedParking = JSON.parse(selectedParkingJSON);
+        if (selectedParking.parkingLat && selectedParking.parkingLong) {
+            lat = selectedParking.parkingLat;
+            lng = selectedParking.parkingLong;
+        } else {
+            console.error("Invalid parking data found in localStorage.");
+        }
+    }
+
+    // 如果無法從 localStorage 中獲取到有效的經緯度，則設置為預設值
+    lat = lat || 25.0330; // 台北預設值
+    lng = lng || 121.5654;
+
+    // 使用上述位置進行地圖初始化
+    const myLatlng = new google.maps.LatLng(lat, lng);
+    
+
+      // var myLatlng = new google.maps.LatLng({lng: $( '#singleListingMap' ).data('longitude'),lat: $( '#singleListingMap' ).data('latitude'), });
 
       var single_map = new google.maps.Map(document.getElementById('singleListingMap'), {
         zoom: 15,

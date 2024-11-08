@@ -84,7 +84,7 @@ public class OrderController {
             Integer orderId = orderService.createOrder(orderDTO);
 
             // 獲取用戶的 email（userAccount）
-            String userEmail = orderService.getUserAccountByUserId(loginUserId); // 假設 userService 中有此方法
+            String userEmail = orderService.getUserAccountByUserId(loginUserId);
 
             // 發送訂單完成郵件
             OrderMailService orderMailService = new OrderMailService();
