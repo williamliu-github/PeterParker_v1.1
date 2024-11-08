@@ -16,7 +16,11 @@
 
 </head>
 
+
 <body>
+<div id="loadingOverlay" class="overlay">
+	<div class="spinner"></div>
+	</div>
 
 <!-- Wrapper -->
 <div id="wrapper">
@@ -254,7 +258,10 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", listeditAll());
+
+
+function listeditAll () {
     const userId = localStorage.getItem('userId');
     fetch(`http://localhost:8081/user/已完成/${userId}`, {
         method: 'GET',
@@ -320,13 +327,25 @@ document.addEventListener("DOMContentLoaded", function () {
                                 <div class="inner-booking-list">
                                     <h5>您的評價：</h5>
                                     <ul class="booking-list">
-                                        <li><h3>"${order.userComment}"</h3></li>
+                                        <li><h3 id="text-display-${order.orderId}">${order.userComment}</h3></li>
                                     </ul>
+									<input type="text" id="text-input-${order.orderId}" style="display:none">
+									<button id="comment-submit-button-${order.orderId}" style="display:none;" class="button gray" onclick="changeComment(${order.orderId})">確認更改</button>
                                 </div>
+								
                             </div>
                         </div>
+						<div class="buttons-to-right" id="section${order.orderId}">
+						<span id="addingSection${order.parkingId}">
+						<a href="#" class="button gray" onclick="addFavourite(${order.parkingId})"><i class="sl sl-icon-heart"></i></a>
+						<a href="#" class="button gray" onclick="addBlacklist(${order.parkingId})"><i class="sl sl-icon-ban"></i></a>
+						</span>
+						<a href="#" class="button gray" id="edit-btn-${order.orderId}" onclick="toggleEdit(${order.orderId})"><i class="sl sl-icon-pencil"></i> 更改評價</a>
+						</div>
                     </div>`;
                 orderList.appendChild(orders);
+				checkFavourite(order.parkingId);
+				checkBlacklist(order.parkingId);
             });
         } else {
             console.log("No orders available.");
@@ -335,9 +354,207 @@ document.addEventListener("DOMContentLoaded", function () {
     .catch(error => {
         console.error("Error:", error);
     });
-});
+
+
+	function checkBlacklist(parkingId){
+		const userId = localStorage.getItem('userId');
+	// Correct the URL and fetch syntax
+	fetch(`http://localhost:8081/user/ifBlacklistedAlready/${userId}/${parkingId}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+		}
+	})
+	.then(response => {
+		if (response.ok) {
+			return response.json(); // Parse JSON if response is successful
+		} else {
+			console.log("Response from checkFav (Error):", response);
+			throw new Error("Failed to check favourite status.");
+		}
+	})
+	.then(data => {
+		if(data.isBlacklisted == "true" ){
+			let addingSection = document.getElementById(data.BlacklistButton);
+			addingSection.style.display="none";
+			return;
+		}
+	})
+	.catch(error => {
+		console.error("Error:", error);
+	});
+	}
+	
+
+	function checkFavourite(parkingId) {
+	const userId = localStorage.getItem('userId');
+	// Correct the URL and fetch syntax
+	fetch(`http://localhost:8081/user/ifFavouritedAlready/${userId}/${parkingId}`, {
+		method: 'GET',
+		headers: {
+			'Content-Type': 'application/json',
+		}
+	})
+	.then(response => {
+		
+		if (response.ok) {
+			return response.json(); // Parse JSON if response is successful
+		} else {
+			console.log("Response from checkFav (Error):", response);
+			throw new Error("Failed to check favourite status.");
+		}
+	})
+	.then(data => {
+		if(data.isFavourited == "true" ){
+			let addingSection = document.getElementById(data.FavouriteButton);
+			addingSection.style.display="none";
+			return;
+		}
+	})
+	.catch(error => {
+		console.error("Error:", error);
+	});
+}
+}
+;
+
+
+
+
+function addFavourite(parkingId) {
+	const userId = localStorage.getItem('userId');
+	const overlay = document.getElementById('loadingOverlay');
+   	overlay.style.display = 'block';
+	let jsonDataUpdate = {
+		userId: userId,
+		parkingId: parkingId
+	}
+
+	fetch(`http://localhost:8081/user/addFavourite`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(jsonDataUpdate)
+	})
+			.then(response => {
+				if (response.ok) {
+					listeditAll();
+				} else {
+					console.log(response);
+				}
+			})
+			.then(data => {
+			})
+			.catch(error => {
+				console.error("Error:", error);
+			})
+			.finally(()=>{c
+				
+			});
+}
+
+
+function addBlacklist(parkingId) {
+	const userId = localStorage.getItem('userId');
+	const overlay = document.getElementById('loadingOverlay');
+   	overlay.style.display = 'block';
+	let jsonDataUpdate = {
+		userId: userId,
+		parkingId: parkingId
+
+	}
+
+	fetch(`http://localhost:8081/user/addBlacklist`, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify(jsonDataUpdate)
+	})
+			.then(response => {
+				if (response.ok) {
+					listeditAll();
+				} else {
+					console.log(response);
+				}
+			})
+			.then(data => {
+			})
+			.catch(error => {
+				console.error("Error:", error);
+			})
+			.finally(()=>{c
+				
+			});
+}
+
+function toggleEdit(order) {
+            const textDisplay = document.getElementById(`text-display-${order}`);
+            const textInput = document.getElementById(`text-input-${order}`);
+            const editBtn = document.getElementById(`edit-btn-${order}`);
+			const commentButton = document.getElementById(`comment-submit-button-${order}`);
+			const section = document.getElementById(`section${order}`);
+
+			textInput.value = textDisplay.textContent;
+            textDisplay.style.display = 'none';
+			section.style.display="none";
+            textInput.style.display = 'inline';
+            editBtn.style.display = 'none';
+			commentButton.style.display="inline";
+
+
+            // if (editBtn.textContent === '開始修改') {
+            //     // Switch to edit mode
+            //     textInput.value = textDisplay.textContent;
+            //     textDisplay.style.display = 'none';
+            //     textInput.style.display = 'inline';
+            //     editBtn.textContent = '確認';
+            // } else {
+            //     // Switch to view mode
+            //     textDisplay.textContent = textInput.value;
+            //     textDisplay.style.display = 'inline';
+            //     textInput.style.display = 'none';
+            //     editBtn.textContent = '開始修改';
+            // }
+        }
+
+function changeComment(order){
+	const textInput = document.getElementById(`text-input-${order}`);
+
+	let newComment = textInput.value;
+
+	let jsonData = {
+		orderId: order,
+		userComment: newComment
+	}
+
+	fetch("http://localhost:8081/user/updateUserComment",{
+		method: 'POST',
+		headers: {
+			'Content-Type':'application/json',
+		},
+		body: JSON.stringify(jsonData)
+	})
+	.then(response=>{
+		if(response.ok){
+			listeditAll();
+			return response.json();
+		} else {
+			return console.log("error");
+		}
+	})
+	.catch(error=>{
+		console.log("error");
+		return;
+	})
+
+}
 
 </script>
+
+
+
 
 
 </body>

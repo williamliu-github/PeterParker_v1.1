@@ -17,6 +17,9 @@
 </head>
 
 <body>
+	<div id="loadingOverlay" class="overlay">
+        <div class="spinner"></div>
+        </div>
 
 <!-- Wrapper -->
 <div id="wrapper">
@@ -281,6 +284,9 @@ function removeFavourite(favouriteId) {
 		userFavouriteId: favouriteId
 	};
 
+	const overlay = document.getElementById('loadingOverlay');
+   	overlay.style.display = 'block';
+
 
     fetch(`http://localhost:8081/user/deleteFavourite`, {
         method: 'DELETE',
@@ -298,7 +304,10 @@ function removeFavourite(favouriteId) {
     })
     .catch(error => {
         console.error('Error removing favourite:', error);
-    });
+    })
+	.finally(()=>{
+		overlay.style.display = "none";
+	});
 }
 
 

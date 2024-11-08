@@ -17,6 +17,9 @@
 </head>
 
 <body>
+<div id="loadingOverlay" class="overlay">
+	<div class="spinner"></div>
+	</div>
 
 <!-- Wrapper -->
 <div id="wrapper">
@@ -267,7 +270,10 @@
         })
         .catch(error => {
             console.error('Error fetching favourites:', error);
-        });
+        })
+		.finally(()=>{
+		overlay.style.display = "none";
+	});
 }
 
 
@@ -278,6 +284,9 @@ function removeBlacklist(blacklistId) {
     let blacklistData = {
 		userBlacklistId: blacklistId
 	};
+
+	const overlay = document.getElementById('loadingOverlay');
+   	overlay.style.display = 'block';
 
 
     fetch(`http://localhost:8081/user/deleteBlacklist`, {
@@ -296,7 +305,10 @@ function removeBlacklist(blacklistId) {
     })
     .catch(error => {
         console.error('Error removing blacklist:', error);
-    });
+    })
+	.finally(()=>{
+		overlay.style.display = "none";
+	});
 }
 </script>
 
