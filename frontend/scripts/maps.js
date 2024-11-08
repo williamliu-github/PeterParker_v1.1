@@ -20,7 +20,7 @@ var infoBox_ratingType = 'star-rating';
 
         '<div class="listing-content">'+
            '<div class="listing-title">'+
-              '<div class="'+infoBox_ratingType+'" data-rating="'+locationRating+'"><div class="rating-counter">('+locationRatingCounter+' reviews)</div></div>'+
+              '<div class="'+infoBox_ratingType+'" data-rating="'+locationRating+'"><div class="rating-counter">('+locationRatingCounter+' )</div></div>'+
            '</div>'+
         '</div>')
   }
