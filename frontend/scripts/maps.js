@@ -78,7 +78,7 @@ var infoBox_ratingType = 'star-rating';
                 parking.parkingLat,
                 parking.parkingLong,
                 index + 1, // 用 index 作為 marker ID
-                '<i class="im im-icon-Plane"></i>' // 可根據需求修改圖標
+                '<i class="im im-icon-Car"></i>' // 可根據需求修改圖標
             ];
         });
     })
