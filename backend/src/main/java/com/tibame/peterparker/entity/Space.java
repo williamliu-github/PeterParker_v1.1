@@ -1,31 +1,29 @@
 package com.tibame.peterparker.entity;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "Space")
-public class Space {
+@Table(name = "space")
+public class Space implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "spaceId")
     private Integer spaceId;
 
-    @Column(name = "parkingId", nullable = false)
-    private Integer parkingId;
-
     @Column(name = "spaceNo", length = 5)
     private String spaceNo;
 
-    // Constructors
-    public Space() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "parkingId", nullable = false)
+    private ParkingVO parkingInfo;
 
-    public Space(Integer parkingId, String spaceNo) {
-        this.parkingId = parkingId;
-        this.spaceNo = spaceNo;
+    // Constructors
+    public Space() {}
+
+    public Space(ParkingVO parkingInfo) {
+        this.parkingInfo = parkingInfo;
     }
 
     // Getters and Setters
@@ -37,12 +35,26 @@ public class Space {
         this.spaceId = spaceId;
     }
 
+    public ParkingVO getParkingInfo() {
+        return parkingInfo;
+    }
+
+    public void setParkingInfo(ParkingVO parkingInfo) {
+        this.parkingInfo = parkingInfo;
+    }
+
     public Integer getParkingId() {
-        return parkingId;
+        if (parkingInfo != null) {
+            return parkingInfo.getParkingId();
+        }
+        return null;
     }
 
     public void setParkingId(Integer parkingId) {
-        this.parkingId = parkingId;
+        if (parkingInfo == null) {
+            parkingInfo = new ParkingVO();
+        }
+        parkingInfo.setParkingId(parkingId);
     }
 
     public String getSpaceNo() {
@@ -57,7 +69,7 @@ public class Space {
     public String toString() {
         return "Space{" +
                 "spaceId=" + spaceId +
-                ", parkingId=" + parkingId +
+                ", parkingId=" + getParkingId() +
                 ", spaceNo='" + spaceNo + '\'' +
                 '}';
     }

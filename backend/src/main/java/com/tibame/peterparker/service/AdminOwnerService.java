@@ -1,6 +1,6 @@
 package com.tibame.peterparker.service;
 
-import com.tibame.peterparker.entity.OwnerVO;
+import com.tibame.peterparker.entity.Owner;
 import com.tibame.peterparker.dao.AdminOwnerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,17 +21,17 @@ public class AdminOwnerService {
     private AdminOwnerRepository adminOwnerRepository;
 
     // 新增或更新業主
-    public OwnerVO saveOwner(OwnerVO owner) {
+    public Owner saveOwner(Owner owner) {
         return adminOwnerRepository.save(owner);
     }
 
     // 根據 ID 查詢業主
-    public Optional<OwnerVO> getOwnerById(Integer ownerNo) {
+    public Optional<Owner> getOwnerById(Integer ownerNo) {
         return adminOwnerRepository.findById(ownerNo);
     }
 
     // 查詢所有業主
-    public List<OwnerVO> getAllOwners() {
+    public List<Owner> getAllOwners() {
         return adminOwnerRepository.findAll();
     }
 

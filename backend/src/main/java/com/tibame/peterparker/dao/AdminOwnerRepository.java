@@ -1,8 +1,10 @@
 package com.tibame.peterparker.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.tibame.peterparker.entity.OwnerVO;
+import com.tibame.peterparker.entity.Owner;
+import org.springframework.stereotype.Repository;
 
-public interface AdminOwnerRepository extends JpaRepository<OwnerVO, Integer> {
-    OwnerVO findByOwnerAccount(String ownerAccount);
+@Repository
+public interface AdminOwnerRepository extends JpaRepository<Owner, Integer> {
+    Owner findByOwnerAccount(String ownerAccount);
 }

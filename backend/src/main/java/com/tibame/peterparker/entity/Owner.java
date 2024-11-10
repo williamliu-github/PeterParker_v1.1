@@ -1,12 +1,30 @@
 package com.tibame.peterparker.entity;
 
-public class Owner {
+import javax.persistence.*;
+import java.io.Serializable;
 
-    private String ownerAccount;
-    private String ownerPassword;
+@Entity
+@Table(name = "owner")  // 對應數據庫中的 "owner" 表
+public class Owner implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)  // 主鍵自動生成
+    @Column(name = "ownerNo")  // 對應表中的 "ownerNo" 列
     private Integer ownerNo;
+
+    @Column(name = "ownerAccount", nullable = false, length = 20)  // 帳號欄位，不能為空
+    private String ownerAccount;
+
+    @Column(name = "ownerPassword", nullable = false, length = 20)  // 密碼欄位，不能為空
+    private String ownerPassword;
+
+    @Column(name = "ownerName", length = 10)  // 姓名欄位
     private String ownerName;
+
+    @Column(name = "ownerPhone", length = 20)  // 電話欄位
     private String ownerPhone;
+
+    @Column(name = "ownerGoogleToken", length = 20)  // Google Token 欄位
     private String ownerGoogleToken;
 
     // 無參數構造函數
@@ -19,6 +37,14 @@ public class Owner {
     }
 
     // Getter 和 Setter 方法
+    public Integer getOwnerNo() {
+        return ownerNo;
+    }
+
+    public void setOwnerNo(Integer ownerNo) {
+        this.ownerNo = ownerNo;
+    }
+
     public String getOwnerAccount() {
         return ownerAccount;
     }
@@ -33,14 +59,6 @@ public class Owner {
 
     public void setOwnerPassword(String ownerPassword) {
         this.ownerPassword = ownerPassword;
-    }
-
-    public Integer getOwnerNo() {
-        return ownerNo;
-    }
-
-    public void setOwnerNo(Integer ownerNo) {
-        this.ownerNo = ownerNo;
     }
 
     public String getOwnerName() {

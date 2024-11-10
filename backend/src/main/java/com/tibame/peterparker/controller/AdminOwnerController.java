@@ -1,6 +1,6 @@
 package com.tibame.peterparker.controller;
 
-import com.tibame.peterparker.entity.OwnerVO;
+import com.tibame.peterparker.entity.Owner;
 import com.tibame.peterparker.service.AdminOwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -18,27 +18,27 @@ public class AdminOwnerController {
 
     // 新增或更新業主
     @PostMapping("/save")
-    public ResponseEntity<OwnerVO> saveOwner(@RequestBody OwnerVO owner) {
-        OwnerVO savedOwner = adminOwnerService.saveOwner(owner);
+    public ResponseEntity<Owner> saveOwner(@RequestBody Owner owner) {
+        Owner savedOwner = adminOwnerService.saveOwner(owner);
         return ResponseEntity.ok(savedOwner);
     }
 
     // 根據 ID 更新業主
     @PutMapping("/{ownerNo}")
-    public ResponseEntity<OwnerVO> updateOwner(@PathVariable("ownerNo") Integer ownerNo, @RequestBody OwnerVO owner) {
-        Optional<OwnerVO> existingOwner = adminOwnerService.getOwnerById(ownerNo);
+    public ResponseEntity<Owner> updateOwner(@PathVariable("ownerNo") Integer ownerNo, @RequestBody Owner owner) {
+        Optional<Owner> existingOwner = adminOwnerService.getOwnerById(ownerNo);
         if (!existingOwner.isPresent()) {
             return ResponseEntity.notFound().build();
         }
         owner.setOwnerNo(ownerNo);  // 確保 ownerNo 的名稱一致
-        OwnerVO updatedOwner = adminOwnerService.saveOwner(owner);
+        Owner updatedOwner = adminOwnerService.saveOwner(owner);
         return ResponseEntity.ok(updatedOwner);
     }
 
     // 根據 ID 查詢業主
     @GetMapping("/{ownerNo}")
-    public ResponseEntity<OwnerVO> getOwnerById(@PathVariable("ownerNo") Integer ownerId) {
-        Optional<OwnerVO> owner = adminOwnerService.getOwnerById(ownerId);
+    public ResponseEntity<Owner> getOwnerById(@PathVariable("ownerNo") Integer ownerId) {
+        Optional<Owner> owner = adminOwnerService.getOwnerById(ownerId);
         return owner.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
@@ -51,8 +51,8 @@ public class AdminOwnerController {
 
     // 查詢所有業主
     @GetMapping("/all")
-    public ResponseEntity<List<OwnerVO>> getAllOwners() {
-        List<OwnerVO> owners = adminOwnerService.getAllOwners();
+    public ResponseEntity<List<Owner>> getAllOwners() {
+        List<Owner> owners = adminOwnerService.getAllOwners();
         return ResponseEntity.ok(owners);
     }
     

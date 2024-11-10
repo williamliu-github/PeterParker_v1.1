@@ -1,6 +1,7 @@
 package com.tibame.peterparker.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
+@Primary
 // 根據用戶名從資料庫中加載用戶信息： 它從 AdminRepository 中查詢用戶，根據用戶名來查找相應的用戶記錄。
 // 它將從資料庫中獲取的用戶信息轉換成 Spring Security 能夠理解的 UserDetails 對象，這樣 Spring Security 就能進行身份驗證和權限授權。
 public class AdminUserDetailsService implements UserDetailsService {
