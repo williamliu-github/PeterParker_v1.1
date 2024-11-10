@@ -5,23 +5,27 @@ import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
-@Table(name = "space")
-public class Space implements Serializable {
+@Table(name = "Space")
+public class Space {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "spaceId")
     private Integer spaceId;
 
-    @ManyToOne
-    @JoinColumn(name = "parkingId", nullable = false)
-    private ParkingVO parkingInfo;
+    @Column(name = "parkingId", nullable = false)
+    private Integer parkingId;
+
+    @Column(name = "spaceNo", length = 5)
+    private String spaceNo;
 
     // Constructors
-    public Space() {}
+    public Space() {
+    }
 
-    public Space(ParkingVO parkingInfo) {
-        this.parkingInfo = parkingInfo;
+    public Space(Integer parkingId, String spaceNo) {
+        this.parkingId = parkingId;
+        this.spaceNo = spaceNo;
     }
 
     // Getters and Setters
@@ -33,11 +37,28 @@ public class Space implements Serializable {
         this.spaceId = spaceId;
     }
 
-    public ParkingVO getParkingInfo() {
-        return parkingInfo;
+    public Integer getParkingId() {
+        return parkingId;
     }
 
-    public void setParkingInfo(ParkingVO parkingInfo) {
-        this.parkingInfo = parkingInfo;
+    public void setParkingId(Integer parkingId) {
+        this.parkingId = parkingId;
+    }
+
+    public String getSpaceNo() {
+        return spaceNo;
+    }
+
+    public void setSpaceNo(String spaceNo) {
+        this.spaceNo = spaceNo;
+    }
+
+    @Override
+    public String toString() {
+        return "Space{" +
+                "spaceId=" + spaceId +
+                ", parkingId=" + parkingId +
+                ", spaceNo='" + spaceNo + '\'' +
+                '}';
     }
 }

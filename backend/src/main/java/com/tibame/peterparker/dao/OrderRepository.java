@@ -4,6 +4,7 @@ import com.tibame.peterparker.entity.OrderVO;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
@@ -46,4 +47,6 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer> {
             "(o.orderStartTime >= :startTime AND o.orderEndTime <= :endTime))")
     List<OrderVO> findConflictingOrdersByParkingIdAndDate(Integer parkingId, Date date, Time startTime, Time endTime);
 
+    @Query("SELECT o FROM OrderVO o WHERE o.space.spaceId = :spaceId AND o.orderStartTime > CURRENT_TIMESTAMP")
+    List<OrderVO> findUpcomingOrdersBySpaceId(@Param("spaceId") Integer spaceId);
 }
