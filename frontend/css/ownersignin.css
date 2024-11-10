@@ -1,0 +1,321 @@
+/* Send Message Button */
+a.send-message-to-owner.button {
+	font-size: 13px;
+	font-weight: 500;
+	padding: 4px 20px;
+	margin-top: 20px;
+	margin-bottom: -5px;
+}
+
+
+#owner-registerok-dialog, .mfp-close
+#owner-register-dialog, .mfp-close{
+	color: black;
+}
+
+#small-dialog .mfp-close,
+#owner-sign-in-dialog, .mfp-close,
+#sign-in-dialog, .mfp-close,
+.mfp-close:hover {
+	color: #fff;
+}
+
+
+/* Popup close button*/
+
+#owner-sign-in-dialog .mfp-close,
+#sign-in-dialog .mfp-close,
+#small-dialog .mfp-close {
+	color: #666;
+	background-color: #e4e4e4;
+	border-radius: 50%;
+	top: 28px;
+	right: 40px;
+    width: 40px;
+    height: 40px;
+}
+
+
+#owner-sign-in-dialog .mfp-close:hover,
+#sign-in-dialog .mfp-close:hover,
+#small-dialog .mfp-close:hover {
+	color: #fff;
+	transform: rotate(0);
+	background-color: #66676b;
+}
+
+
+#owner-sign-in-dialog .mfp-close::after,
+#owner-sign-in-dialog .mfp-close::before,
+#sign-in-dialog .mfp-close::after,
+#sign-in-dialog .mfp-close::before,
+#small-dialog .mfp-close::after,
+#small-dialog .mfp-close::before {
+	top: 4px;
+	height: 9px;
+	font-size: 21px;
+	transition: 0s;
+}
+
+
+/* owner Popup */
+#owner-registerok-dialog,
+#owner-register-dialog,
+#owner-sign-in-dialog,
+#small-dialog {
+	background: #fff;
+	padding: 40px;
+	padding-top: 0;
+	text-align: left;
+	max-width: 610px;
+	margin: 40px auto;
+	position: relative;
+	box-sizing:border-box;
+	border-radius: 4px;
+}
+
+#owner-registerok-dialog,
+#owner-register-dialog,
+#owner-sign-in-dialog {
+	max-width: 500px;
+}
+
+#owner-registerok-dialog span.line,
+#owner-register-dialog span.line,
+#owner-sign-in-dialog span.line,
+#small-dialog span.line {padding-top: 0;}
+
+.my-mfp-zoom-in .zoom-anim-dialog {
+	opacity: 0;
+	-webkit-transition: all 0.2s ease-in-out;
+	-moz-transition: all 0.2s ease-in-out;
+	-o-transition: all 0.2s ease-in-out;
+	transition: all 0.2s ease-in-out;
+	-webkit-transform: scale(0.8);
+	-moz-transform: scale(0.8);
+	-ms-transform: scale(0.8);
+	-o-transform: scale(0.8);
+	transform: scale(0.8);
+}
+
+/* All Mobile Sizes (devices and browser) */
+@media (max-width: 767px) {
+
+	.listing-features {
+		columns: 1;
+		-webkit-columns: 1;
+		-moz-columns: 1;
+	}
+
+	.messages-headline h4 { display: block; }
+
+	.message-action {
+	    display: inline-block;
+	    float: none;
+	    margin-top: 15px;
+	    background-color: #f2f2f2;
+	    border-radius: 50px;
+	    padding: 4px 20px;
+	    text-align: center;
+	}
+
+	.message-bubble .message-text { margin-left: 55px; }
+	.message-bubble.me .message-text { margin-right: 55px; }
+
+	.message-bubble .message-avatar img{
+		width: 35px;
+		height: 35px;
+		margin-top: 8px;
+	}
+
+	#backtotop { display: none; }
+
+	.small-dialog-header {
+	    width: calc(100% + 60px);
+	    left: -30px;
+	    padding: 30px;
+	}
+
+	#sign-in-dialog, #small-dialog {
+		background: #fff;
+		padding: 30px;
+		padding-top: 0;
+    }
+
+	#owner-registerok-dialog, #owner-sign-in-dialog, #owner-register-dialog {
+		background: #fff;
+		padding: 30px;
+		padding-top: 0;
+    }
+
+	#sign-in-dialog .mfp-close, #small-dialog .mfp-close {
+	    top: 24px;
+	    right: 30px;
+	    width: 40px;
+	    height: 40px;
+	}
+
+	#owner-sign-in-dialog .mfp-close, #owner-register-dialog .mfp-close, #owner-registerok-dialog .mfp-close {
+	    top: 24px;
+	    right: 30px;
+	    width: 40px;
+	    height: 40px;
+	}
+
+	.list-box-listing { display: block;}
+
+	.list-box-listing-content .inner {
+	    position: relative;
+	    top: 0;
+	    transform: translateY(0);
+	    display: inline-block;
+	}
+
+	.header-widget {
+	    height: auto;
+	}
+
+	.list-box-listing-img {
+	    max-width: 100%;
+	}
+
+	.list-box-listing-content { padding-left: 0; padding-top: 10px; }
+
+	#titlebar { padding: 50px 0; margin-bottom: 50px; }
+
+	#map-container.fullwidth-home-map .zoomControlWrapper { top: 15px !important; }
+
+	/* Pricing Tables */
+	.pricing-container { display: block; }
+	.plan.featured { transform: none; }
+	.plan { margin-bottom: 35px; }
+
+	#breadcrumbs {
+	    position: relative;
+	    display: block;
+	    margin-top: 30px;
+	}
+
+	#breadcrumbs ul li { margin: 0 10px 0 0; }
+
+	.comment-by .numerical-rating, .comment-by .star-rating {
+	    position: relative;
+	    right: 0;
+	    top: 7px;
+	    display: block;
+	    width: 100%;
+	    float: none;
+	    height: 30px;
+	}
+
+	.avatar { display: none; }
+	.comment-content { padding: 0 ;}
+
+	.small-dialog-header h3 {
+	    padding: 0;
+	    margin: 0;
+	    font-size: 22px;
+	    padding-right: 80px;
+	    line-height: 30Px;
+	}
+
+	#sign-in-dialog, #small-dialog {
+	    max-width: 75vw;
+	}
+
+	#owner-registerok-dialog, #owner-sign-in-dialog, #owner-register-dialog {
+	    max-width: 75vw;
+	}
+
+	.listing-nav li a {
+	    border-bottom: 1px solid #e0e0e0;
+	    padding: 15px;
+	    width: 100%;
+	    display: block;
+	    padding-left: 0;
+	    border-color:  #e8e8e8;
+	}
+
+	.listing-nav li {
+	    margin-right: 0;
+	    display: block;
+	}
+
+	.listing-nav-container .listing-nav li:first-child a {padding-top: 0;}
+
+	.listing-nav-container.cloned .listing-nav li:first-child a.active,
+	.listing-nav-container.cloned .listing-nav li:first-child a:hover,
+	.listing-nav li:first-child a,
+	.listing-nav li a.active,
+	.listing-nav li a:hover {
+	    border-color: #e8e8e8;
+	}
+
+	.dashboard-content .checkboxes label {
+    	width: 100%;
+	}
+
+	.pricing-list-item td {
+	    display: block;
+	    width: 100%;
+	    position: relative;
+	}
+
+	.pricing-list-item td .fm-input,
+	.pricing-list-item td .fm-input.pricing-price,
+	.pricing-list-item td .fm-input.pricing-name {
+	    max-width: 100%;
+	    margin-right: 0;
+	}
+
+	.pricing-list-item td .fm-close {
+	    text-align: left;
+	    position: absolute;
+	    top: 4px;
+	    right: 0;
+	}
+
+	.about-author img {
+	    width: 70px;
+	    height: 70px;
+	}
+
+	.about-description {
+	    margin: 2px 0 0 100px;
+	}
+	/* Blog styling */
+	#posts-nav li {
+	    position: relative;
+	    width: 100%;
+	}
+
+	#posts-nav li a { padding: 0 !important; }
+	#posts-nav li a::before { display: none;}
+	#posts-nav li.next-post {text-align: left; margin-bottom: 30px;}	.comments ul li ul { margin: 0;  }
+
+	.avatar img {  max-width: 60px;  }
+	.comment-content {   padding: 0 0 0 85px; }
+	.comments ul li ul li::before { top: 25px; }
+	.comment-content {
+	    padding: 0;
+	}
+
+	.testimonial::after { display: none; }
+	.testimonial-box { padding-left: 38px; }
+
+
+	.main-search-container h2 {
+	    font-size: 28px;
+	    font-weight: 400;
+	    line-height: 36px;
+	}
+
+	.main-search-container h4 {
+	    font-size: 20px;
+	    font-weight: 400;
+	    line-height: 32px;
+	}
+
+	.main-search-container:before { background: rgba(255,255,255,0.92); }
+
+}

@@ -6,6 +6,7 @@ import com.tibame.peterparker.dto.ParkingDTO;
 import com.tibame.peterparker.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
@@ -244,12 +245,18 @@ public class OrderService {
 
     //根據userId查找userAccount
     public String getUserAccountByUserId(Integer userId) {
-        Optional<UserVO> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get().getUserAccount();
-        } else {
-            throw new EntityNotFoundException("User not found for ID: " + userId);
-        }
+        UserVO user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found for ID: " + userId));
+        return user.getUserAccount();
+    }
+
+    //只更新數據狀態
+    @Transactional
+    public void updateOrderStatus(Integer orderId, String newStatus) {
+        OrderVO order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        order.setStatusId(newStatus);
+        orderRepository.save(order);
     }
 
 

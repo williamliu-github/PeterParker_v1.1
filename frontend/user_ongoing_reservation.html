@@ -320,6 +320,7 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 								</div>
 							</div>
 						<div class="buttons-to-right">
+						<a href="#" class="button gray" onclick="redirectToQRCode(${order.orderId})"><i class="sl sl-icon-camera"></i>使用 QR Code</a>
 						<a href="#" class="button gray" onclick="cancelExistingOrder(${order.orderId})"><i class="sl sl-icon-close"></i>取消訂單</a>
 						</div>
 						</div>`;
@@ -335,7 +336,10 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 	
 	}
 		
-	
+	function redirectToQRCode(orderId) {
+    window.location.href = `order_use.html?orderId=${orderId}`;
+}
+
 	
 	
 	

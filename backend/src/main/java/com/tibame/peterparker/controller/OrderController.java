@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.tibame.peterparker.dao.OrderRepository;
 import com.tibame.peterparker.dto.CalculatePriceRequest;
 import com.tibame.peterparker.dto.FilterRequest;
 import com.tibame.peterparker.dto.ParkingDTO;
@@ -41,6 +42,9 @@ public class OrderController {
 
     @Autowired
     private OrderMailService orderMailService;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     // 查詢用戶所有訂單
     @GetMapping("/user/{userId}")
@@ -267,6 +271,46 @@ public class OrderController {
             return new ResponseEntity<>("Error fetching parking info: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @PostMapping("/scan/{orderId}")
+    public ResponseEntity<String> scanQRCode(@PathVariable Integer orderId) {
+        // 根據 orderId 查找訂單
+        Optional<OrderVO> orderOptional = orderService.findOrderById(orderId);
+
+        if (orderOptional.isEmpty()) {
+            // 如果找不到訂單，返回 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+        }
+
+        // 獲取訂單
+        OrderVO order = orderOptional.get();
+
+        // 根據當前的狀態更新訂單狀態
+        String currentStatus = order.getStatusId();
+        String nextStatus;
+        String redirectUrl;
+
+        switch (currentStatus) {
+            case "預約中":
+                nextStatus = "使用中";
+                redirectUrl = "/user_ongoing_reservation.html";
+                break;
+            case "使用中":
+                nextStatus = "已完成";
+                redirectUrl = "/user_completed_reservation.html";
+                break;
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid order status for scanning");
+        }
+
+        // 更新訂單狀態
+        orderService.updateOrderStatus(orderId, nextStatus);
+
+        // 返回對應的重定向 URL
+        return ResponseEntity.ok(redirectUrl);
+    }
+
 
 
 

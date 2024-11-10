@@ -35,6 +35,7 @@ public class OwnerService implements UserDetailsService {
                 .build();
     }
 
+
     /**
      * 獲取當前登入者的帳號
      */
@@ -80,11 +81,20 @@ public class OwnerService implements UserDetailsService {
      * 根據 OwnerNo 查詢 Owner，僅允許查詢自己的資料
      */
     public Owner getOwnerByNo(Integer ownerNo) {
+        // 如果目前沒有登入的使用者，則跳過授權驗證（創建新帳號時可能是未登入狀態）
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated() || authentication instanceof org.springframework.security.authentication.AnonymousAuthenticationToken) {
+            System.out.println("未登入狀態，跳過授權驗證。");
+            return ownerDao.getOwnerByNo(ownerNo);
+        }
+
         if (!isOwnerAuthorized(ownerNo)) {
             throw new SecurityException("You are not authorized to view this data.");
         }
+
         return ownerDao.getOwnerByNo(ownerNo);
     }
+
 
     /**
      * 更新 Owner 資訊，僅允許更新自己的資料
@@ -121,4 +131,9 @@ public class OwnerService implements UserDetailsService {
     public Integer getOwnerNoByAccount(String ownerAccount) {
         return ownerDao.findOwnerNoByAccount(ownerAccount);
     }
+
+    public boolean checkPassword(String rawPassword, String encodedPassword) {
+        return passwordEncoder.matches(rawPassword, encodedPassword);
+    }
+
 }

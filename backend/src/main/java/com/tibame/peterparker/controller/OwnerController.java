@@ -1,9 +1,11 @@
 package com.tibame.peterparker.controller;
 
+import com.tibame.peterparker.dao.OwnerDao;
 import com.tibame.peterparker.entity.Owner;
 import com.tibame.peterparker.dto.OwnerRequest;
 import com.tibame.peterparker.service.OwnerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -21,10 +23,14 @@ import java.util.List;
 public class OwnerController {
 
     @Autowired
-    private AuthenticationManager authenticationManager;
+    @Qualifier("ownerAuthenticationManager") // 指定使用 Owner 的 AuthenticationManager
+    private AuthenticationManager ownerAuthenticationManager;
 
     @Autowired
     private OwnerService ownerService;
+
+    @Autowired
+    private OwnerDao ownerDao;
 
     /**
      * 登入
@@ -32,8 +38,20 @@ public class OwnerController {
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody Owner owner, HttpSession session) {
         try {
+            Owner dbOwner = ownerDao.findOwnerByAccount(owner.getOwnerAccount());
+
+            // 如果資料庫中沒有找到帳號
+            if (dbOwner == null) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("帳號或密碼錯誤");
+            }
+
+            // 檢查密碼是否匹配
+            if (!ownerService.checkPassword(owner.getOwnerPassword(), dbOwner.getOwnerPassword())) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("帳號或密碼錯誤");
+            }
+
             // 使用 ownerAccount 和 ownerPassword 進行身份認證
-            Authentication authentication = authenticationManager.authenticate(
+            Authentication authentication = ownerAuthenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(owner.getOwnerAccount(), owner.getOwnerPassword())
             );
             System.out.println("Current Session ID: " + session.getId());
@@ -48,10 +66,10 @@ public class OwnerController {
             Integer ownerNo = ownerService.getOwnerNoByAccount(owner.getOwnerAccount());
             session.setAttribute("ownerNo", ownerNo);
 
-
             return ResponseEntity.ok("登入成功！Session ID: " + session.getId());
 
         } catch (AuthenticationException e) {
+            e.printStackTrace();
             // 身份驗證失敗，返回401 Unauthorized
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("身份驗證失敗");
         }
@@ -80,7 +98,6 @@ public class OwnerController {
         session.invalidate();
         return ResponseEntity.ok("已成功登出");
     }
-
 
     /**
      * 創建新的 Owner
@@ -144,6 +161,4 @@ public class OwnerController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
-
-
 }

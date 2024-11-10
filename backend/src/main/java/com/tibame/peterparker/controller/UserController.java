@@ -422,18 +422,30 @@ public class UserController {
 
     // 使用者訂單，我的最愛，我的黑名單停車場的圖片
     @GetMapping("/image/{parkingId}")
-    public ResponseEntity<ByteArrayResource> getParkingImage(@PathVariable Integer parkingId) {
+    public ResponseEntity<?> getParkingImage(@PathVariable Integer parkingId) {
         Optional<ParkingVO> parkingLotOptional = parkingRepository.findById(parkingId);
+
         if (parkingLotOptional.isPresent()) {
             ParkingVO parkingVO = parkingLotOptional.get();
             byte[] imageData = parkingVO.getParkingImg();
+
+            // 檢查 imageData 是否為 null 或長度為 0
+            if (imageData == null || imageData.length == 0) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("圖片不存在");
+            }
+
+            ByteArrayResource resource = new ByteArrayResource(imageData);
+
             return ResponseEntity.ok()
-                    .contentType(MediaType.IMAGE_PNG) // or JPEG depending on your image type
-                    .body(new ByteArrayResource(imageData));
+                    .contentType(MediaType.IMAGE_PNG) // 根據您的圖片類型設定適當的 Content-Type
+                    .contentLength(imageData.length)
+                    .body(resource);
         } else {
-            return ResponseEntity.notFound().build();
+            // 如果找不到對應的 parkingId，返回 404 Not Found
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("停車場不存在");
         }
     }
+
 
     // 取消使用者的訂單
     @GetMapping("/updateOrderStatus/{orderId}/{statusId}")

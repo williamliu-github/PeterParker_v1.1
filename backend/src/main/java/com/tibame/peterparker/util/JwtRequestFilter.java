@@ -7,6 +7,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,6 +30,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    private final RequestMatcher ignoredPaths = new AntPathRequestMatcher("/**/user/**");
+    private final RequestMatcher ignoredOwnerPaths = new AntPathRequestMatcher("/**/owner/**");
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        boolean result = this.ignoredPaths.matches(request) || this.ignoredOwnerPaths.matches(request);
+        return result;
+    }
 
     @Override
 // 過濾請求並進行 JWT 驗證

@@ -34,10 +34,11 @@ public class AuthRequestFilter extends OncePerRequestFilter {
     private AdminUserDetailsService userDetailsService;
 
     private final RequestMatcher ignoredPaths = new AntPathRequestMatcher("/**/user/**");
+    private final RequestMatcher ignoredOwnerPaths = new AntPathRequestMatcher("/owner/**");
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
-        boolean result =this.ignoredPaths.matches(request);
+        boolean result = this.ignoredPaths.matches(request) || this.ignoredOwnerPaths.matches(request);
         return result;
     }
 
