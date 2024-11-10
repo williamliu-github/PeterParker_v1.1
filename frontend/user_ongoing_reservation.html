@@ -262,7 +262,7 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 		
 
 
-		fetch(`http://localhost:8081/user/使用中/${userId}`, {
+		fetch(`http://localhost:8081/user/MultipleStatusOrderRetrieve/預約中/使用中/${userId}`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',

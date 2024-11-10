@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
+    console.log("DOM加載完成")
     // 取出保存的停車場資訊
     const selectedParking = JSON.parse(localStorage.getItem("selectedParking"));
+    console.log(selectedParking);
 
     if (selectedParking) {
         // 動態填充停車場的詳細信息到頁面中
@@ -11,18 +13,30 @@ document.addEventListener("DOMContentLoaded", function () {
         const ownerDialogTitleElement = document.querySelector('#small-dialog .small-dialog-header h3');
         const ownerTitleElement = document.querySelector('.hosted-by-title h4 a');
         const ownerEmailElement = document.querySelector('.listing-details-sidebar li i.fa-envelope-o').nextElementSibling;
+        
 
-        // 填充停車場資訊到對應的元素
+        // 填充停車場名稱
         if (parkingNameElement) {
-            parkingNameElement.textContent = selectedParking.parkingName;
+            parkingNameElement.textContent = selectedParking.parkingName || '未提供名稱';
+            console.log("停車場名稱已填充:", parkingNameElement.textContent);
+        } else {
+            console.error('找不到停車場名稱元素');
         }
 
-        if (parkingAddressElement) {
-            parkingAddressElement.textContent = selectedParking.parkingAddress;
+         // 填充停車場地址
+         if (parkingAddressElement) {
+            parkingAddressElement.textContent = selectedParking.parkingLocation || '未提供地址';
+            console.log("停車場地址已填充:", parkingAddressElement.textContent);
+        } else {
+            console.error('找不到停車場地址元素');
         }
 
+        // 填充停車場資訊
         if (parkingInfoElement) {
-            parkingInfoElement.textContent = `(容量: ${selectedParking.capacity} 車位)`;
+            parkingInfoElement.textContent = `(總車位: ${selectedParking.capacity || '未知'} 個)`;
+            console.log("停車場資訊已填充:", parkingInfoElement.textContent);
+        } else {
+            console.error('找不到停車場資訊元素');
         }
 
         if (ownerTitleElement) {
@@ -99,53 +113,53 @@ function goToNextPage() {
 }
 
 
-// 透過連絡業主按鈕發送消息給業主
-document.getElementById('contact-owner-button').addEventListener('click', function () {
-    const message = document.getElementById('owner-message').value;
+// // 透過連絡業主按鈕發送消息給業主
+// document.getElementById('contact-owner-button').addEventListener('click', function () {
+//     const message = document.getElementById('owner-message').value;
 
-    if (message.trim() === "") {
-        alert("請填寫您想要發給業主的訊息");
-        return;
-    }
+//     if (message.trim() === "") {
+//         alert("請填寫您想要發給業主的訊息");
+//         return;
+//     }
 
-    // 取出保存的停車場資訊
-    const selectedParking = JSON.parse(localStorage.getItem("selectedParking"));
+//     // 取出保存的停車場資訊
+//     const selectedParking = JSON.parse(localStorage.getItem("selectedParking"));
 
-    if (selectedParking) {
-        // 獲取 JWT token
-        const peterParkerToken = localStorage.getItem('peterParkerToken');
-        if (!peterParkerToken) {
-            console.error('JWT token not found, redirecting to login');
-            window.location.href = 'index.html'; // 重定向到登入頁面
-            return;
-        }
+//     if (selectedParking) {
+//         // 獲取 JWT token
+//         const peterParkerToken = localStorage.getItem('peterParkerToken');
+//         if (!peterParkerToken) {
+//             console.error('JWT token not found, redirecting to login');
+//             window.location.href = 'index.html'; // 重定向到登入頁面
+//             return;
+//         }
 
-        // 傳送消息至後端
-        fetch('http://localhost:8081/contactOwner', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${peterParkerToken}`,
-            },
-            body: JSON.stringify({
-                parkingId: selectedParking.parkingId,
-                message: message,
-            })
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                alert('訊息已發送成功！');
-            })
-            .catch(error => {
-                console.error('Error sending message:', error);
-                alert('發送訊息失敗，請稍後再試');
-            });
-    } else {
-        console.error("未找到選擇的停車場資訊，無法發送訊息");
-    }
-});
+//         // 傳送消息至後端
+//         fetch('http://localhost:8081/contactOwner', {
+//             method: 'POST',
+//             headers: {
+//                 'Content-Type': 'application/json',
+//                 'Authorization': `Bearer ${peterParkerToken}`,
+//             },
+//             body: JSON.stringify({
+//                 parkingId: selectedParking.parkingId,
+//                 message: message,
+//             })
+//         })
+//             .then(response => {
+//                 if (!response.ok) {
+//                     throw new Error('Network response was not ok');
+//                 }
+//                 return response.json();
+//             })
+//             .then(data => {
+//                 alert('訊息已發送成功！');
+//             })
+//             .catch(error => {
+//                 console.error('Error sending message:', error);
+//                 alert('發送訊息失敗，請稍後再試');
+//             });
+//     } else {
+//         console.error("未找到選擇的停車場資訊，無法發送訊息");
+//     }
+// });

@@ -470,4 +470,18 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/MultipleStatusOrderRetrieve/{statusId1}/{statusId2}/{userId}")
+    public ResponseEntity<List<UserOrderInfoDTO>> getUserOrdersWithParkingInfo(
+            @PathVariable String statusId1, @PathVariable String statusId2, @PathVariable Integer userId) {
+
+        List<String>statusIds = List.of(statusId1, statusId2);
+
+        List<UserOrderInfoDTO> orders = userService.getOrderParkingInfoByMultipleStatus(statusIds,userId);
+
+        if (orders.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return ResponseEntity.ok(orders);
+    }
+
 }

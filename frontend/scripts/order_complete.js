@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (parkingInfoElement) {
-            parkingInfoElement.textContent = `(容量: ${selectedParking.capacity} 車位, 費率: 假日 ${selectedParking.holidayHourlyRate} 元 / 平日 ${selectedParking.workdayHourlyRate} 元)`;
+            parkingInfoElement.textContent = `總車位數: ${selectedParking.capacity} 個`;
         } else {
             console.error('找不到停車場資訊元素');
         }
