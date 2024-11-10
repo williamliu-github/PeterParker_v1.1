@@ -123,67 +123,80 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error('無法取得預約信息，請返回上一頁重新選擇');
     }
 
-    // 當用戶確認預約並提交時
-    const confirmBookingButton = document.getElementById('confirm-booking-button');
-    if (confirmBookingButton) {
-        confirmBookingButton.addEventListener('click', function () {
-            if (!parkingId || !dateRange || !startTime || !endTime) {
-                alert('無法提交訂單，缺少必要的預約信息');
-                return;
-            }
-
-            // 使用已經計算的 formattedStartDate 和 formattedEndDate
-            const orderDTO = {
-                parkingId: parseInt(parkingId),
-                orderStartTime: `${formattedStartDate}T${startTime}:00`,
-                orderEndTime: `${formattedEndDate}T${endTime}:00`,
-                statusId: '預約中' // 設置預約狀態
-            };
-
+     // 當用戶確認預約並提交時
+     const confirmBookingButton = document.getElementById('confirm-booking-button');
+     if (confirmBookingButton) {
+         confirmBookingButton.addEventListener('click', function () {
+             if (!parkingId || !dateRange || !startTime || !endTime) {
+                 alert('無法提交訂單，缺少必要的預約信息');
+                 return;
+             }
+ 
+             // 使用已經計算的 formattedStartDate 和 formattedEndDate
+             const orderDTO = {
+                 parkingId: parseInt(parkingId),
+                 orderStartTime: `${formattedStartDate}T${startTime}:00`,
+                 orderEndTime: `${formattedEndDate}T${endTime}:00`,
+                 statusId: '預約中', // 設置預約狀態
+                 totalPrice: sessionStorage.getItem('totalCost') // 保存計算的總金額
+             };
+ 
              // 獲取 JWT token
-            const peterParkerToken = localStorage.getItem('peterParkerToken');
-            if (!peterParkerToken) {
-                console.error('JWT token not found, redirecting to login');
-                window.location.href = 'index.html'; // Redirect to login if token is missing
-                return;
-            }
-
-            console.log("Token being sent:", peterParkerToken);
-
-
-            // 將訂單提交到後端
-            fetch('http://localhost:8081/order/create', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${peterParkerToken}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(orderDTO)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data && data.orderId) {
-                        alert(`預約成功，訂單號：${data.orderId}`);
-                        // 清空 sessionStorage 中的預約資料
-                        sessionStorage.clear();
-                        // 跳轉到訂單確認頁面
-                        window.location.href = 'parking_booking_confirm.html';
-                    } else {
-                        console.error('創建訂單失敗');
-                        alert('創建訂單失敗，請稍後重試');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error creating order:', error);
-                    alert('創建訂單時發生錯誤，請稍後重試');
-                });
-        });
-    } else {
-        console.error("找不到確認預約按鈕元素");
-    }
-});
+             const peterParkerToken = localStorage.getItem('peterParkerToken');
+             if (!peterParkerToken) {
+                 console.error('JWT token not found, redirecting to login');
+                 window.location.href = 'index.html'; // Redirect to login if token is missing
+                 return;
+             }
+ 
+             console.log("Token being sent:", peterParkerToken);
+ 
+             // 將訂單提交到後端
+             fetch('http://localhost:8081/order/create', {
+                 method: 'POST',
+                 headers: {
+                     'Authorization': `Bearer ${peterParkerToken}`,
+                     'Content-Type': 'application/json',
+                 },
+                 body: JSON.stringify(orderDTO)
+             })
+                 .then(response => {
+                     // 打印返回的狀態碼以便於調試
+                     console.log("Response status:", response.status);
+ 
+                     // 確保是成功狀態
+                     if (response.status >= 200 && response.status < 300) {
+                         return response.json();
+                     } else {
+                         throw new Error(`Network response was not ok, status code: ${response.status}`);
+                     }
+                 })
+                 .then(data => {
+                     console.log("Response data:", data); // 測試用，打印返回的數據
+ 
+                     // 檢查返回的數據是否是一個數字（orderId）
+                     if (typeof data === 'number') {
+                         alert(`預約成功，訂單號：${data}`);
+ 
+                         // 保存必要的預約資料到 sessionStorage 中供下一頁顯示
+                         sessionStorage.setItem('orderId', data);
+                         sessionStorage.setItem('date', dateRange);
+                         sessionStorage.setItem('startTime', startTime);
+                         sessionStorage.setItem('endTime', endTime);
+ 
+                         // 跳轉到訂單確認頁面
+                         window.location.href = 'parking_booking_confirm.html';
+                     } else {
+                         console.error('創建訂單失敗');
+                         alert('創建訂單失敗，請稍後重試');
+                     }
+                 })
+                 .catch(error => {
+                     console.error('Error creating order:', error);
+                     alert('創建訂單時發生錯誤，請稍後重試');
+                 });
+         });
+     } else {
+         console.error("找不到確認預約按鈕元素");
+     }
+ });

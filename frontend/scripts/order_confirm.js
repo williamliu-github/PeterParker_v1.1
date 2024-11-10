@@ -1,4 +1,3 @@
-
 document.addEventListener("DOMContentLoaded", function () {
     // 獲取暫存的訂單資料
     const reservationDate = sessionStorage.getItem('date');
@@ -30,10 +29,10 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("計算預約時數時發生錯誤");
     }
 
-    if (totalPrice) {
+    if (totalPrice && !isNaN(totalPrice)) {
         document.getElementById('total-cost').textContent = `${totalPrice} NTD`;
     } else {
-        console.error("找不到總金額的資料");
+        console.error("找不到總金額的資料或總金額不正確");
     }
 
     // 從 sessionStorage 獲取並更新停車場相關資料
@@ -70,4 +69,9 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("未找到選擇的停車場資訊");
     }
+
+    // 當頁面跳轉或關閉時，清除 sessionStorage 中的資料
+    window.addEventListener("beforeunload", function () {
+        sessionStorage.clear();
+    });
 });
