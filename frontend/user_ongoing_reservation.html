@@ -280,7 +280,7 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 		})
 		.then(data => {
 			if (data && data.length > 0) {
-				console.log(data);
+				
 				const orderList = document.getElementById('orderlist');
 				orderList.innerHTML = ""; // Clear existing orders if any
 				data.forEach(order => {
@@ -292,7 +292,7 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 							 <img style="object-fit: cover; height: 100%; width: 100%" src="http://localhost:8081/user/image/${order.parkingId}" alt="Parking Image"/></div>
 							<div class="list-box-listing-content">
 								<div class="inner">
-									<h3>${order.parkingName}<span class="booking-status">${order.statusId}</span></h3>
+									<h3>${order.parkingName}<span id=status-${order.parkingId} class="booking-status">${order.statusId}</span></h3>
 									<div class="inner-booking-list">
 										<h5>開始時間：</h5>
 										<ul class="booking-list">
@@ -320,11 +320,19 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 								</div>
 							</div>
 						<div class="buttons-to-right">
-						<a href="#" class="button gray" onclick="redirectToQRCode(${order.orderId})"><i class="sl sl-icon-camera"></i>使用 QR Code</a>
 						<a href="#" class="button gray" onclick="cancelExistingOrder(${order.orderId})"><i class="sl sl-icon-close"></i>取消訂單</a>
 						</div>
 						</div>`;
+
 					orderList.appendChild(orders);
+					let status = document.getElementById(`status-${order.parkingId}`);
+					console.log(status.innerText);
+					if (status.innerText === "預約中"){
+						status.style.backgroundColor = "orange";
+						
+					}
+					
+					
 				});
 			} else {
 				console.log("No orders available.");

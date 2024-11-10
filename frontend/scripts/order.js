@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    console.log("DOM加載完成")
+    console.log("DOM加載完成");
     // 取出保存的停車場資訊
     const selectedParking = JSON.parse(localStorage.getItem("selectedParking"));
     console.log(selectedParking);
@@ -9,76 +9,23 @@ document.addEventListener("DOMContentLoaded", function () {
         const parkingNameElement = document.getElementById('parking-name');
         const parkingAddressElement = document.getElementById('parking-address');
         const parkingInfoElement = document.getElementById('parking-info');
-        const ownerMessageElement = document.getElementById('owner-message');
-        const ownerDialogTitleElement = document.querySelector('#small-dialog .small-dialog-header h3');
-        const ownerTitleElement = document.querySelector('.hosted-by-title h4 a');
-        const ownerEmailElement = document.querySelector('.listing-details-sidebar li i.fa-envelope-o').nextElementSibling;
-        
 
-        // 填充停車場名稱
         if (parkingNameElement) {
-            parkingNameElement.textContent = selectedParking.parkingName || '未提供名稱';
-            console.log("停車場名稱已填充:", parkingNameElement.textContent);
+            parkingNameElement.textContent = selectedParking.parkingName;
         } else {
             console.error('找不到停車場名稱元素');
         }
 
-         // 填充停車場地址
-         if (parkingAddressElement) {
-            parkingAddressElement.textContent = selectedParking.parkingLocation || '未提供地址';
-            console.log("停車場地址已填充:", parkingAddressElement.textContent);
+        if (parkingAddressElement) {
+            parkingAddressElement.textContent = selectedParking.parkingLocation;
         } else {
             console.error('找不到停車場地址元素');
         }
 
-        // 填充停車場資訊
         if (parkingInfoElement) {
-            parkingInfoElement.textContent = `(總車位: ${selectedParking.capacity || '未知'} 個)`;
-            console.log("停車場資訊已填充:", parkingInfoElement.textContent);
+            parkingInfoElement.textContent = `總數: ${selectedParking.capacity} `;
         } else {
             console.error('找不到停車場資訊元素');
-        }
-
-        if (ownerTitleElement) {
-            ownerTitleElement.textContent = selectedParking.ownerName || '未知業主';
-        }
-
-        if (ownerEmailElement) {
-            ownerEmailElement.textContent = selectedParking.ownerEmail || '未知';
-        }
-
-        // 填充業主名稱至對話框中的佔位符
-        const ownerName = selectedParking.ownerName || "業主";
-        if (ownerMessageElement) {
-            ownerMessageElement.setAttribute('placeholder', `Your message to ${ownerName}`);
-        }
-
-        if (ownerDialogTitleElement) {
-            ownerDialogTitleElement.textContent = `聯絡 ${ownerName}`;
-        }
-
-        // 地圖顯示
-        const mapElement = document.getElementById('singleListingMap');
-        if (mapElement) {
-            const lat = parseFloat(selectedParking.parkingLat);
-            const lng = parseFloat(selectedParking.parkingLong);
-
-            if (!isNaN(lat) && !isNaN(lng)) {
-                const map = new google.maps.Map(mapElement, {
-                    center: { lat: lat, lng: lng },
-                    zoom: 15
-                });
-
-                new google.maps.Marker({
-                    position: { lat: lat, lng: lng },
-                    map: map,
-                    title: selectedParking.parkingName
-                });
-            } else {
-                console.error('經緯度資料無效，無法顯示地圖');
-            }
-        } else {
-            console.error("未找到地圖元素");
         }
     } else {
         console.error("未找到選擇的停車場資訊");
@@ -87,12 +34,42 @@ document.addEventListener("DOMContentLoaded", function () {
 
 function goToNextPage() {
     const selectedParking = JSON.parse(localStorage.getItem("selectedParking"));
-    const date = document.getElementById('date-picker').value;
+    const dateRange = document.getElementById('date-picker').value;
     const startTime = document.getElementById('start-time').value;
     const endTime = document.getElementById('end-time').value;
 
-    if (selectedParking && date && startTime && endTime) {
-        // 暫存選擇的資料，包括 parkingId
+    if (selectedParking && dateRange && startTime && endTime) {
+        // 格式化日期範圍並進行拆分
+        const [startDateStr, endDateStr] = dateRange.split(" - ");
+        const [startMonth, startDay, startYear] = startDateStr.split("/");
+        const [endMonth, endDay, endYear] = endDateStr.split("/");
+
+        // 格式化日期為 "YYYY-MM-DD"
+        const formattedStartDate = `${startYear}-${startMonth.padStart(2, '0')}-${startDay.padStart(2, '0')}`;
+        const formattedEndDate = `${endYear}-${endMonth.padStart(2, '0')}-${endDay.padStart(2, '0')}`;
+
+        // 如果開始日期和結束日期相同，則驗證開始和結束時間
+        if (formattedStartDate === formattedEndDate) {
+            const startHour = parseInt(startTime.split(':')[0], 10);
+            const endHour = parseInt(endTime.split(':')[0], 10);
+            const startMinute = parseInt(startTime.split(':')[1], 10);
+            const endMinute = parseInt(endTime.split(':')[1], 10);
+
+            if (startHour > endHour || (startHour === endHour && startMinute >= endMinute)) {
+                alert('當預約日期為同一天時，結束時間必須晚於開始時間，請重新選擇。');
+                return;
+            }
+        }
+
+        // 將日期和時間合併成完整的時間字符串
+        const localStartDateTime = new Date(`${formattedStartDate}T${startTime}:00`);
+        const localEndDateTime = new Date(`${formattedEndDate}T${endTime}:00`);
+
+        // 將時間轉換為 UTC 格式
+        const utcStartDateTime = localStartDateTime.toISOString();
+        const utcEndDateTime = localEndDateTime.toISOString();
+
+        // 暫存選擇的資料，包括 parkingId 和時間
         if (selectedParking.parkingId) {
             sessionStorage.setItem('parkingId', selectedParking.parkingId);
         } else {
@@ -100,10 +77,11 @@ function goToNextPage() {
             alert('系統錯誤，請重試');
             return;
         }
-        
-        sessionStorage.setItem('date', date);
-        sessionStorage.setItem('startTime', startTime);
-        sessionStorage.setItem('endTime', endTime);
+
+        // 存儲 UTC 格式的時間到 sessionStorage
+        sessionStorage.setItem('date', dateRange);
+        sessionStorage.setItem('startTime', utcStartDateTime);
+        sessionStorage.setItem('endTime', utcEndDateTime);
 
         // 跳轉至下一頁
         window.location.href = 'parking_booking_2.html';
@@ -111,6 +89,10 @@ function goToNextPage() {
         alert('請選擇日期和時間段');
     }
 }
+
+
+
+
 
 
 // // 透過連絡業主按鈕發送消息給業主

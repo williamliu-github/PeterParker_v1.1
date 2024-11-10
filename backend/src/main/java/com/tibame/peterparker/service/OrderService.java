@@ -10,13 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 import java.util.Optional;
 
-import java.time.LocalDate;
-import java.time.DayOfWeek;
 import java.sql.Date;
 
 @Service
@@ -220,24 +217,42 @@ public class OrderService {
             throw new IllegalArgumentException("訂單結束時間不可早於訂單開始時間");
         }
 
-        // 使用 orderStartTime 轉換為 LocalDate
-        LocalDate orderDate = orderStartTime.toLocalDateTime().toLocalDate();
+        // 設置時區，這裡使用系統預設時區
+        ZoneId zoneId = ZoneId.systemDefault();
 
-        // 判斷是否為週末
-        boolean isHoliday = orderDate.getDayOfWeek() == DayOfWeek.SATURDAY || orderDate.getDayOfWeek() == DayOfWeek.SUNDAY;
+        // 將 Timestamp 轉換為 ZonedDateTime，確保在同一時區操作
+        ZonedDateTime startDateTime = orderStartTime.toInstant().atZone(zoneId);
+        ZonedDateTime endDateTime = orderEndTime.toInstant().atZone(zoneId);
 
-        // 根據是否是假日選擇價格
-        int pricePerHour = isHoliday ? parkingInfo.getHolidayHourlyRate() : parkingInfo.getWorkdayHourlyRate();
+        // 總金額初始化
+        int totalPrice = 0;
 
-        // 計算訂單持續時間（小時）
-        long durationInHours = (orderEndTime.getTime() - orderStartTime.getTime()) / (1000 * 60 * 60);
-        if (durationInHours <= 0) {
-            throw new IllegalArgumentException("訂單結束時間不可早於訂單開始時間");
+        // 逐小時計算費用
+        ZonedDateTime currentDateTime = startDateTime;
+        while (currentDateTime.isBefore(endDateTime)) {
+            // 判斷當前時間是否為假日
+            boolean isHoliday = currentDateTime.getDayOfWeek() == DayOfWeek.SATURDAY || currentDateTime.getDayOfWeek() == DayOfWeek.SUNDAY;
+
+            // 根據是否是假日選擇價格
+            int pricePerHour = isHoliday ? parkingInfo.getHolidayHourlyRate() : parkingInfo.getWorkdayHourlyRate();
+
+            // 累加當小時的費用
+            totalPrice += pricePerHour;
+
+            // 打印當前累計的金額和時間
+            System.out.println("當前時間：" + currentDateTime + "，累加後總金額：" + totalPrice);
+
+            // 時間加一小時
+            currentDateTime = currentDateTime.plusHours(1);
         }
 
-        // 計算訂單總金額
-        return Math.toIntExact(pricePerHour * durationInHours);
+        return totalPrice;
     }
+
+
+
+
+
 
 
 

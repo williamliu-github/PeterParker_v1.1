@@ -5,22 +5,50 @@ document.addEventListener("DOMContentLoaded", function () {
     const reservationEndTime = sessionStorage.getItem('endTime');
     const totalPrice = sessionStorage.getItem('totalCost'); // 注意，使用 'totalCost' 而非 'totalPrice'
 
-    // 計算時數
-    const startHour = parseInt(reservationStartTime.split(':')[0], 10);
-    const endHour = parseInt(reservationEndTime.split(':')[0], 10);
-    const duration = endHour - startHour;
+    // 定義日期與時間的顯示格式 options
+    const dateOptions = { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' };
+    const timeOptions = { hour: '2-digit', minute: '2-digit', hourCycle: 'h23' };
 
     // 動態填充資料
     if (reservationDate) {
-        document.getElementById('reservation-date').textContent = reservationDate;
+        // 格式化日期並添加星期幾
+        const [startDateStr, endDateStr] = reservationDate.split(" - ");
+        const startDate = new Date(startDateStr);
+        const endDate = new Date(endDateStr);
+
+        const formattedStartDate = startDate.toLocaleDateString('zh-TW', dateOptions);
+        const formattedEndDate = endDate.toLocaleDateString('zh-TW', dateOptions);
+
+        // 顯示日期範圍
+        document.getElementById('reservation-date').textContent = formattedStartDate === formattedEndDate 
+            ? formattedStartDate 
+            : `${formattedStartDate} - ${formattedEndDate}`;
     } else {
         console.error("找不到預約日期的資料");
     }
 
     if (reservationStartTime && reservationEndTime) {
-        document.getElementById('reservation-time').textContent = `${reservationStartTime} ~ ${reservationEndTime}`;
+        const startDateTime = new Date(reservationStartTime);
+        const endDateTime = new Date(reservationEndTime);
+
+        const formattedStartDate = `(${(startDateTime.getMonth() + 1).toString().padStart(2, '0')}/${startDateTime.getDate().toString().padStart(2, '0')})`;
+        const formattedEndDate = `(${(endDateTime.getMonth() + 1).toString().padStart(2, '0')}/${endDateTime.getDate().toString().padStart(2, '0')})`;
+        
+        const formattedStartTime = startDateTime.toLocaleTimeString('zh-TW', timeOptions);
+        const formattedEndTime = endDateTime.toLocaleTimeString('zh-TW', timeOptions);
+
+        document.getElementById('reservation-time').textContent = 
+            `${formattedStartDate} ${formattedStartTime} ~ ${formattedEndDate} ${formattedEndTime}`;
     } else {
         console.error("找不到預約時間段的資料");
+    }
+
+    // 計算時數
+    let duration = 0;
+    if (reservationStartTime && reservationEndTime) {
+        const startDateTime = new Date(reservationStartTime);
+        const endDateTime = new Date(reservationEndTime);
+        duration = Math.ceil((endDateTime - startDateTime) / (1000 * 60 * 60));
     }
 
     if (duration > 0) {
