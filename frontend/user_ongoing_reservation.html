@@ -320,6 +320,7 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 								</div>
 							</div>
 						<div class="buttons-to-right">
+						<a href="#" class="button gray" data-order-id="${order.orderId}" data-status-id="${order.statusId}" onclick="redirectToQRCode(this)"><i class="sl sl-icon-camera"></i> 使用 QR Code</a>
 						<a href="#" class="button gray" onclick="cancelExistingOrder(${order.orderId})"><i class="sl sl-icon-close"></i>取消訂單</a>
 						</div>
 						</div>`;
@@ -344,9 +345,22 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 	
 	}
 		
-	function redirectToQRCode(orderId) {
-    window.location.href = `order_use.html?orderId=${orderId}`;
-}
+		function redirectToQRCode(element) {
+		// 從 element 中獲取 data-order-id 屬性
+		const orderId = element.getAttribute('data-order-id');
+		const statusId = element.getAttribute('data-status-id');
+
+		if (orderId) {
+			sessionStorage.setItem('orderId', orderId);
+			sessionStorage.setItem('orderStatus', statusId);
+			window.location.href = `order_use.html?orderId=${orderId}`;
+		} else {
+			console.error('無法找到訂單 ID');
+		}
+	}
+
+
+
 
 	
 	

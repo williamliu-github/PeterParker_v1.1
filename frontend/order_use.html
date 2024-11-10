@@ -250,18 +250,27 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
 
 <script>
     // 獲取 URL 中的 orderId 參數
-    const urlParams = new URLSearchParams(window.location.search);
-    const orderId = urlParams.get('orderId');
+const urlParams = new URLSearchParams(window.location.search);
+const orderId = urlParams.get('orderId');
+const orderStatus = sessionStorage.getItem('orderStatus'); // 從 sessionStorage 中獲取狀態
 
-    if (orderId) {
-        // 設置 QR code 圖片的 src
-        document.getElementById('qrCodeImage').src = `http://localhost:8081/qr/generate?orderId=${orderId}`;
+if (orderId) {
+    // 設置 QR code 圖片的 src
+    document.getElementById('qrCodeImage').src = `http://localhost:8081/qr/generate?orderId=${orderId}`;
+
+    // 根據訂單狀態更新按鈕文字
+    const startParkingBtn = document.getElementById('startParkingBtn');
+    if (orderStatus === "使用中") {
+        startParkingBtn.textContent = "結束停車";
     } else {
-        console.error("未找到 orderId 參數");
+        startParkingBtn.textContent = "開始停車";
     }
 
-    // 開始停車按鈕事件，與掃描 QR code 的功能相同
-    document.getElementById('startParkingBtn').addEventListener('click', function () {
+    // 開始或結束停車按鈕事件
+    startParkingBtn.addEventListener('click', function () {
+        // 根據狀態決定是開始還是結束停車
+        let endpoint = orderStatus === "使用中" ? 'end' : 'scan';
+        
         // 觸發掃描 QR code 的相同行為
         fetch(`http://localhost:8081/order/scan/${orderId}`, {
             method: 'POST',
@@ -282,17 +291,14 @@ $('#booking-date-range').on('hide.daterangepicker', function(ev, picker) {
         })
         .catch(error => {
             console.error("Error:", error);
-            alert('掃描失敗，請稍後再試');
+            alert('操作失敗，請稍後再試');
         });
     });
+} else {
+    console.error("未找到 orderId 參數");
+}
 
-    // 回到訂單列表按鈕事件
-    document.getElementById('backToOrderListBtn').addEventListener('click', function () {
-        // 回到跳轉前的頁面
-        window.history.back();
-    });
 </script>
-
 
 
 
