@@ -448,6 +448,7 @@
 							displayRows(currentPage);
 							setupPagination();
 							updateResultsInfo();
+							window.setUserRows(rows); // 將 rows 設置為搜尋模組的資料
 						})
 						.catch(error => {
 							console.error('無法獲取會員資料:', error);

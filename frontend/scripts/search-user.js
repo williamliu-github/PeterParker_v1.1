@@ -1,5 +1,3 @@
-// search-user.js
-
 document.addEventListener('DOMContentLoaded', function () {
     const table = document.querySelector('.data-table tbody');  // 選擇表格主體
     let allRows = [];  // 儲存所有資料的副本，用於查詢功能
@@ -32,14 +30,11 @@ document.addEventListener('DOMContentLoaded', function () {
         rows.forEach(row => table.appendChild(row));
     };
 
-    // 輸出設定方法以便從其他模組呼叫
-    const setAllRows = (rows) => {
+    // 導出設置方法以便從其他模組呼叫
+    window.setUserRows = (rows) => {
         allRows = rows;
     };
 
     // 初始化查詢功能
     setupSearch();
-
-    // 導出方法
-    window.setUserRows = setAllRows;
 });
