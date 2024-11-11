@@ -1,6 +1,5 @@
 package com.tibame.peterparker.entity;
 
-
 import javax.persistence.*;
 import java.io.Serializable;
 
@@ -12,6 +11,9 @@ public class Space implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "spaceId")
     private Integer spaceId;
+
+    @Column(name = "spaceNo", length = 5)
+    private String spaceNo;
 
     @ManyToOne
     @JoinColumn(name = "parkingId", nullable = false)
@@ -39,5 +41,36 @@ public class Space implements Serializable {
 
     public void setParkingInfo(ParkingVO parkingInfo) {
         this.parkingInfo = parkingInfo;
+    }
+
+    public Integer getParkingId() {
+        if (parkingInfo != null) {
+            return parkingInfo.getParkingId();
+        }
+        return null;
+    }
+
+    public void setParkingId(Integer parkingId) {
+        if (parkingInfo == null) {
+            parkingInfo = new ParkingVO();
+        }
+        parkingInfo.setParkingId(parkingId);
+    }
+
+    public String getSpaceNo() {
+        return spaceNo;
+    }
+
+    public void setSpaceNo(String spaceNo) {
+        this.spaceNo = spaceNo;
+    }
+
+    @Override
+    public String toString() {
+        return "Space{" +
+                "spaceId=" + spaceId +
+                ", parkingId=" + getParkingId() +
+                ", spaceNo='" + spaceNo + '\'' +
+                '}';
     }
 }

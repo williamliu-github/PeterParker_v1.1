@@ -1,27 +1,20 @@
 package com.tibame.peterparker.service;
 
-import com.tibame.peterparker.dao.OrderRepository;
-import com.tibame.peterparker.dao.ParkingRepository;
-import com.tibame.peterparker.dao.SpaceRepository;
-import com.tibame.peterparker.dao.UserRepository;
+import com.tibame.peterparker.dao.*;
 import com.tibame.peterparker.dto.OrderDTO;
 import com.tibame.peterparker.dto.ParkingDTO;
-import com.tibame.peterparker.entity.OrderVO;
-import com.tibame.peterparker.entity.ParkingVO;
-import com.tibame.peterparker.entity.Space;
-import com.tibame.peterparker.entity.UserVO;
+import com.tibame.peterparker.entity.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.List;
 import java.util.Optional;
 
-import java.time.LocalDate;
-import java.time.DayOfWeek;
+import java.sql.Date;
 
 @Service
 public class OrderService {
@@ -40,6 +33,9 @@ public class OrderService {
 
     @Autowired
     private OrderMailService orderMailService;
+
+    @Autowired
+    private SpaceStatusRepository spaceStatusRepository;
 
     // 查找附近的停車場
     public List<ParkingVO> findNearbyParking(Double lat, Double lng, Double radius) {
@@ -73,44 +69,90 @@ public class OrderService {
 
     // 創建訂單
     public Integer createOrder(OrderDTO orderDTO) {
-        // 先檢查該車位在指定時段是否可用
-        List<OrderVO> conflictingOrders = orderRepository.findConflictingOrders(orderDTO.getSpaceId(), orderDTO.getOrderStartTime(), orderDTO.getOrderEndTime());
-        if (conflictingOrders.isEmpty()) {
-            OrderVO order = new OrderVO();
+        // 根據 parkingId 查找該停車場下的所有 space
+        List<Space> spaces = spaceRepository.findByParkingInfoParkingId(orderDTO.getParkingId());
 
-            // 查找 UserVO
-            UserVO user = userRepository.findByUserId(orderDTO.getUserId());
-            if (user == null) {
-                throw new EntityNotFoundException("User not found");
-            }
-            order.setUser(user);  // 設置 UserVO
-
-            // 查找 Space
-            Space space = spaceRepository.findById(orderDTO.getSpaceId())
-                    .orElseThrow(() -> new EntityNotFoundException("Space not found"));
-            order.setSpace(space);  // 設置 Space
-
-            //設置訂單相關訊息
-            order.setStatusId(orderDTO.getStatusId());
-            order.setUserComment(orderDTO.getUserComment());
-            order.setOrderStartTime(orderDTO.getOrderStartTime());
-            order.setOrderEndTime(orderDTO.getOrderEndTime());
-            order.setOrderTotalIncome(orderDTO.getOrderTotalIncome());
-            order.setOrderModified(new Timestamp(System.currentTimeMillis()));
-
-            //保存訂單
-            OrderVO savedOrder = orderRepository.save(order);
-
-            //發送郵件通知
-            String userAccount = user.getUserAccount(); // 獲取 userAccount
-            String mailText = generateMailText(savedOrder); // 根據訂單生成郵件內容
-            orderMailService.sendMail(userAccount, mailText); // 調用郵件服務發送通知
-
-            return savedOrder.getOrderId();
-        } else {
-            throw new IllegalStateException("The selected space is not available for the chosen time period.");
+        if (spaces.isEmpty()) {
+            throw new EntityNotFoundException("No spaces available under the specified parking ID");
         }
+
+        // 找到沒有時間衝突的 space
+        Space availableSpace = null;
+        for (Space space : spaces) {
+            List<SpaceStatus> conflictingStatuses = spaceStatusRepository.findBySpaceIdAndOrderStartTimeLessThanAndOrderEndTimeGreaterThan(
+                    space.getSpaceId(), orderDTO.getOrderEndTime(), orderDTO.getOrderStartTime());
+
+            if (conflictingStatuses.isEmpty()) {
+                availableSpace = space;
+                break;
+            }
+        }
+
+        // 如果找不到可用的 space，則拋出異常
+        if (availableSpace == null) {
+            throw new IllegalStateException("No available space for the chosen time period.");
+        }
+
+        OrderVO order = new OrderVO();
+
+        // 查找 UserVO
+        UserVO user = userRepository.findByUserId(orderDTO.getUserId());
+        if (user == null) {
+            throw new EntityNotFoundException("User not found");
+        }
+        order.setUser(user);  // 設置 UserVO
+
+        // 設置找到的可用 space
+        order.setSpace(availableSpace);
+
+        // 設置訂單相關訊息
+        order.setStatusId(orderDTO.getStatusId());
+        order.setUserComment(orderDTO.getUserComment());
+        order.setOrderStartTime(orderDTO.getOrderStartTime());
+        order.setOrderEndTime(orderDTO.getOrderEndTime());
+
+        // 設置訂單創建日期
+        order.setOrderDate(new Date(System.currentTimeMillis()));
+
+        // 創建 ParkingDTO 以便計算總金額
+        ParkingDTO parkingInfo = new ParkingDTO();
+        parkingInfo.setParkingId(orderDTO.getParkingId());
+        parkingInfo.setWorkdayHourlyRate(availableSpace.getParkingInfo().getWorkdayHourlyRate());
+        parkingInfo.setHolidayHourlyRate(availableSpace.getParkingInfo().getHolidayHourlyRate());
+
+        // 計算總金額
+        Integer totalIncome = calculateTotalPrice(parkingInfo, orderDTO.getOrderStartTime(), orderDTO.getOrderEndTime());
+        order.setOrderTotalIncome(totalIncome); // 設置訂單總金額
+
+        // 設置訂單修改時間
+        order.setOrderModified(new Timestamp(System.currentTimeMillis()));
+
+        // 保存訂單
+        OrderVO savedOrder = orderRepository.save(order);
+
+        // 保存空間狀態
+        SpaceStatus spaceStatus = new SpaceStatus(
+                savedOrder.getOrderId(),
+                orderDTO.getParkingId(),
+                availableSpace.getSpaceId(),
+                new Date(System.currentTimeMillis()),
+                orderDTO.getOrderStartTime(),
+                orderDTO.getOrderEndTime()
+        );
+        spaceStatusRepository.save(spaceStatus);
+
+        // 發送郵件通知
+        String userAccount = user.getUserAccount(); // 獲取 userAccount
+        String mailText = generateMailText(savedOrder); // 根據訂單生成郵件內容
+        orderMailService.sendMail(userAccount, mailText); // 調用郵件服務發送通知
+
+        return savedOrder.getOrderId();
     }
+
+
+
+
+
 
     //訂單完成通知內容
     private String generateMailText(OrderVO order) {
@@ -175,24 +217,42 @@ public class OrderService {
             throw new IllegalArgumentException("訂單結束時間不可早於訂單開始時間");
         }
 
-        // 使用 orderStartTime 轉換為 LocalDate
-        LocalDate orderDate = orderStartTime.toLocalDateTime().toLocalDate();
+        // 設置時區，這裡使用系統預設時區
+        ZoneId zoneId = ZoneId.systemDefault();
 
-        // 判斷是否為週末
-        boolean isHoliday = orderDate.getDayOfWeek() == DayOfWeek.SATURDAY || orderDate.getDayOfWeek() == DayOfWeek.SUNDAY;
+        // 將 Timestamp 轉換為 ZonedDateTime，確保在同一時區操作
+        ZonedDateTime startDateTime = orderStartTime.toInstant().atZone(zoneId);
+        ZonedDateTime endDateTime = orderEndTime.toInstant().atZone(zoneId);
 
-        // 根據是否是假日選擇價格
-        int pricePerHour = isHoliday ? parkingInfo.getHolidayHourlyRate() : parkingInfo.getWorkdayHourlyRate();
+        // 總金額初始化
+        int totalPrice = 0;
 
-        // 計算訂單持續時間（小時）
-        long durationInHours = (orderEndTime.getTime() - orderStartTime.getTime()) / (1000 * 60 * 60);
-        if (durationInHours <= 0) {
-            throw new IllegalArgumentException("訂單結束時間不可早於訂單開始時間");
+        // 逐小時計算費用
+        ZonedDateTime currentDateTime = startDateTime;
+        while (currentDateTime.isBefore(endDateTime)) {
+            // 判斷當前時間是否為假日
+            boolean isHoliday = currentDateTime.getDayOfWeek() == DayOfWeek.SATURDAY || currentDateTime.getDayOfWeek() == DayOfWeek.SUNDAY;
+
+            // 根據是否是假日選擇價格
+            int pricePerHour = isHoliday ? parkingInfo.getHolidayHourlyRate() : parkingInfo.getWorkdayHourlyRate();
+
+            // 累加當小時的費用
+            totalPrice += pricePerHour;
+
+            // 打印當前累計的金額和時間
+            System.out.println("當前時間：" + currentDateTime + "，累加後總金額：" + totalPrice);
+
+            // 時間加一小時
+            currentDateTime = currentDateTime.plusHours(1);
         }
 
-        // 計算訂單總金額
-        return Math.toIntExact(pricePerHour * durationInHours);
+        return totalPrice;
     }
+
+
+
+
+
 
 
 
@@ -200,12 +260,18 @@ public class OrderService {
 
     //根據userId查找userAccount
     public String getUserAccountByUserId(Integer userId) {
-        Optional<UserVO> optionalUser = userRepository.findById(userId);
-        if (optionalUser.isPresent()) {
-            return optionalUser.get().getUserAccount();
-        } else {
-            throw new EntityNotFoundException("User not found for ID: " + userId);
-        }
+        UserVO user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found for ID: " + userId));
+        return user.getUserAccount();
+    }
+
+    //只更新數據狀態
+    @Transactional
+    public void updateOrderStatus(Integer orderId, String newStatus) {
+        OrderVO order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new EntityNotFoundException("Order not found"));
+        order.setStatusId(newStatus);
+        orderRepository.save(order);
     }
 
 

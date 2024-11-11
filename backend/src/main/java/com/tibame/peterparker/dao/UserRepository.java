@@ -65,7 +65,22 @@ public interface UserRepository extends JpaRepository<UserVO, Integer> {
                                                            @Param("userId") Integer userId);
 
 
+    @Modifying
+    @Query(value= "UPDATE orderinfo o SET o.userComment = :userComment WHERE o.orderId = :orderId", nativeQuery=true)
+    public int updateOrderComment(@Param("userComment")String userComment, @Param("orderId")Integer orderId);
+
     //獲取userAccount作為寄信mail
     Optional<UserVO> findById(Integer userId);
+
+    // 獲取使用者多個statusId的order
+    @Query(value = "SELECT pi.parkingId, pi.parkingName, o.orderId, o.spaceId, o.userId, o.statusId, " +
+            "o.orderStartTime, o.orderEndTime, o.orderTotalIncome, o.userComment, o.orderModified " +
+            "FROM orderinfo o " +
+            "JOIN space s ON o.spaceId = s.spaceId " +
+            "JOIN parkingInfo pi ON s.parkingId = pi.parkingId " +
+            "WHERE o.statusId IN (:statusIds) AND o.userId = :userId",
+            nativeQuery = true)
+    List<Object[]> findOrderParkingInfoByMutipleStatusIdAndUserId(@Param("statusIds") List<String> statusIds,
+                                                                  @Param("userId") Integer userId);
 
 }

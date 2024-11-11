@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.tibame.peterparker.dao.OrderRepository;
 import com.tibame.peterparker.dto.CalculatePriceRequest;
 import com.tibame.peterparker.dto.FilterRequest;
 import com.tibame.peterparker.dto.ParkingDTO;
@@ -28,7 +29,7 @@ import javax.servlet.http.HttpSession;
 
 import java.sql.Date;
 
-@CrossOrigin(origins = "*") //本地端佈署用來允許所有跨域
+//@CrossOrigin(origins = "http://localhost:5500") //本地端佈署用來允許所有跨域
 @RestController
 @RequestMapping(path = "/order")
 public class OrderController {
@@ -41,6 +42,9 @@ public class OrderController {
 
     @Autowired
     private OrderMailService orderMailService;
+
+    @Autowired
+    private OrderRepository orderRepository;
 
     // 查詢用戶所有訂單
     @GetMapping("/user/{userId}")
@@ -65,16 +69,16 @@ public class OrderController {
     // 創建訂單
     @PostMapping("/create")
     public ResponseEntity<?> createOrder(@RequestBody OrderDTO orderDTO, HttpSession session) {
-        Integer loginUserId = (Integer) session.getAttribute("loginUserId");
+        Integer loginUserId = Integer.parseInt( (String)session.getAttribute("loginUserId"));
         //使用者未登入則阻止成立
-//        if (loginUserId == null) {
-//            return new ResponseEntity<>("使用者未登入", HttpStatus.UNAUTHORIZED);
-//        }
+        if (loginUserId == null) {
+            return new ResponseEntity<>("使用者未登入", HttpStatus.UNAUTHORIZED);
+        }
 
         // 如果用戶未登入，使用預設 ID 999
-        if (loginUserId == null) {
-            loginUserId = 1; // 預設的未登入用戶 ID
-        }
+//        if (loginUserId == null) {
+//            loginUserId = 1; // 預設的未登入用戶 ID
+//        }
 
         orderDTO.setUserId(loginUserId);
 
@@ -84,7 +88,7 @@ public class OrderController {
             Integer orderId = orderService.createOrder(orderDTO);
 
             // 獲取用戶的 email（userAccount）
-            String userEmail = orderService.getUserAccountByUserId(loginUserId); // 假設 userService 中有此方法
+            String userEmail = orderService.getUserAccountByUserId(loginUserId);
 
             // 發送訂單完成郵件
             OrderMailService orderMailService = new OrderMailService();
@@ -141,16 +145,34 @@ public class OrderController {
     @PostMapping("/nearbyParking")
     public ResponseEntity<?> getNearbyParking(@RequestBody Map<String, Object> request) {
         try {
-            Double latitude = (Double) request.get("latitude");
-            Double longitude = (Double) request.get("longitude");
-            Double radius = (Double) request.get("radius");
+            // 嘗試將 latitude, longitude, radius 從請求中獲取，並轉換為 Double 類型
+            Double latitude = null;
+            Double longitude = null;
+            Double radius = null;
 
+            if (request.get("latitude") instanceof Number) {
+                latitude = ((Number) request.get("latitude")).doubleValue();
+            }
+            if (request.get("longitude") instanceof Number) {
+                longitude = ((Number) request.get("longitude")).doubleValue();
+            }
+            if (request.get("radius") instanceof Number) {
+                radius = ((Number) request.get("radius")).doubleValue();
+            }
+
+            // 確保參數不為空
+            if (latitude == null || longitude == null || radius == null) {
+                throw new IllegalArgumentException("Missing or invalid latitude, longitude, or radius");
+            }
+
+            // 呼叫 service 查找附近的停車場
             List<Map<String, Object>> nearbyParking = parkingService.findNearbyParking(latitude, longitude, radius);
             return new ResponseEntity<>(nearbyParking, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("Error finding nearby parking: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 
 
     // 用關鍵字查找停車場
@@ -249,6 +271,46 @@ public class OrderController {
             return new ResponseEntity<>("Error fetching parking info: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+
+    @PostMapping("/scan/{orderId}")
+    public ResponseEntity<String> scanQRCode(@PathVariable Integer orderId) {
+        // 根據 orderId 查找訂單
+        Optional<OrderVO> orderOptional = orderService.findOrderById(orderId);
+
+        if (orderOptional.isEmpty()) {
+            // 如果找不到訂單，返回 404
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Order not found");
+        }
+
+        // 獲取訂單
+        OrderVO order = orderOptional.get();
+
+        // 根據當前的狀態更新訂單狀態
+        String currentStatus = order.getStatusId();
+        String nextStatus;
+        String redirectUrl;
+
+        switch (currentStatus) {
+            case "預約中":
+                nextStatus = "使用中";
+                redirectUrl = "/user_ongoing_reservation.html";
+                break;
+            case "使用中":
+                nextStatus = "已完成";
+                redirectUrl = "/user_completed_reservation.html";
+                break;
+            default:
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid order status for scanning");
+        }
+
+        // 更新訂單狀態
+        orderService.updateOrderStatus(orderId, nextStatus);
+
+        // 返回對應的重定向 URL
+        return ResponseEntity.ok(redirectUrl);
+    }
+
 
 
 

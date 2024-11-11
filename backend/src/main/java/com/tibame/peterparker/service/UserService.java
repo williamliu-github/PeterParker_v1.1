@@ -144,4 +144,31 @@ public class UserService {
        return orderRepository.updateOrderStatus(orderId,statusId);
     }
 
+    // 更改訂單用戶評價
+    public int updateUserComment(String userComment, Integer orderId){
+        return userRepository.updateOrderComment(userComment,orderId);
+    }
+
+    // 列出使用者所有訂單依據多個狀態
+    public List<UserOrderInfoDTO> getOrderParkingInfoByMultipleStatus(List<String> statusIds, Integer userId) {
+        List<Object[]> results = userRepository.findOrderParkingInfoByMutipleStatusIdAndUserId(statusIds, userId);
+
+        // Map the raw Object[] results to the DTOs
+        return results.stream()
+                .map(result -> new UserOrderInfoDTO(
+                        (Integer) result[0], // parkingImg
+                        (String) result[1], // parkingName
+                        (Integer) result[2], // orderId
+                        (Integer) result[3], // spaceId
+                        (Integer) result[4], // userId
+                        (String) result[5], // statusId
+                        (Timestamp) result[6], // orderStartTime
+                        (Timestamp) result[7], // orderEndTime
+                        (Integer) result[8], // orderTotalIncome
+                        (String) result[9], // userComment
+                        (Timestamp) result[10] // orderModified
+                ))
+                .collect(Collectors.toList());
+    }
+
 }

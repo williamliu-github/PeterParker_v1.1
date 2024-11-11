@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (parkingInfoElement) {
-            parkingInfoElement.textContent = `(容量: ${selectedParking.capacity} 車位, 費率: 假日 ${selectedParking.holidayHourlyRate} 元 / 平日 ${selectedParking.workdayHourlyRate} 元)`;
+            parkingInfoElement.textContent = `總數: ${selectedParking.capacity} `;
         } else {
             console.error('找不到停車場資訊元素');
         }
@@ -32,10 +32,16 @@ document.addEventListener("DOMContentLoaded", function () {
     // 獲取暫存的預約資料
     const parkingId = sessionStorage.getItem('parkingId');
     const dateRange = sessionStorage.getItem('date'); // 使用 dateRange 替代 date
-    const startTime = sessionStorage.getItem('startTime');
-    const endTime = sessionStorage.getItem('endTime');
+    const startTime = sessionStorage.getItem('startTime'); // UTC 格式的開始時間
+    const endTime = sessionStorage.getItem('endTime'); // UTC 格式的結束時間
+
+    let localStartDateTime, localEndDateTime;
 
     if (parkingId && dateRange && startTime && endTime) {
+        // 將 UTC 時間轉換為本地時間
+        localStartDateTime = new Date(startTime);
+        localEndDateTime = new Date(endTime);
+
         // 更新預約日期和時間段
         const displayDateElement = document.querySelector('#display-date');
         const displayTimeElement = document.querySelector('#display-time');
@@ -48,29 +54,23 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (displayTimeElement) {
-            displayTimeElement.textContent = `${startTime}~${endTime}`;
+            displayTimeElement.textContent = `${localStartDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} ~ ${localEndDateTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
         } else {
             console.error('找不到顯示預約時間的元素');
         }
 
         if (timeCountElement) {
-            // 計算時數
-            const startHour = parseInt(startTime.split(':')[0], 10);
-            const endHour = parseInt(endTime.split(':')[0], 10);
-            const timeCount = endHour - startHour;
-            timeCountElement.textContent = `${timeCount}小時`;
+            // 計算持續時間（小時）
+            const timeDifferenceInMillis = localEndDateTime - localStartDateTime;
+            let durationInHours = Math.ceil(timeDifferenceInMillis / (1000 * 60 * 60)); // 無條件進位到下一小時
+            timeCountElement.textContent = `${durationInHours} 小時`;
         } else {
             console.error('找不到顯示時數的元素');
         }
 
-        // 確保日期範圍格式為 "MM/DD/YYYY - MM/DD/YYYY"，並進行拆分
-        const [startDateStr, endDateStr] = dateRange.split(" - ");
-        const [startMonth, startDay, startYear] = startDateStr.split("/");
-        const [endMonth, endDay, endYear] = endDateStr.split("/");
-
         // 格式化日期為 "YYYY-MM-DD"
-        const formattedStartDate = `${startYear}-${startMonth.padStart(2, '0')}-${startDay.padStart(2, '0')}`;
-        const formattedEndDate = `${endYear}-${endMonth.padStart(2, '0')}-${endDay.padStart(2, '0')}`;
+        const formattedStartDate = localStartDateTime.toISOString().split('T')[0];
+        const formattedEndDate = localEndDateTime.toISOString().split('T')[0];
 
         // 打印確認用
         console.log('Formatted Start Date:', formattedStartDate);
@@ -78,8 +78,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // 計算預估金額
         const orderData = {
-            orderStartTime: `${formattedStartDate}T${startTime}:00`.replace(/\s+/g, ''),  // 去掉任何多餘空格
-            orderEndTime: `${formattedEndDate}T${endTime}:00`.replace(/\s+/g, ''),      // 去掉任何多餘空格
+            orderStartTime: localStartDateTime.toISOString(),
+            orderEndTime: localEndDateTime.toISOString(),
             parkingId: parseInt(parkingId)
         };
 
@@ -100,8 +100,12 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .then(priceData => {
                 const totalCostElement = document.getElementById('total-cost');
-                if (priceData && priceData.totalPrice && totalCostElement) {
-                    totalCostElement.textContent = `${priceData.totalPrice} NTD`;
+                if (priceData && priceData.totalPrice) {
+                    if (totalCostElement) {
+                        totalCostElement.textContent = `${priceData.totalPrice} NTD`;
+                    }
+                    // 保存總金額到 sessionStorage
+                    sessionStorage.setItem('totalCost', priceData.totalPrice);
                 } else if (priceData.error) {
                     console.error('無法計算總金額:', priceData.error);
                 } else {
@@ -111,7 +115,6 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => {
                 console.error('Error calculating total price:', error);
             });
-
     } else {
         console.error('無法取得預約信息，請返回上一頁重新選擇');
     }
@@ -120,32 +123,60 @@ document.addEventListener("DOMContentLoaded", function () {
     const confirmBookingButton = document.getElementById('confirm-booking-button');
     if (confirmBookingButton) {
         confirmBookingButton.addEventListener('click', function () {
-            if (!parkingId || !dateRange || !startTime || !endTime) {
+            if (!parkingId || !dateRange || !startTime || !endTime || !localStartDateTime || !localEndDateTime) {
                 alert('無法提交訂單，缺少必要的預約信息');
                 return;
             }
 
+            // 使用已經計算的 localStartDateTime 和 localEndDateTime
             const orderDTO = {
                 parkingId: parseInt(parkingId),
-                orderStartTime: `${formattedStartDate}T${startTime}:00`,
-                orderEndTime: `${formattedEndDate}T${endTime}:00`,
-                statusId: '預約中' // 設置預約狀態
+                orderStartTime: localStartDateTime.toISOString(),
+                orderEndTime: localEndDateTime.toISOString(),
+                statusId: '預約中', // 設置預約狀態
+                totalPrice: sessionStorage.getItem('totalCost') // 保存計算的總金額
             };
+
+            // 獲取 JWT token
+            const peterParkerToken = localStorage.getItem('peterParkerToken');
+            if (!peterParkerToken) {
+                console.error('JWT token not found, redirecting to login');
+                window.location.href = 'index.html'; // Redirect to login if token is missing
+                return;
+            }
+
+            console.log("Token being sent:", peterParkerToken);
 
             // 將訂單提交到後端
             fetch('http://localhost:8081/order/create', {
                 method: 'POST',
                 headers: {
+                    'Authorization': `Bearer ${peterParkerToken}`,
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(orderDTO)
             })
-                .then(response => response.json())
+                .then(response => {
+                    console.log("Response status:", response.status);
+
+                    if (response.status >= 200 && response.status < 300) {
+                        return response.json();
+                    } else {
+                        throw new Error(`Network response was not ok, status code: ${response.status}`);
+                    }
+                })
                 .then(data => {
-                    if (data && data.orderId) {
-                        alert(`預約成功，訂單號：${data.orderId}`);
-                        // 清空 sessionStorage 中的預約資料
-                        sessionStorage.clear();
+                    console.log("Response data:", data);
+
+                    if (typeof data === 'number') {
+                        alert(`預約成功，訂單號：${data}`);
+
+                        // 保存必要的預約資料到 sessionStorage 中供下一頁顯示
+                        sessionStorage.setItem('orderId', data);
+                        sessionStorage.setItem('date', dateRange);
+                        sessionStorage.setItem('startTime', startTime);
+                        sessionStorage.setItem('endTime', endTime);
+
                         // 跳轉到訂單確認頁面
                         window.location.href = 'parking_booking_confirm.html';
                     } else {
