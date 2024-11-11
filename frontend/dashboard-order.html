@@ -452,23 +452,25 @@
 
 		<script>
 			document.addEventListener('DOMContentLoaded', function () {
-				const table = document.querySelector('.data-table tbody');  // 選擇表格主體
-				let rows = [];  // 儲存顯示的資料行
-				let allRows = [];  // 儲存所有資料的副本，用於查詢功能
-				let rowsPerPage = 10;  // 每頁顯示的資料數量
-				let currentPage = 1;  // 當前頁數
-
+				const table = document.querySelector('.data-table tbody');
+				let rows = [];  // 保存當前頁面顯示的資料
+				let allRows = [];  // 保存所有訂單資料
+				let rowsPerPage = 10;  // 每頁顯示筆數
+				let currentPage = 1;  // 當前頁面
+		
 				const resultsInfoDiv = document.querySelector('.results-info');
 				const resultsPerPageSelect = document.getElementById('resultsPerPage');
 				const params = new URLSearchParams(window.location.search);
 				const parkingId = params.get('parkingId');
-
+		
+				// 更新顯示的範圍和總筆數
 				const updateResultsInfo = () => {
 					const startResult = (currentPage - 1) * rowsPerPage + 1;
 					const endResult = Math.min(currentPage * rowsPerPage, allRows.length);
 					resultsInfoDiv.innerHTML = `顯示第 ${startResult} 至 ${endResult} 筆結果，共 <span style="color:red; font-weight:bold;">${allRows.length}</span> 筆`;
 				};
-
+		
+				// 從 API 獲取訂單資料
 				const fetchOrders = () => {
 					fetch('http://localhost:8081/api/orders/all', {
 						method: 'GET',
@@ -476,38 +478,34 @@
 							'Content-Type': 'application/json'
 						}
 					})
-						.then(response => {
-							if (!response.ok) {
-								throw new Error('Network response was not ok ' + response.statusText);
-							}
-							return response.json();
-						})
-						.then(data => {
-							const rows = data.map(order => createRow(order)); // 將資料轉為表格行
-							console.log("Fetched rows:", rows); // 除錯訊息，確認從 API 獲取的資料
-
-							displayRows(rows); // 顯示當前頁的資料
-							setupPagination(); // 設定分頁
-							updateResultsInfo(); // 更新結果資訊
-
-							// 使用 setOrderRows 將 rows 傳遞到 search-order.js 模組中
-							window.setOrderRows(rows);  // 呼叫 setOrderRows 並傳入 rows
-						})
-						.catch(error => console.error('無法獲取訂單資料:', error));
+					.then(response => {
+						if (!response.ok) {
+							throw new Error('Network response was not ok ' + response.statusText);
+						}
+						return response.json();
+					})
+					.then(data => {
+						allRows = data.map(order => createRow(order)); // 將資料轉換為表格行並儲存到 allRows
+						displayRows(currentPage); // 顯示第一頁
+						setupPagination(); // 設定分頁
+						updateResultsInfo(); // 更新結果資訊
+					})
+					.catch(error => console.error('無法獲取訂單資料:', error));
 				};
-
+		
+				// 建立表格行
 				const createRow = (order) => {
 					const row = document.createElement('tr');
 					const formattedOrderModified = new Date(order.orderModified).toLocaleString('zh-TW', {
 						year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'
 					});
-
+		
 					let statusClass = '';
 					if (order.statusId === '已完成') statusClass = 'label-complete';
 					else if (order.statusId === '已取消') statusClass = 'label-cancelled';
 					else if (order.statusId === '使用中') statusClass = 'label-in-use';
 					else if (order.statusId === '預約中') statusClass = 'label-in-order';
-
+		
 					row.innerHTML = `
 						<td>${order.orderId}</td>
 						<td>${order.user.userName}</td>
@@ -521,35 +519,41 @@
 					`;
 					return row;
 				};
-
+		
+				// 顯示當前頁的資料行
 				const displayRows = (page) => {
 					table.innerHTML = '';
-					rows.slice((page - 1) * rowsPerPage, page * rowsPerPage).forEach(row => table.appendChild(row));
-					updateResultsInfo();
+					rows = allRows.slice((page - 1) * rowsPerPage, page * rowsPerPage);  // 更新當前頁面資料
+					rows.forEach(row => table.appendChild(row));  // 顯示資料行
+					updateResultsInfo(); // 更新結果資訊
 				};
-
+		
+				// 每頁顯示筆數的變更事件
 				resultsPerPageSelect.addEventListener('change', (event) => {
 					rowsPerPage = parseInt(event.target.value);
-					displayRows(currentPage = 1);
+					currentPage = 1;  // 重置到第一頁
+					displayRows(currentPage);
 					setupPagination();
-					updateResultsInfo();
 				});
-
+		
+				// 設置分頁按鈕
 				const setupPagination = () => {
 					const totalPages = Math.ceil(allRows.length / rowsPerPage);
 					const paginationInfoDiv = document.querySelector('.pagination-info');
 					const paginationButtonsDiv = document.querySelector('.pagination-buttons');
-
+		
 					paginationInfoDiv.innerHTML = '';
 					paginationButtonsDiv.innerHTML = '';
-
+		
+					// 創建上一頁按鈕
 					const prevButton = createButton('上一頁', currentPage === 1, () => {
 						currentPage--;
 						displayRows(currentPage);
 						setupPagination();
 					});
 					paginationButtonsDiv.appendChild(prevButton);
-
+		
+					// 創建分頁按鈕
 					for (let i = 1; i <= totalPages; i++) {
 						const pageButton = createButton(i, i === currentPage, () => {
 							currentPage = i;
@@ -559,7 +563,8 @@
 						pageButton.classList.toggle("active", i === currentPage);
 						paginationButtonsDiv.appendChild(pageButton);
 					}
-
+		
+					// 創建下一頁按鈕
 					const nextButton = createButton('下一頁', currentPage === totalPages, () => {
 						currentPage++;
 						displayRows(currentPage);
@@ -567,7 +572,7 @@
 					});
 					paginationButtonsDiv.appendChild(nextButton);
 				};
-
+		
 				const createButton = (text, disabled, onClick) => {
 					const btn = document.createElement('button');
 					btn.innerText = text;
@@ -575,8 +580,8 @@
 					btn.onclick = onClick;
 					return btn;
 				};
-
-				fetchOrders();
+		
+				fetchOrders();  // 初始化顯示
 			});
 		</script>
 
