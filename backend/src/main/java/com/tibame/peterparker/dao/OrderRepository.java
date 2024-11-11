@@ -49,4 +49,6 @@ public interface OrderRepository extends JpaRepository<OrderVO, Integer> {
 
     @Query("SELECT o FROM OrderVO o WHERE o.space.spaceId = :spaceId AND o.orderStartTime > CURRENT_TIMESTAMP")
     List<OrderVO> findUpcomingOrdersBySpaceId(@Param("spaceId") Integer spaceId);
+
+
 }

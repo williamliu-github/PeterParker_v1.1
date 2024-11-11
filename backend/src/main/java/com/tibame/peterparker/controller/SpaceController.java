@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("owner/owners")
+@RequestMapping("/owner/owners")
 public class SpaceController {
 
     @Autowired
