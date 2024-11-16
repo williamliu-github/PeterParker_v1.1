@@ -1,6 +1,6 @@
 <h1>Peter Parker (September 2024 - November 2024)</h1>
 <h3>Project Content:</h3> 
-Peter Parker is a parking reservation platform that provides features for users and parking lot owners, including reserving parking spaces, listing parking facilities, as well as a backend management system.
+Peter Parker is a parking reservation platform that provides features for users and parking lot owners, including reserving parking spaces, listing parking facilities, as well as a backend management system. It was a team project built by a team of four, including me, during my study in Tibame Java Bootcamp. 
 <h3>Technologies:</h3>
 Below are the technologies we use for this project:<br>
 <h4>Frontend</h4>
