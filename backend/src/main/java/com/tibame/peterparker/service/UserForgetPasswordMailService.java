@@ -31,7 +31,7 @@ public class UserForgetPasswordMailService {
             //     ●5-2) 下拉式選單【選取裝置】--> 選取【Windows 電腦】
             //     ●5-3) 最後按【產生】密碼
             final String myGmail = "bliu69108@gmail.com";
-            final String myGmail_password = "ncom exxb bbln oybb";
+            final String myGmail_password = "irzk fqjr isfx rtmq";
             Session session = Session.getInstance(props, new Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(myGmail, myGmail_password);
@@ -43,12 +43,12 @@ public class UserForgetPasswordMailService {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
             // 設定信中的主旨
-            message.setSubject("[Peter Parker] 密碼重設");
+            message.setSubject("【Peter Parker】 密碼重設");
 
             String resetLink = "http://localhost:5500/user_update_password.html?token=" + passwordResetCode;
 
             // 設定信中的內容
-            message.setText("忘記密碼不要擔心！請點選以下的連接前往重設您的帳號(30分鐘後失效)：\n" + resetLink );
+            message.setText("忘記密碼不要擔心！請點選以下的連接前往重設您的帳號【30分鐘後失效】：\n" + resetLink );
 
             Transport.send(message);
             System.out.println("傳送成功!");

@@ -66,6 +66,7 @@
             <artifactId>jedis</artifactId>
         </dependency>
 
+
         <!-- Google API 客戶端 -->
         <dependency>
             <groupId>com.google.api-client</groupId>
@@ -159,11 +160,11 @@
         </dependency>
 
 
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.projectlombok</groupId>-->
+<!--            <artifactId>lombok</artifactId>-->
+<!--            <optional>true</optional>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.springframework.security</groupId>
@@ -195,8 +196,22 @@
             <version>3.4.1</version>
         </dependency>
 
-
-
     </dependencies>
+
+<!-- adding for JCT error -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 
 </project>

@@ -67,10 +67,10 @@ public class UserController {
 
         if (!rememberMe) {
             jwtToken = Jwts.builder()
-                    .setSubject(String.valueOf(userVO.getUserId()))
-                    .setIssuedAt(new Date())
-                    .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hour in milliseconds
-                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes()) // Signing with byte array
+                    .setSubject(String.valueOf(userVO.getUserId())) // JWT Token payload (subject)
+                    .setIssuedAt(new Date())  // JWT Token payload (setIssuedAt)
+                    .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hour in milliseconds JWT Token payload(expiration time)
+                    .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes()) // Signing with byte array // JWT Token signature
                     .compact();
         } else {
             jwtToken = Jwts.builder()

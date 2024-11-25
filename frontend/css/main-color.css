@@ -1,5 +1,5 @@
 /* ------------------------------------------------------------------- */
-/* Color #f91942 - rgb(249, 25, 66)
+/* Color black - rgb(249, 25, 66)
 ---------------------------------------------------------------------- */
 #booking-date-range span:after,
 .time-slot label:hover span,
@@ -7,17 +7,17 @@
 .time-slot input ~ label:hover,
 .booking-estimated-cost span,
 .time-slot label:hover span {
-    color: #f91942;
+    color: black;
 }
 
 
 .icon-box-v3:hover .ibv3-icon {
-    background:  #F82246;
+    background: black;
     box-shadow:  0 3px 8px #F8224650;
 }
 
 .icon-box-v3 .ibv3-icon i {
-    color:  #F82246;
+    color:  black;
 }
 
 .icon-box-v3 .ibv3-icon i,
@@ -25,16 +25,16 @@
 .icon-box-v3 .ibv3-icon svg circle,
 .icon-box-v3 .ibv3-icon svg rect,
 .icon-box-v3 .ibv3-icon svg path {
-    fill:  #F82246;
+    fill: black;
 }
 
 .home-search-slide h3 a:before,
 .home-search-slide h3 strong:before {
-    background: #f91942;
+    background: black;
 }
 
 .ibv3-icon {
-    background:  #f9194210;
+    background:  black10;
 }
 .daterangepicker td.in-range,
 .time-slot input ~ label:hover {
@@ -48,7 +48,7 @@
 .time-slot input:checked ~ label,
 .daterangepicker td.active, .daterangepicker td.active:hover,
 .daterangepicker .drp-buttons button.applyBtn {
-    background-color: #f91942;
+    background-color: black;
 }
 
 .comment-by-listing a:hover,
@@ -104,7 +104,7 @@ a.button.border,
 .agent .social-icons li a:hover i,
 #footer .social-icons li a:hover i,
 .headline span i {
-    color: #f91942;
+    color: black;
 }
 
 .daterangepicker td.active.end-date.in-range.available,
@@ -148,7 +148,7 @@ input:checked + .slider,
 #mapnav-buttons a:hover,
 #sign-in-dialog .mfp-close:hover,
 #small-dialog .mfp-close:hover {
-    background-color: #f91942;
+    background-color: black;
 }
 
 
@@ -158,20 +158,20 @@ span.blog-item-tag ,
 .listing-item-container.list-layout span.tag,
 .tip,
 .mfp-arrow:hover {
-    background: #f91942;
+    background: black;
 }
 
 
-.rangeslider__handle { border-color: #f91942; }
+.rangeslider__handle { border-color: black; }
 
 .layout-switcher a.active {
-    color: #f91942;
-    border-color: #f91942;
+    color: black;
+    border-color: black;
 }
 
 #titlebar.listing-titlebar span.listing-tag {
-    border-color: #f91942;
-    color: #f91942;
+    border-color: black;
+    color: black;
 }
 
 
@@ -179,7 +179,7 @@ span.blog-item-tag ,
 .listing-slider-small .slick-prev:hover,
 .listing-slider .slick-next:hover,
 .listing-slider .slick-prev:hover {
-    background-color: #f91942;
+    background-color: black;
 }
 
 
@@ -188,118 +188,118 @@ span.blog-item-tag ,
 .listing-nav li:first-child a,
 .listing-nav li a.active,
 .listing-nav li a:hover {
-    border-color: #f91942;
-    color: #f91942;
+    border-color: black;
+    color: black;
 }
 
 .pricing-list-container h4 {
-    color: #f91942;
-    border-color: #f91942;
+    color: black;
+    border-color: black;
 }
 
-.sidebar-textbox ul.contact-details li a { color: #f91942; }
+.sidebar-textbox ul.contact-details li a { color: black; }
 
 a.button.border {
-    color: #f91942;
-    border-color: #f91942;
+    color: black;
+    border-color: black;
 }
 
 .trigger.active a,
 .ui-accordion .ui-accordion-header-active:hover,
 .ui-accordion .ui-accordion-header-active {
-    background-color: #f91942;
-    border-color: #f91942;
+    background-color: black;
+    border-color: black;
 }
 
 .numbered.color ol > li::before {
-    border-color: #f91942;;
-    color: #f91942;
+    border-color: black;;
+    color: black;
 }
 
 .numbered.color.filled ol > li::before {
-    border-color: #f91942;
-    background-color: #f91942;
+    border-color: black;
+    background-color: black;
 }
 
 .info-box {
-    border-top: 2px solid #f91942;
+    border-top: 2px solid black;
     background: linear-gradient(to bottom, rgba(255,255,255,0.98), rgba(255,255,255,0.95));
-    background-color: #f91942;
-    color: #f91942;
+    background-color: black;
+    color: black;
 }
 
 .info-box.no-border {
     background: linear-gradient(to bottom, rgba(255,255,255,0.96), rgba(255,255,255,0.93));
-    background-color: #f91942;
+    background-color: black;
 }
 
-.tabs-nav li a:hover { border-color: #f91942; }
+.tabs-nav li a:hover { border-color: black; }
 
 .tabs-nav li a:hover,
 .tabs-nav li.active a {
-    border-color: #f91942;
-    color: #f91942;
+    border-color: black;
+    color: black;
 }
 
 .style-3 .tabs-nav li a:hover,
 .style-3 .tabs-nav li.active a {
-    border-color: #f91942;
-    background-color: #f91942;
+    border-color: black;
+    background-color: black;
 }
 
 .checkboxes input[type=checkbox]:checked + label:before {
-    background-color: #f91942;
-    border-color: #f91942;
+    background-color: black;
+    border-color: black;
 }
 
-.listing-item-container.compact .listing-item-content span.tag { background-color: #f91942; }
+.listing-item-container.compact .listing-item-content span.tag { background-color: black; }
 
 .dashboard-nav ul li.active,
-.dashboard-nav ul li:hover { border-color: #f91942; }
+.dashboard-nav ul li:hover { border-color: black; }
 
-.dashboard-list-box .comment-by-listing a:hover { color: #f91942; }
+.dashboard-list-box .comment-by-listing a:hover { color: black; }
 
-.opening-day:hover h5 { color: #f91942 !important; }
+.opening-day:hover h5 { color: black !important; }
 
-.map-box h4 a:hover { color: #f91942; }
+.map-box h4 a:hover { color: black; }
 .infoBox-close:hover {
-    background-color: #f91942;
-    -webkit-text-stroke: 1px #f91942;
+    background-color: black;
+    -webkit-text-stroke: 1px black;
 }
 
 .cluster-visible {
-    background-color: #f91942;
+    background-color: black;
 }
 
 .cluster-visible:before {
-    border: 7px solid #f91942;
-    box-shadow: inset 0 0 0 4px #f91942;
+    border: 7px solid black;
+    box-shadow: inset 0 0 0 4px black;
 }
 
 .marker-arrow {
-    border-color: #f91942 transparent transparent;
+    border-color: black transparent transparent;
 }
 
 .face.front {
-    border-color: #f91942;
-    color: #f91942;
+    border-color: black;
+    color: black;
 }
 
 .face.back {
-    background: #f91942;
-    border-color: #f91942;
+    background: black;
+    border-color: black;
 }
 
 .custom-zoom-in:hover:before,
-.custom-zoom-out:hover:before  { -webkit-text-stroke: 1px #f91942;  }
+.custom-zoom-out:hover:before  { -webkit-text-stroke: 1px black;  }
 
 .category-box-btn:hover {
-    background-color: #f91942;
-    border-color: #f91942;
+    background-color: black;
+    border-color: black;
 } 
 
 .message-bubble.me .message-text {
-    color: #f91942;
+    color: black;
     background-color: rgba(249,25,66,0.05);
 }
 
@@ -320,19 +320,19 @@ body #navigation.style-1 ul li:hover ul li:hover li:hover li:hover a,
 body #navigation.style-1 ul ul li:hover a:after,
 body #navigation.style-1 ul ul li:hover ul li a:hover,
 body .user-menu ul li a:hover {
-    color: #f91942
+    color: black
 }
 
 #navigation.style-1>ul>li:hover>a,
 #navigation.style-1>ul>li>a.current {
     background: rgba(249, 25, 66, .06);
-    color: #f91942
+    color: black
 }
 
 .category-box:hover .category-box-content span,
 .radio input[type=radio]+label .radio-label:after,
 .uploadButton .uploadButton-button:hover {
-    background-color: #f91942
+    background-color: black
 }
 
 .headline-with-separator:after,
@@ -342,12 +342,12 @@ body .user-menu ul li a:hover {
 .transparent-header #header:not(.cloned) #navigation.style-1>ul>li>a.current,
 .transparent-header #header:not(.cloned) .header-widget .button.border:hover,
 .transparent-header #header:not(.cloned) .header-widget .button:hover {
-    background: #f91942
+    background: black
 }
 
 .radio input[type=radio]:checked+label .radio-label {
-    background-color: #f91942;
-    border-color: #f91942
+    background-color: black;
+    border-color: black
 }
 
 .uploadButton .uploadButton-button:hover {
@@ -356,7 +356,7 @@ body .user-menu ul li a:hover {
 
 .category-small-box i,
 .uploadButton .uploadButton-button:before {
-    color: #f91942
+    color: black
 }
 
 .daterangepicker td.in-range,
@@ -370,5 +370,5 @@ section.fullwidth .icon-box-2 i {
 
 .slick-current .testimonial-author h4 span {
     background: rgba(249, 25, 66, .06);
-    color: #f91942
+    color: black
 }
