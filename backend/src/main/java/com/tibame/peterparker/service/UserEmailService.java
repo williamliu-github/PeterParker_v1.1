@@ -36,7 +36,7 @@ public class UserEmailService {
             //     ●5-2) 下拉式選單【選取裝置】--> 選取【Windows 電腦】
             //     ●5-3) 最後按【產生】密碼
             final String myGmail = "bliu69108@gmail.com";
-            final String myGmail_password = "ncom exxb bbln oybb";
+            final String myGmail_password = "irzk fqjr isfx rtmq";
             Session session = Session.getInstance(props, new Authenticator() {
                 protected PasswordAuthentication getPasswordAuthentication() {
                     return new PasswordAuthentication(myGmail, myGmail_password);
@@ -48,9 +48,9 @@ public class UserEmailService {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
             // 設定信中的主旨
-            message.setSubject("[PeterParker] 驗證碼通知");
+            message.setSubject("【PeterParker】驗證碼通知");
             // 設定信中的內容
-            message.setText("歡迎您註冊 PeterParker 的會員。您的驗證碼為：" + verificationCode + " (30分鐘後失效)。");
+            message.setText("歡迎您註冊 PeterParker 的會員。您的驗證碼為：" + verificationCode + " 【30分鐘後失效】。");
 
             Transport.send(message);
             System.out.println("傳送成功!");

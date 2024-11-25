@@ -185,7 +185,7 @@ document.getElementById('register_form').addEventListener('submit', function(eve
 		})
 		.catch((error) => {
 			console.error('Error:', error);
-			console.error(JSON.stringify(jsonData));
+			console.error(JSON.stringify(jsonData_registry));
 			errorMessage_registry.style.display = 'block';
 			errorMessage_registry.innerText = "系統忙線中，請等候。"
 		})

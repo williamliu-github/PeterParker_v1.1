@@ -13,6 +13,7 @@
 <link rel="stylesheet" href="css/main-color.css" id="colors">
 <script type="module" src="scripts/userinfo.js"></script>
 <script type="module" src="scripts/get_photo.js"></script>
+<link rel="icon" href="images/logo-icon.png" type="image/png">
 
 </head>
 
@@ -346,6 +347,7 @@ function listeditAll () {
                 orderList.appendChild(orders);
 				checkFavourite(order.parkingId);
 				checkBlacklist(order.parkingId);
+				checkUserComment(order.orderId);
             });
         } else {
             console.log("No orders available.");
@@ -415,6 +417,25 @@ function listeditAll () {
 		console.error("Error:", error);
 	});
 }
+
+function checkUserComment(order) {
+    const textInput = document.getElementById(`text-display-${order}`);
+	console.log(textInput);
+    if (!textInput) {
+        console.error(`Element with ID text-display-${order} not found`);
+        return;
+    }
+    let newComment = textInput.innerText;
+    
+    if (newComment === "null" || newComment === "") {
+        newComment = "還未有評論喔，趕快留下你的感受吧";
+		console.log(newComment);
+		textInput.innerText = newComment;
+		return;
+    }
+}
+
+
 }
 ;
 
@@ -453,6 +474,7 @@ function addFavourite(parkingId) {
 				
 			});
 }
+
 
 
 function addBlacklist(parkingId) {
